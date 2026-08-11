@@ -1,0 +1,110 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: latitude8estate_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: latitude8estate_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - latitude8estate_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:RELEASE.2024-01-31T20-20-31Z
+    container_name: latitude8estate_minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - latitude8estate_minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: latitude8estate_redis
+    environment:
+      TZ: Europe/Zagreb
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  crm_api:
+    build:
+      context: ./crm/api/
+      dockerfile: Dockerfile
+    container_name: latitude8estate_crm_api
+    # environment:
+    #   - ENV_VAR=value
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  web_api:
+    build:
+      context: ./web/api/
+      dockerfile: Dockerfile
+    container_name: latitude8estate_web_api
+    # environment:
+    #   - ENV_VAR=value
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8001:8000"
+
+  crm_ui:
+    build:
+      context: ./crm/ui/
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: latitude8estate_crm_ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - crm_api
+
+  web_ui:
+    build:
+      context: ./web/ui
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8001
+    container_name: latitude8estate_web_ui
+    ports:
+      - "3001:80"
+    depends_on:
+      - web_api
+
+volumes:
+  latitude8estate_postgres_data:
+  latitude8estate_minio_data:
