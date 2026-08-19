@@ -246,6 +246,14 @@ class ProjectUpdate(ProjectCreate):
     features: ProjectFeatures | None = None
 
 
+class ProjectResponse(ProjectCreate):
+    """Response model for a :class:`~core.models.db.Project`."""
+
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
 class BlogStatus(StrEnum):
     """Lifecycle status of a blog post."""
 
@@ -296,3 +304,46 @@ class BlogUpdate(BlogCreate):
 
     seo_title: str | None = None
     seo_description: str | None = None
+
+
+class BlogResponse(BlogCreate):
+    """Response model for a :class:`~core.models.db.Blog`."""
+
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+
+class PaginationMetadata(BaseModel):
+    """Describes the pagination state of a list / search response.
+
+    Attributes:
+        total_items:  Total number of matching records in the database.
+        total_pages:  Total number of pages given the current ``limit``.
+        current_page: 1-based page number derived from ``skip`` and ``limit``.
+        skip:         The offset that was applied.
+        limit:        The maximum number of items per page.
+    """
+
+    total_items: int = Field(..., description="Total number of matching records.")
+    total_pages: int = Field(..., description="Total number of pages.")
+    current_page: int = Field(..., description="Current page number (1-based).")
+    skip: int = Field(..., description="Number of records skipped.")
+    limit: int = Field(..., description="Maximum records per page.")
+
+
+class PagninatedResponse[T: BaseModel](BaseModel):
+    """Generic paginated response envelope.
+
+    Type parameter ``T`` is the item model (e.g. ``SellerResponse``).
+
+    Example JSON::
+
+        {
+          "metadata": { ... },
+          "items": [ ... ]
+        }
+    """
+
+    metadata: PaginationMetadata = Field(..., description="Pagination metadata.")
+    items: list[T] = Field(..., description="Page of result items.")
