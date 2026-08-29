@@ -4,7 +4,7 @@ import type { Media } from "../data/media";
 interface Props {
   title: string;
   href: string;
-  image: Media;
+  image: Media | null;
   /** Tall tile (home page grid) or square tile (lifestyle category row). */
   shape?: "tall" | "square";
 }
@@ -19,13 +19,18 @@ const { title, href, image, shape = "tall" } = Astro.props;
     shape === "tall" ? "h-96" : "aspect-square",
   ]}
 >
-  <div
-    class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-    style={`background-image: url('${image.src}')`}
-    role="img"
-    aria-label={image.alt}
-  >
-  </div>
+  {
+    image ? (
+      <div
+        class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+        style={`background-image: url('${image.src}')`}
+        role="img"
+        aria-label={image.alt}
+      />
+    ) : (
+      <div class="absolute inset-0 bg-primary" />
+    )
+  }
   <div
     class="absolute inset-0 bg-linear-to-t from-primary/90 via-primary/20 to-transparent"
   >

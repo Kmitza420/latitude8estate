@@ -38,25 +38,11 @@ export const API_BASE_URL = readString(
 export const API_TIMEOUT_MS = readNumber(import.meta.env.PUBLIC_API_TIMEOUT_MS, 10_000);
 
 /**
- * When true, a failed read falls back to the placeholder fixtures in
- * `src/data/` instead of failing the build.
- *
- * This defaults to *on* because the API cannot yet supply most of what the
- * site renders — there are no images, prices, taglines or agents behind
- * `/v1/projects/` (see `web/api/TODO.md`). Turn it off once the API is the
- * real source of truth, so that a broken API fails the build loudly rather
- * than quietly publishing stale placeholder content.
- */
-export const ALLOW_PLACEHOLDER_FALLBACK = readBoolean(
-  import.meta.env.PUBLIC_API_ALLOW_FALLBACK,
-  true,
-);
-
-/**
  * When true, the enquiry and newsletter forms POST to the API.
  *
  * Defaults to *off* because neither endpoint exists yet. While it is off the
  * forms keep their current behaviour: they intercept the submit and say so.
+ * See `web/api/TODO.md`.
  */
 export const FORMS_ENABLED = readBoolean(import.meta.env.PUBLIC_API_FORMS_ENABLED, false);
 
@@ -68,18 +54,31 @@ export const FORMS_ENABLED = readBoolean(import.meta.env.PUBLIC_API_FORMS_ENABLE
  * `/v1/blogs` 404s where `/v1/blogs/` succeeds.
  */
 export const endpoints = {
-  /** Not reachable yet — see the router prefix bug in `web/api/TODO.md`. */
   projects: "/v1/projects/",
+  featuredProjects: "/v1/projects/featured",
+  projectBySlug: (slug: string) => `/v1/projects/by-slug/${encodeURIComponent(slug)}`,
   project: (id: string) => `/v1/projects/${encodeURIComponent(id)}`,
+
   blogs: "/v1/blogs/",
+  featuredBlogs: "/v1/blogs/featured",
+  blogBySlug: (slug: string) => `/v1/blogs/by-slug/${encodeURIComponent(slug)}`,
   blog: (id: string) => `/v1/blogs/${encodeURIComponent(id)}`,
+
+  categories: "/v1/categories/",
+  category: (slug: string) => `/v1/categories/${encodeURIComponent(slug)}`,
+  categoryBlogs: (slug: string) => `/v1/categories/${encodeURIComponent(slug)}/blogs`,
+
   /** Planned, not implemented. */
   enquiries: "/v1/enquiries/",
   /** Planned, not implemented. */
   newsletterSubscriptions: "/v1/newsletter/subscriptions/",
 } as const;
 
-/** Page size used when the services walk a list endpoint to exhaustion. */
+/**
+ * Page size used when the services walk a list endpoint to exhaustion.
+ *
+ * Matches the API's `le=100` cap on `limit`; asking for more is a 422.
+ */
 export const BULK_PAGE_SIZE = 100;
 
 /** Safety valve on that walk, so a bad `total_pages` cannot spin forever. */

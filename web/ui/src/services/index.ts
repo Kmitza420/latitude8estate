@@ -9,14 +9,16 @@
  *     import { listAllProjects, getFeaturedPost } from "../services";
  *
  * The one exception is the hydrated React islands, which import
- * `services/forms` directly. Going through the barrel would pull the read
- * services — and the placeholder fixtures behind them — into the client bundle.
+ * `services/forms` directly — going through the barrel would pull the read
+ * services into the client bundle.
  *
- * Configuration lives in `src/env.d.ts` and `services/config.ts`; the state of
- * the API behind it is tracked in `web/api/TODO.md`.
+ * Every read hits the API. There are no fixtures and no fallback: a page
+ * renders what the database holds, or the build fails. Configuration lives in
+ * `src/env.d.ts` and `services/config.ts`; what the API still cannot answer is
+ * tracked in `web/api/TODO.md`.
  */
 
-export { ALLOW_PLACEHOLDER_FALLBACK, API_BASE_URL, FORMS_ENABLED } from "./config";
+export { API_BASE_URL, FORMS_ENABLED } from "./config";
 export { ApiError } from "./http";
 
 export {
@@ -25,6 +27,8 @@ export {
   listAllProjects,
   listProjects,
   paginate,
+  summarise,
+  type PortfolioSummary,
   type ProjectPage,
 } from "./projects";
 

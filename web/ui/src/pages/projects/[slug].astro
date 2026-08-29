@@ -15,6 +15,9 @@ export const getStaticPaths: GetStaticPaths = async () =>
 
 const { project } = Astro.props;
 
+// Not every listing publishes a price; "Price on application" is the trade's
+// term for that, and the only honest thing to put in the slot.
+const priceLabel = project.price ?? "Price on application";
 ---
 
 <BaseLayout title={project.name} description={project.tagline}>
@@ -33,13 +36,15 @@ const { project } = Astro.props;
         >
           Schedule Tour
         </a>
-        <a
-          href="#gallery"
-          class="font-label-md text-label-md inline-flex items-center justify-center rounded-full border-2 border-on-primary px-8 py-4 tracking-wider text-on-primary uppercase transition-colors duration-300 hover:bg-on-primary hover:text-primary"
-        >
-          <Icon name="photo_library" class="mr-2" />
-          View all images
-        </a>
+        {project.gallery.length > 0 && (
+          <a
+            href="#gallery"
+            class="font-label-md text-label-md inline-flex items-center justify-center rounded-full border-2 border-on-primary px-8 py-4 tracking-wider text-on-primary uppercase transition-colors duration-300 hover:bg-on-primary hover:text-primary"
+          >
+            <Icon name="photo_library" class="mr-2" />
+            View all images
+          </a>
+        )}
       </div>
     </Hero>
 
@@ -57,8 +62,13 @@ const { project } = Astro.props;
                 {project.name}
               </h2>
               <p class="font-headline-md text-headline-md mt-2 text-secondary">
-                {project.price}
+                {priceLabel}
               </p>
+              {project.area && (
+                <p class="font-body-lg text-body-lg mt-1 text-on-surface-variant">
+                  {project.area}
+                </p>
+              )}
             </div>
 
             <div class="h-px w-full bg-outline-variant"></div>
@@ -205,7 +215,7 @@ const { project } = Astro.props;
             </div>
           </div>
 
-          {/* Documents — the API has no documents table, so this is usually empty. */}
+          {/* Floor plans and brochures attached to the record. */}
           {
             project.documents.length > 0 && (
               <div class="space-y-6">
@@ -224,9 +234,11 @@ const { project } = Astro.props;
                           <span class="font-body-md text-body-md block font-medium text-primary">
                             {doc.title}
                           </span>
-                          <span class="font-body-md block text-sm text-on-surface-variant">
-                            {doc.meta}
-                          </span>
+                          {doc.meta && (
+                            <span class="font-body-md block text-sm text-on-surface-variant">
+                              {doc.meta}
+                            </span>
+                          )}
                         </span>
                         <Icon
                           name="download"
@@ -241,11 +253,11 @@ const { project } = Astro.props;
           }
 
           {/* Gallery */}
-          <div class="space-y-6" id="gallery">
-            <h3 class="font-headline-md text-headline-md text-primary">Gallery</h3>
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {
-                project.gallery.map((shot) => (
+          {project.gallery.length > 0 && (
+            <div class="space-y-6" id="gallery">
+              <h3 class="font-headline-md text-headline-md text-primary">Gallery</h3>
+              <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {project.gallery.map((shot) => (
                   <div class="aspect-[4/3] overflow-hidden rounded-lg">
                     <img
                       src={shot.src}
@@ -254,10 +266,10 @@ const { project } = Astro.props;
                       class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                   </div>
-                ))
-              }
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Inquiry sidebar */}
@@ -280,36 +292,45 @@ const { project } = Astro.props;
                 projectSlug={project.slug}
               />
 
-              <div
-                class="mt-8 flex items-center space-x-4 border-t border-outline-variant pt-8"
-              >
-                <div
-                  class="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-surface-dim"
-                >
-                  <img
-                    src={project.agent.portrait.src}
-                    alt={project.agent.portrait.alt}
-                    loading="lazy"
-                    class="h-full w-full object-cover"
-                  />
-                </div>
-                <div>
-                  <p
-                    class="font-label-md text-label-md mb-1 tracking-wider text-on-surface-variant uppercase"
-                  >
-                    Listed By
-                  </p>
-                  <p class="font-headline-sm text-headline-sm text-primary">
-                    {project.agent.name}
-                  </p>
-                  <a
-                    href={`mailto:${project.agent.email}`}
-                    class="font-body-md text-body-md text-secondary transition-colors hover:text-primary"
-                  >
-                    Contact Specialist
-                  </a>
-                </div>
-              </div>
+              {/* The listing agent, when the record names one. */}
+              {
+                project.agent && (
+                  <div class="mt-8 flex items-center space-x-4 border-t border-outline-variant pt-8">
+                    {project.agent.portrait && (
+                      <div class="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-surface-dim">
+                        <img
+                          src={project.agent.portrait.src}
+                          alt={project.agent.portrait.alt}
+                          loading="lazy"
+                          class="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <p class="font-label-md text-label-md mb-1 tracking-wider text-on-surface-variant uppercase">
+                        Listed By
+                      </p>
+                      <p class="font-headline-sm text-headline-sm text-primary">
+                        {project.agent.name}
+                      </p>
+                      <a
+                        href={`mailto:${project.agent.email}`}
+                        class="font-body-md text-body-md block text-secondary transition-colors hover:text-primary"
+                      >
+                        {project.agent.email}
+                      </a>
+                      {project.agent.phone && (
+                        <a
+                          href={`tel:${project.agent.phone.replace(/\s+/g, "")}`}
+                          class="font-body-md text-body-md block text-on-surface-variant transition-colors hover:text-primary"
+                        >
+                          {project.agent.phone}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>

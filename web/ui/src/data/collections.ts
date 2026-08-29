@@ -7,10 +7,10 @@ export interface Collection extends NavLink {
 
 /** Tile artwork per category, keyed by route. */
 const artwork: Record<string, Media> = {
-  "/home": media.catHistoric,
-  "/projects": media.catUrban,
-  "/lifestyle": media.journalBrutalist,
-  "/about-us": media.catCoastal,
+  "/home": media.tileHome,
+  "/projects": media.tileProjects,
+  "/lifestyle": media.tileLifestyle,
+  "/about-us": media.aboutHero,
 };
 
 /**
@@ -19,5 +19,5 @@ const artwork: Record<string, Media> = {
  */
 export const collections: Collection[] = categories.map((category) => ({
   ...category,
-  image: artwork[category.href] ?? media.catCoastal,
+  image: artwork[category.href] ?? media.aboutHero,
 }));

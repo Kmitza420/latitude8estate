@@ -15,11 +15,18 @@ interface Props {
 const { project, variant = "card", class: className = "" } = Astro.props;
 const href = `/projects/${project.slug}`;
 
+// Only the stats this listing actually has. A record with no floor area shows
+// beds and baths rather than an em dash where the third figure would be.
 const stats = [
-  { icon: "bed", label: `${project.beds} Beds` },
-  { icon: "bathtub", label: `${project.baths} Baths` },
-  { icon: "square_foot", label: project.area },
-];
+  project.beds ? { icon: "bed", label: `${project.beds} Beds` } : null,
+  project.baths ? { icon: "bathtub", label: `${project.baths} Baths` } : null,
+  project.area ? { icon: "square_foot", label: project.area } : null,
+].filter((stat): stat is { icon: string; label: string } => stat !== null);
+
+// Not every listing publishes a price. "Price on application" is the trade's
+// term for exactly that, and it is a true statement about the record — unlike
+// a number, which would have to be invented.
+const priceLabel = project.price ?? "Price on application";
 ---
 
 {
@@ -30,12 +37,25 @@ const stats = [
         class="luxury-shadow block overflow-hidden rounded-lg bg-surface"
       >
         <div class="relative h-80 overflow-hidden">
-          <div
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-            style={`background-image: url('${project.hero.src}')`}
-            role="img"
-            aria-label={project.hero.alt}
-          />
+          {project.hero ? (
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+              style={`background-image: url('${project.hero.src}')`}
+              role="img"
+              aria-label={project.hero.alt}
+            />
+          ) : (
+            /* No photography on this record. A typographic panel in the house
+               palette, rather than another listing's photograph. */
+            <div class="absolute inset-0 flex flex-col justify-end bg-primary p-8">
+              <span class="font-label-md text-label-md tracking-widest text-secondary-fixed uppercase">
+                {project.city}
+              </span>
+              <span class="font-headline-md text-headline-md mt-2 text-on-primary">
+                {project.name}
+              </span>
+            </div>
+          )}
           {project.badge && (
             <span class="font-label-md absolute top-4 right-4 rounded-full bg-primary px-3 py-1 text-xs tracking-wider text-secondary-fixed uppercase">
               {project.badge}
@@ -49,7 +69,7 @@ const stats = [
               {project.city}
             </span>
             <span class="font-label-md text-label-md text-primary">
-              {project.price}
+              {priceLabel}
             </span>
           </div>
 
@@ -57,14 +77,16 @@ const stats = [
             {project.name}
           </h3>
 
-          <div class="font-label-md flex flex-wrap gap-6 border-t border-outline-variant pt-4 text-sm text-on-surface-variant">
-            {stats.map((stat) => (
-              <span class="flex items-center gap-2">
-                <Icon name={stat.icon} class="text-lg" />
-                {stat.label}
-              </span>
-            ))}
-          </div>
+          {stats.length > 0 && (
+            <div class="font-label-md flex flex-wrap gap-6 border-t border-outline-variant pt-4 text-sm text-on-surface-variant">
+              {stats.map((stat) => (
+                <span class="flex items-center gap-2">
+                  <Icon name={stat.icon} class="text-lg" />
+                  {stat.label}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </a>
     </article>
@@ -72,17 +94,25 @@ const stats = [
     <article class:list={["group", className]}>
       <a href={href} class="block">
         <div class="relative mb-6 aspect-[4/3] overflow-hidden">
-          <img
-            src={project.hero.src}
-            alt={project.hero.alt}
-            loading="lazy"
-            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
+          {project.hero ? (
+            <img
+              src={project.hero.src}
+              alt={project.hero.alt}
+              loading="lazy"
+              class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          ) : (
+            <div class="flex h-full w-full items-end bg-primary p-6">
+              <span class="font-headline-sm text-headline-sm text-on-primary">
+                {project.name}
+              </span>
+            </div>
+          )}
         </div>
 
         <div class="flex flex-col gap-2 px-4">
           <p class="font-label-md text-label-md text-secondary uppercase">
-            {project.price}
+            {priceLabel}
           </p>
           <h2 class="font-headline-md text-headline-md text-primary transition-colors group-hover:text-secondary">
             {project.name}
@@ -90,14 +120,16 @@ const stats = [
           <p class="font-body-md text-body-md text-on-surface-variant">
             {project.city}
           </p>
-          <div class="font-label-md text-label-md mt-2 flex flex-wrap gap-8 text-outline">
-            {stats.map((stat) => (
-              <span class="flex items-center gap-1">
-                <Icon name={stat.icon} class="text-sm" />
-                {stat.label}
-              </span>
-            ))}
-          </div>
+          {stats.length > 0 && (
+            <div class="font-label-md text-label-md mt-2 flex flex-wrap gap-8 text-outline">
+              {stats.map((stat) => (
+                <span class="flex items-center gap-1">
+                  <Icon name={stat.icon} class="text-sm" />
+                  {stat.label}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </a>
     </article>

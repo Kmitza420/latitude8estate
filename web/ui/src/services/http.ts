@@ -6,7 +6,7 @@
  * the two React islands that POST from the browser.
  */
 
-import { ALLOW_PLACEHOLDER_FALLBACK, API_BASE_URL, API_TIMEOUT_MS } from "./config";
+import { API_BASE_URL, API_TIMEOUT_MS } from "./config";
 
 export type QueryValue = string | number | boolean | undefined | null;
 
@@ -15,8 +15,9 @@ export type QueryValue = string | number | boolean | undefined | null;
  *
  * `status` is the HTTP status when the server answered, and `null` when the
  * request never got that far — DNS failure, connection refused, timeout. The
- * distinction matters: a 404 is an answer ("no such post"), a `null` status is
- * the API being absent, which is what the fixture fallback exists for.
+ * distinction matters: a 404 is an answer ("no such post") and a caller may
+ * choose to treat it as "nothing here"; a `null` status means the API is
+ * absent, which is always a build failure.
  */
 export class ApiError extends Error {
   readonly status: number | null;
@@ -125,32 +126,23 @@ export function apiPost<T>(path: string, payload: unknown): Promise<T> {
   });
 }
 
-const warned = new Set<string>();
-
 /**
- * Run a read against the API, and drop back to the placeholder fixtures when
- * it fails.
+ * Resolve a request that is allowed to find nothing.
  *
- * Each distinct `label` warns once per build, so a cold API produces a handful
- * of readable lines instead of one per page. Callers that need to tell "no
- * such record" apart from "no API" should check `ApiError.isNotFound`
- * themselves before reaching for this.
+ * A 404 is an *answer* — "no such post" — and belongs to the caller as
+ * `undefined`. Anything else (a 500, a refused connection, a timeout) is a
+ * failure and propagates, which fails the build.
+ *
+ * That distinction is the whole error policy now. There is no fixture
+ * fallback: the site renders what the database holds or it does not build.
+ * A build that quietly published placeholder content because the API was
+ * briefly down is worse than a build that stops.
  */
-export async function withFallback<T>(
-  label: string,
-  load: () => Promise<T>,
-  fallback: () => T,
-): Promise<T> {
+export async function optional<T>(load: () => Promise<T>): Promise<T | undefined> {
   try {
     return await load();
   } catch (error) {
-    if (!ALLOW_PLACEHOLDER_FALLBACK) throw error;
-
-    if (!warned.has(label)) {
-      warned.add(label);
-      const reason = error instanceof Error ? error.message : String(error);
-      console.warn(`[services] ${label}: falling back to placeholder data — ${reason}`);
-    }
-    return fallback();
+    if (error instanceof ApiError && error.isNotFound) return undefined;
+    throw error;
   }
 }

@@ -2,7 +2,8 @@
 import type { Media } from "../data/media";
 
 interface Props {
-  image: Media;
+  /** Null renders a flat primary ground instead of a photograph. */
+  image: Media | null;
   title: string;
   eyebrow?: string;
   lead?: string;
@@ -45,16 +46,21 @@ const centered = align === "center";
     "px-margin-mobile md:px-margin-desktop",
   ]}
 >
-  <div
-    class:list={[
-      "absolute inset-0 z-0 h-full w-full bg-cover bg-center",
-      animate && "scale-105 animate-[kenburns_20s_ease-out_forwards]",
-    ]}
-    style={`background-image: url('${image.src}')`}
-    role="img"
-    aria-label={image.alt}
-  >
-  </div>
+  {
+    image ? (
+      <div
+        class:list={[
+          "absolute inset-0 z-0 h-full w-full bg-cover bg-center",
+          animate && "scale-105 animate-[kenburns_20s_ease-out_forwards]",
+        ]}
+        style={`background-image: url('${image.src}')`}
+        role="img"
+        aria-label={image.alt}
+      />
+    ) : (
+      <div class="absolute inset-0 z-0 h-full w-full bg-primary" />
+    )
+  }
 
   <div
     class:list={[

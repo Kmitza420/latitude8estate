@@ -5,8 +5,12 @@ import Icon from "../components/Icon.astro";
 import ContactForm from "../components/react/ContactForm";
 import { media } from "../data/media";
 import { site } from "../data/site";
+import { listAllProjects, summarise } from "../services";
 
-// Placeholder contact details — no mockup existed for this page.
+// The telephone number and three office addresses here were invented, so they
+// are gone: an invented phone number on a contact page is the one placeholder
+// a visitor will actually try to use. What is left is the enquiry form, the
+// email address, and the markets the portfolio genuinely covers.
 const details = [
   {
     icon: "mail",
@@ -14,24 +18,9 @@ const details = [
     value: "enquiries@latitude8estate.com",
     href: "mailto:enquiries@latitude8estate.com",
   },
-  {
-    icon: "call",
-    label: "Telephone",
-    value: "+1 (310) 555 0148",
-    href: "tel:+13105550148",
-  },
-  {
-    icon: "schedule",
-    label: "Hours",
-    value: "Monday to Friday, 9:00 — 18:00 PT",
-  },
 ];
 
-const offices = [
-  { city: "Malibu", lines: ["29400 Pacific Coast Hwy", "Malibu, California"] },
-  { city: "New York", lines: ["217 West 57th Street", "New York, NY"] },
-  { city: "Lake Como", lines: ["Via Regina 44", "Tremezzina, Italy"] },
-];
+const markets = summarise(await listAllProjects()).marketNames;
 ---
 
 <BaseLayout
@@ -39,7 +28,7 @@ const offices = [
   description={`Speak with a ${site.name} specialist about acquiring or selling an architecturally significant residence.`}
 >
   <Hero
-    image={media.estateGlassPavilion}
+    image={media.contactHero}
     eyebrow="Contact Us"
     title="Start a conversation."
     lead="Tell us what you are looking for, or what you are considering selling. Every enquiry is handled in confidence by a principal."
@@ -80,27 +69,22 @@ const offices = [
             }
           </div>
 
-          <div>
-            <h2 class="font-headline-sm text-headline-sm mb-6 text-primary">
-              Offices
-            </h2>
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1">
-              {
-                offices.map((office) => (
-                  <address class="rounded-xl border border-surface-container-high bg-surface-container-low p-6 not-italic">
-                    <p class="font-label-md text-label-md mb-2 tracking-wider text-secondary uppercase">
-                      {office.city}
+          {
+            markets.length > 0 && (
+              <div>
+                <h2 class="font-headline-sm text-headline-sm mb-6 text-primary">
+                  Where We Represent
+                </h2>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1">
+                  {markets.map((market) => (
+                    <p class="font-body-md text-body-md rounded-xl border border-surface-container-high bg-surface-container-low p-6 text-on-surface-variant">
+                      {market}
                     </p>
-                    {office.lines.map((line) => (
-                      <p class="font-body-md text-body-md text-on-surface-variant">
-                        {line}
-                      </p>
-                    ))}
-                  </address>
-                ))
-              }
-            </div>
-          </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
         </div>
 
         {/* Form */}
