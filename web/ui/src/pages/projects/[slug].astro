@@ -5,10 +5,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import ContactForm from "../../components/react/ContactForm";
-import { projects } from "../../data/projects";
+import { listAllProjects } from "../../services";
 
-export const getStaticPaths: GetStaticPaths = () =>
-  projects.map((project) => ({
+export const getStaticPaths: GetStaticPaths = async () =>
+  (await listAllProjects()).map((project) => ({
     params: { slug: project.slug },
     props: { project },
   }));
@@ -205,38 +205,40 @@ const { project } = Astro.props;
             </div>
           </div>
 
-          {/* Documents */}
-          <div class="space-y-6">
-            <h3 class="font-headline-md text-headline-md text-primary">
-              Floor Plans &amp; Documents
-            </h3>
-            <ul class="space-y-4">
-              {
-                project.documents.map((doc) => (
-                  <li>
-                    <a
-                      href={doc.href}
-                      class="group flex items-center gap-4 rounded-xl border border-surface-container-high bg-surface-container-low p-6 transition-colors hover:bg-surface-container"
-                    >
-                      <Icon name="picture_as_pdf" class="text-3xl text-secondary" />
-                      <span class="flex-1">
-                        <span class="font-body-md text-body-md block font-medium text-primary">
-                          {doc.title}
+          {/* Documents — the API has no documents table, so this is usually empty. */}
+          {
+            project.documents.length > 0 && (
+              <div class="space-y-6">
+                <h3 class="font-headline-md text-headline-md text-primary">
+                  Floor Plans &amp; Documents
+                </h3>
+                <ul class="space-y-4">
+                  {project.documents.map((doc) => (
+                    <li>
+                      <a
+                        href={doc.href}
+                        class="group flex items-center gap-4 rounded-xl border border-surface-container-high bg-surface-container-low p-6 transition-colors hover:bg-surface-container"
+                      >
+                        <Icon name="picture_as_pdf" class="text-3xl text-secondary" />
+                        <span class="flex-1">
+                          <span class="font-body-md text-body-md block font-medium text-primary">
+                            {doc.title}
+                          </span>
+                          <span class="font-body-md block text-sm text-on-surface-variant">
+                            {doc.meta}
+                          </span>
                         </span>
-                        <span class="font-body-md block text-sm text-on-surface-variant">
-                          {doc.meta}
-                        </span>
-                      </span>
-                      <Icon
-                        name="download"
-                        class="text-on-surface-variant transition-colors group-hover:text-secondary"
-                      />
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
-          </div>
+                        <Icon
+                          name="download"
+                          class="text-on-surface-variant transition-colors group-hover:text-secondary"
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
 
           {/* Gallery */}
           <div class="space-y-6" id="gallery">
@@ -272,7 +274,11 @@ const { project } = Astro.props;
                 shortly.
               </p>
 
-              <ContactForm client:visible subject={project.name} />
+              <ContactForm
+                client:visible
+                subject={project.name}
+                projectSlug={project.slug}
+              />
 
               <div
                 class="mt-8 flex items-center space-x-4 border-t border-outline-variant pt-8"

@@ -28,6 +28,13 @@ rather than expecting Ctrl+C on a wrapper process to stop them.
 | `/lifestyle/[slug]` | `src/pages/lifestyle/[slug].astro` | `mockups/blog.html` |
 | `/about-us` | `src/pages/about-us.astro` | no mockup — placeholder copy |
 | `/contact-us` | `src/pages/contact-us.astro` | no mockup — placeholder details |
+| anything else | `src/pages/404.astro` | → `/home` |
+
+Both the bare root and any unknown path land on `/home`. The 404 is a meta
+refresh, the same mechanism Astro emits for the `/` redirect, so the static host
+must be configured to serve `404.html` for unknown paths — `error_page 404
+/404.html;` for nginx. `web/ui/Dockerfile` is currently empty, so that is not
+set up yet.
 
 The blog section is named **Lifestyle**; there is no `/journal`.
 
@@ -97,6 +104,15 @@ src/
     Footer, Newsletter, Pagination, PortfolioView, SectionHeading, Icon
   data/           media.ts (generated), site.ts, collections.ts,
                   projects.ts, posts.ts, pagination.ts
+  services/       everything that talks to web/api (see below)
+    index.ts         the barrel pages import from
+    config.ts        base URL, timeouts, feature flags, endpoint paths
+    http.ts          typed fetch, ApiError, fixture fallback
+    dto.ts           wire shapes, mirrored from core/models/dto.py
+    mappers.ts       DTO -> the view models in src/data/
+    projects.ts      the portfolio
+    posts.ts         lifestyle articles + categories
+    forms.ts         enquiry + newsletter submissions
   layouts/        BaseLayout.astro
   pages/          routes (table above)
   styles/         global.css — @theme tokens + utilities
@@ -109,9 +125,45 @@ drawer), `ContactForm` and `NewsletterForm` hydrate as islands — `client:load`
 for the nav, `client:visible` for the forms. Everything presentational stays in
 `.astro` and ships zero JavaScript.
 
-Content is plain TypeScript modules under `src/data/`, not content collections —
-they are placeholder data standing in for what will eventually come from
-`web/api`. Swap the module bodies for fetches and the pages need no changes.
+## Data
+
+Pages read through `src/services/`, never with a bare `fetch`. The services
+return the same `Project`, `Post` and `Category` types declared in `src/data/`,
+so the components below them are unaware a network exists.
+
+```astro
+---
+import { listAllProjects, paginate } from "../services";
+const { projects, totalPages } = paginate(await listAllProjects(), 1, PAGE_SIZE);
+---
+```
+
+The site is a static build, so the reads happen once at build time. The two
+React islands are the exception: they POST from the browser at runtime, and
+import `services/forms` directly rather than through the barrel, so the read
+services and their fixtures stay out of the client bundle.
+
+The modules under `src/data/` keep two jobs: they declare the view model types,
+and they are the **fallback fixtures**. When a read fails, the service logs one
+warning and serves the fixture instead of failing the build. That is on by
+default because the API cannot yet supply most of what the site renders — no
+images, prices, taglines or agents. `web/api/TODO.md` is the full gap list.
+
+### Configuration
+
+All four are optional and read at build time; `PUBLIC_` is required for the two
+the islands need in the browser.
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `PUBLIC_API_BASE_URL` | `http://localhost:8001` | Origin of `web/api`, as published by docker-compose |
+| `PUBLIC_API_TIMEOUT_MS` | `10000` | Per-request timeout |
+| `PUBLIC_API_ALLOW_FALLBACK` | `true` | Fall back to fixtures instead of failing the build |
+| `PUBLIC_API_FORMS_ENABLED` | `false` | Let the forms POST for real |
+
+Set `PUBLIC_API_ALLOW_FALLBACK=false` once the API is the real source of truth,
+so a broken API fails the build loudly instead of quietly publishing stale
+placeholder content.
 
 ## What was reconciled from the mockups
 
@@ -137,8 +189,17 @@ The mockups were generated per-page, so shared chrome had drifted:
 - **Images are temporary.** All 40 entries in `src/data/media.ts` point at
   `lh3.googleusercontent.com` URLs emitted by the design tool. They *will*
   expire. Replace them with real assets and move to `astro:assets`.
-- **Forms have no backend.** `ContactForm` and `NewsletterForm` intercept
-  submission and show an inline notice saying so. Wire them to `web/api`.
+- **Forms have no backend.** Both forms are wired to `services/forms`, but
+  `POST /v1/enquiries/` and `POST /v1/newsletter/subscriptions/` do not exist
+  yet, so `PUBLIC_API_FORMS_ENABLED` is off and submission still shows an inline
+  notice saying so. Flip the flag once the endpoints ship.
+- **Projects are unreachable over HTTP.** `web/api` mounts its projects router
+  under the `/blogs` prefix by mistake, so `/v1/projects/` 404s and the portfolio
+  always falls back to fixtures. One-line fix upstream; first item in
+  `web/api/TODO.md`.
+- **Categories are still fixtures.** `Blog.category_id` is a UUID with no
+  `categories` table behind it, so every API-sourced article is filed under a
+  single placeholder category and the byline is a constant.
 - **`/about-us` and `/contact-us` are placeholder content.** No mockup existed
   for either; the copy, statistics, office addresses, phone number and email are
   invented and need replacing with real agency details.

@@ -1,20 +1,51 @@
 import { useState, type FormEvent } from "react";
 
+// Imported from the module rather than the barrel: this file is a hydrated
+// island, and the barrel would drag the read services (and the fixtures behind
+// them) into the client bundle.
+import {
+  describeSubmitError,
+  formsEnabled,
+  subscribeNewsletter,
+} from "../../services/forms";
+
 interface NewsletterFormProps {
   note?: string;
 }
 
+type Status = "idle" | "sending" | "sent" | "error";
+
 /**
  * Email capture used by both newsletter blocks. Sits on the dark `primary`
- * panel, so its lettering is gold. No backend yet, so submission is intercepted.
+ * panel, so its lettering is gold.
+ *
+ * `POST /v1/newsletter/subscriptions/` does not exist yet, so `formsEnabled` is
+ * off by default and submission is intercepted with a notice saying so. The
+ * success copy assumes double opt-in, which is what the endpoint should do.
  */
 export default function NewsletterForm({ note }: NewsletterFormProps) {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState<string>("");
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    const form = event.currentTarget;
+    const email = String(new FormData(form).get("email") ?? "");
+
+    setStatus("sending");
+    setError("");
+
+    try {
+      await subscribeNewsletter(email);
+      form.reset();
+      setStatus("sent");
+    } catch (cause) {
+      setError(describeSubmitError(cause));
+      setStatus("error");
+    }
   };
+
+  const sending = status === "sending";
 
   return (
     <>
@@ -32,18 +63,24 @@ export default function NewsletterForm({ note }: NewsletterFormProps) {
         />
         <button
           type="submit"
-          className="font-label-md text-label-md rounded-full bg-secondary-fixed px-8 py-4 whitespace-nowrap text-primary transition-colors hover:bg-white"
+          disabled={sending}
+          className="font-label-md text-label-md rounded-full bg-secondary-fixed px-8 py-4 whitespace-nowrap text-primary transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Subscribe
+          {sending ? "Subscribing…" : "Subscribe"}
         </button>
       </form>
 
-      {submitted && (
+      {status !== "idle" && !sending && (
         <p
           role="status"
+          aria-live="polite"
           className="font-body-md mt-4 text-xs text-secondary-fixed/70"
         >
-          Newsletter signup is not connected to a backend yet.
+          {status === "sent"
+            ? "Almost there — check your inbox to confirm your subscription."
+            : formsEnabled
+              ? error
+              : "Newsletter signup is not connected to a backend yet."}
         </p>
       )}
 

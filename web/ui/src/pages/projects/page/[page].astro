@@ -3,22 +3,19 @@ import type { GetStaticPaths } from "astro";
 
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PortfolioView from "../../../components/PortfolioView.astro";
-import { projects } from "../../../data/projects";
 import { PAGE_SIZE } from "../../../data/pagination";
+import { listAllProjects, paginate } from "../../../services";
 
 // Page 1 is served by /projects, so only pages 2..n are generated here.
-export const getStaticPaths: GetStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const projects = await listAllProjects();
   const totalPages = Math.ceil(projects.length / PAGE_SIZE);
 
   return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, i) => {
     const page = i + 2;
     return {
       params: { page: String(page) },
-      props: {
-        page,
-        totalPages,
-        pageProjects: projects.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-      },
+      props: { page, totalPages, pageProjects: paginate(projects, page, PAGE_SIZE).projects },
     };
   });
 };

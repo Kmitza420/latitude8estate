@@ -3,13 +3,19 @@ import type { GetStaticPaths } from "astro";
 
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Hero from "../../../components/Hero.astro";
-import { categories, categoryName, postsByCategory } from "../../../data/posts";
+import { categoryName } from "../../../data/posts";
+import { getPostsByCategory, listCategories } from "../../../services";
 
-export const getStaticPaths: GetStaticPaths = () =>
-  categories.map((category) => ({
-    params: { category: category.slug },
-    props: { category, posts: postsByCategory(category.slug) },
-  }));
+export const getStaticPaths: GetStaticPaths = async () => {
+  const categories = await listCategories();
+
+  return Promise.all(
+    categories.map(async (category) => ({
+      params: { category: category.slug },
+      props: { category, posts: await getPostsByCategory(category.slug) },
+    })),
+  );
+};
 
 const { category, posts } = Astro.props;
 ---

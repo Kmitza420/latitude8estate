@@ -1,11 +1,16 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PortfolioView from "../../components/PortfolioView.astro";
-import { projects } from "../../data/projects";
 import { PAGE_SIZE } from "../../data/pagination";
+import { listAllProjects, paginate } from "../../services";
 
-const totalPages = Math.ceil(projects.length / PAGE_SIZE);
-const pageProjects = projects.slice(0, PAGE_SIZE);
+// Page 1. Pages 2..n come from page/[page].astro, sliced from the same list so
+// the two can never disagree about where the boundary falls.
+const { projects: pageProjects, totalPages } = paginate(
+  await listAllProjects(),
+  1,
+  PAGE_SIZE,
+);
 ---
 
 <BaseLayout

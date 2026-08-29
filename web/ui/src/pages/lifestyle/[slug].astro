@@ -5,18 +5,19 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import PostCard from "../../components/PostCard.astro";
-import {
-  categoryName,
-  formatDate,
-  posts,
-  relatedPosts,
-} from "../../data/posts";
+import { categoryName, formatDate } from "../../data/posts";
+import { getRelatedPosts, listAllPosts } from "../../services";
 
-export const getStaticPaths: GetStaticPaths = () =>
-  posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post, related: relatedPosts(post.slug) },
-  }));
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await listAllPosts();
+
+  return Promise.all(
+    posts.map(async (post) => ({
+      params: { slug: post.slug },
+      props: { post, related: await getRelatedPosts(post.slug) },
+    })),
+  );
+};
 
 const { post, related } = Astro.props;
 

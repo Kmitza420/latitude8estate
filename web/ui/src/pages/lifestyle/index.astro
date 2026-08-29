@@ -6,10 +6,16 @@ import Icon from "../../components/Icon.astro";
 import Newsletter from "../../components/Newsletter.astro";
 import PostCard from "../../components/PostCard.astro";
 import { media } from "../../data/media";
-import { categories, featuredPost, posts } from "../../data/posts";
+import { getFeaturedPost, listAllPosts, listCategories } from "../../services";
+
+const [categories, posts, featuredPost] = await Promise.all([
+  listCategories(),
+  listAllPosts(),
+  getFeaturedPost(),
+]);
 
 const tiles = categories.filter((category) => category.featured);
-const latest = posts.filter((post) => !post.featured).slice(0, 3);
+const latest = posts.filter((post) => post.slug !== featuredPost?.slug).slice(0, 3);
 ---
 
 <BaseLayout
@@ -43,44 +49,40 @@ const latest = posts.filter((post) => !post.featured).slice(0, 3);
       </div>
     </section>
 
-    {/* Featured */}
-    <section class="mt-section-gap">
-      <h2 class="sr-only">Featured</h2>
-      <div class="grid grid-cols-1 items-center gap-gutter lg:grid-cols-12">
-        <div
-          class="luxury-shadow group relative h-[500px] overflow-hidden rounded-lg lg:col-span-7"
-        >
-          <img
-            src={featuredPost.image.src}
-            alt={featuredPost.image.alt}
-            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-        </div>
-        <div
-          class="luxury-shadow relative z-10 rounded-lg bg-surface-container p-8 md:p-12 lg:col-span-5 lg:-ml-12"
-        >
-          <span
-            class="font-label-md text-label-md mb-4 block tracking-widest text-secondary uppercase"
-          >
-            Featured
-          </span>
-          <h3
-            class="font-headline-lg text-headline-lg-mobile mb-6 text-primary md:text-headline-lg"
-          >
-            {featuredPost.title}
-          </h3>
-          <p class="font-body-md text-body-md mb-8 text-on-surface-variant">
-            {featuredPost.excerpt}
-          </p>
-          <a
-            href={`/lifestyle/${featuredPost.slug}`}
-            class="font-label-md text-label-md inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-on-primary transition-colors duration-300 hover:bg-secondary hover:text-on-secondary"
-          >
-            Read Article
-          </a>
-        </div>
-      </div>
-    </section>
+    {/* Featured — omitted entirely when the API has no published articles. */}
+    {
+      featuredPost && (
+        <section class="mt-section-gap">
+          <h2 class="sr-only">Featured</h2>
+          <div class="grid grid-cols-1 items-center gap-gutter lg:grid-cols-12">
+            <div class="luxury-shadow group relative h-[500px] overflow-hidden rounded-lg lg:col-span-7">
+              <img
+                src={featuredPost.image.src}
+                alt={featuredPost.image.alt}
+                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+            <div class="luxury-shadow relative z-10 rounded-lg bg-surface-container p-8 md:p-12 lg:col-span-5 lg:-ml-12">
+              <span class="font-label-md text-label-md mb-4 block tracking-widest text-secondary uppercase">
+                Featured
+              </span>
+              <h3 class="font-headline-lg text-headline-lg-mobile mb-6 text-primary md:text-headline-lg">
+                {featuredPost.title}
+              </h3>
+              <p class="font-body-md text-body-md mb-8 text-on-surface-variant">
+                {featuredPost.excerpt}
+              </p>
+              <a
+                href={`/lifestyle/${featuredPost.slug}`}
+                class="font-label-md text-label-md inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-on-primary transition-colors duration-300 hover:bg-secondary hover:text-on-secondary"
+              >
+                Read Article
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
 
     {/* Latest */}
     <section class="mt-section-gap">

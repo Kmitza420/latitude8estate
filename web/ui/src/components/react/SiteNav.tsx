@@ -128,9 +128,14 @@ export default function SiteNav({ brand, links, cta, pathname }: SiteNavProps) {
           }`}
         >
           <div className="mb-12 flex items-center justify-between gap-4">
-            <span className="font-headline-sm text-headline-sm text-secondary-fixed">
+            {/* Same target as the brand in the top bar and the footer. */}
+            <a
+              href="/home"
+              onClick={() => setOpen(false)}
+              className="font-headline-sm text-headline-sm text-secondary-fixed transition-opacity hover:opacity-70"
+            >
               {brand}
-            </span>
+            </a>
             <button
               type="button"
               onClick={() => setOpen(false)}

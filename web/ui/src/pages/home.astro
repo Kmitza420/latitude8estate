@@ -9,16 +9,22 @@ import PropertyCard from "../components/PropertyCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import { media } from "../data/media";
 import { collections } from "../data/collections";
-import { featuredProjects } from "../data/projects";
-import { getPost } from "../data/posts";
+import { categoryName } from "../data/posts";
 import { site } from "../data/site";
+import { getFeaturedPost, getFeaturedProjects, listAllPosts } from "../services";
 
-const lifestyleLead = getPost("brutalist-elegance")!;
-const lifestyleRail = [
-  getPost("subtle-luxury-kitchens")!,
-  getPost("private-island-retreats")!,
-  getPost("invisible-tech")!,
-];
+const [featuredProjects, posts, lifestyleLead] = await Promise.all([
+  getFeaturedProjects(3),
+  listAllPosts(),
+  getFeaturedPost(),
+]);
+
+// The three articles beside the lead story, whatever they turn out to be —
+// this used to name four specific slugs, which no longer exist once the
+// articles come from the database.
+const lifestyleRail = posts
+  .filter((post) => post.slug !== lifestyleLead?.slug)
+  .slice(0, 3);
 
 const testimonial = {
   quote:
@@ -99,58 +105,48 @@ const testimonial = {
         class="mb-16"
       />
 
-      <div class="grid grid-cols-1 gap-8 lg:h-[600px] lg:grid-cols-12">
-        <article
-          class="luxury-shadow group relative h-[400px] overflow-hidden rounded-xl lg:col-span-8 lg:h-full"
-        >
-          <div
-            class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-            style={`background-image: url('${media.journalBrutalist.src}')`}
-            role="img"
-            aria-label={media.journalBrutalist.alt}
-          >
-          </div>
-          <div
-            class="absolute inset-0 bg-linear-to-t from-primary via-primary/40 to-transparent opacity-90"
-          >
-          </div>
-          <div class="absolute bottom-0 left-0 w-full p-10 lg:w-3/4">
-            <span
-              class="font-label-md text-label-md mb-4 block tracking-widest text-secondary-fixed uppercase"
-            >
-              Architecture
-            </span>
-            <h3
-              class="font-headline-md text-headline-md mb-4 leading-tight text-on-primary"
-            >
-              {lifestyleLead.title}
-            </h3>
-            <p
-              class="font-body-md text-body-md mb-6 hidden text-on-primary/80 md:block"
-            >
-              {lifestyleLead.excerpt}
-            </p>
-            <a
-              href={`/lifestyle/${lifestyleLead.slug}`}
-              class="font-label-md inline-flex items-center gap-2 text-secondary-fixed transition-all hover:gap-4"
-            >
-              Read Story
-              <Icon name="arrow_forward" />
-            </a>
-          </div>
-        </article>
+      {
+        lifestyleLead && (
+          <div class="grid grid-cols-1 gap-8 lg:h-[600px] lg:grid-cols-12">
+            <article class="luxury-shadow group relative h-[400px] overflow-hidden rounded-xl lg:col-span-8 lg:h-full">
+              <div
+                class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style={`background-image: url('${lifestyleLead.image.src}')`}
+                role="img"
+                aria-label={lifestyleLead.image.alt}
+              />
+              <div class="absolute inset-0 bg-linear-to-t from-primary via-primary/40 to-transparent opacity-90" />
+              <div class="absolute bottom-0 left-0 w-full p-10 lg:w-3/4">
+                <span class="font-label-md text-label-md mb-4 block tracking-widest text-secondary-fixed uppercase">
+                  {categoryName(lifestyleLead.category)}
+                </span>
+                <h3 class="font-headline-md text-headline-md mb-4 leading-tight text-on-primary">
+                  {lifestyleLead.title}
+                </h3>
+                <p class="font-body-md text-body-md mb-6 hidden text-on-primary/80 md:block">
+                  {lifestyleLead.excerpt}
+                </p>
+                <a
+                  href={`/lifestyle/${lifestyleLead.slug}`}
+                  class="font-label-md inline-flex items-center gap-2 text-secondary-fixed transition-all hover:gap-4"
+                >
+                  Read Story
+                  <Icon name="arrow_forward" />
+                </a>
+              </div>
+            </article>
 
-        <div class="flex h-full flex-col gap-8 lg:col-span-4">
-          {
-            lifestyleRail.map((post, index) => (
-              <>
-                {index > 0 && <div class="h-px w-full bg-outline-variant/30" />}
-                <PostCard post={post} variant="compact" />
-              </>
-            ))
-          }
-        </div>
-      </div>
+            <div class="flex h-full flex-col gap-8 lg:col-span-4">
+              {lifestyleRail.map((post, index) => (
+                <>
+                  {index > 0 && <div class="h-px w-full bg-outline-variant/30" />}
+                  <PostCard post={post} variant="compact" />
+                </>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </section>
 
     {/* Testimonial */}
