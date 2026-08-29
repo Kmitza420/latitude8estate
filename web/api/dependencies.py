@@ -1,11 +1,22 @@
-from fastapi import Depends
+"""
+FastAPI dependency wiring for the public web API.
+
+Everything is imported from the repository root (``core.*``, ``web.api.*``),
+which is the single import root for this service. It is run as
+``uvicorn web.api.main:app`` from the repository root, and the Dockerfile
+copies ``core/`` and ``web/api/`` into the image so that both resolve.
+"""
+
+from fastapi import Depends, Query
 from sqlalchemy.orm import Session
 from typing import Generator, Annotated
 
 from core.clients.db import Database
 from core.repositories.blog_repository import BlogRepository
+from core.repositories.category_repository import CategoryRepository
 from core.repositories.project_repository import ProjectRepository
 from core.services.blog_service import BlogService
+from core.services.category_service import CategoryService
 from core.services.project_service import ProjectService
 from core.settings import settings
 
@@ -59,6 +70,13 @@ def get_blog_repository(session: DBSessionDependency) -> BlogRepository:
 BlogRepositoryDependency = Annotated[BlogRepository, Depends(get_blog_repository)]
 
 
+def get_category_repository(session: DBSessionDependency) -> CategoryRepository:
+    """Provide a ``CategoryRepository`` instance for the current request."""
+    return CategoryRepository(session)
+
+CategoryRepositoryDependency = Annotated[CategoryRepository, Depends(get_category_repository)]
+
+
 def get_project_service(project_repository: ProjectRepositoryDependency) -> ProjectService:
     """Provide a ``ProjectService`` instance for the current request."""
     return ProjectService(project_repository)
@@ -71,3 +89,22 @@ def get_blog_service(blog_repository: BlogRepositoryDependency) -> BlogService:
     return BlogService(blog_repository)
 
 BlogServiceDependency = Annotated[BlogService, Depends(get_blog_service)]
+
+
+def get_category_service(category_repository: CategoryRepositoryDependency) -> CategoryService:
+    """Provide a ``CategoryService`` instance for the current request."""
+    return CategoryService(category_repository)
+
+CategoryServiceDependency = Annotated[CategoryService, Depends(get_category_service)]
+
+
+# ── Shared query parameters ───────────────────────────────────────────
+#
+# Both bounds are enforced, not merely defaulted. `limit` in particular was
+# previously unvalidated, and the list routes divide by it to compute
+# `total_pages` — so `?limit=0` was a 500 reachable by anyone who typed it
+# into the address bar. `ge=1` makes it a 422 instead, and `le=100` stops a
+# single request from asking for the entire table.
+
+SkipParam = Annotated[int, Query(ge=0, description="Number of records to skip.")]
+LimitParam = Annotated[int, Query(ge=1, le=100, description="Maximum records per page.")]

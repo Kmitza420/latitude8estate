@@ -66,6 +66,32 @@ class BaseSQLAlchemyRepository[T: ORMBase]:
         """
         return self._session.get(self._model_cls, pk)
 
+    def default_select(self):
+        """The base ``SELECT`` for this repository, ordered.
+
+        Subclasses override this to change the default ordering or to apply a
+        filter that every read should honour (see
+        :meth:`~core.repositories.blog_repository.BlogRepository.published_select`).
+
+        The ordering must be *total*. Ordering by ``created_at`` alone leaves
+        rows sharing a timestamp in an arbitrary relative order, and
+        PostgreSQL is free to return them differently between two queries —
+        which makes ``LIMIT``/``OFFSET`` pagination silently duplicate a
+        record on one page and drop it from the next. The primary key breaks
+        the tie.
+        """
+        return select(self._model_cls).order_by(
+            self._model_cls.created_at.desc(), self._model_cls.id
+        )
+
+    def paginate(self, stmt, skip: int | None = None, limit: int | None = None):
+        """Apply ``OFFSET``/``LIMIT`` to a statement."""
+        if skip:
+            stmt = stmt.offset(skip)
+        if limit:
+            stmt = stmt.limit(limit)
+        return stmt
+
     def list(
         self,
         skip: int | None = None,
@@ -78,14 +104,9 @@ class BaseSQLAlchemyRepository[T: ORMBase]:
             limit: Maximum number of rows to return (``LIMIT``).
 
         Returns:
-            A list of ORM instances.
+            A list of ORM instances, in the repository's default order.
         """
-        stmt = select(self._model_cls)
-        if skip:
-            stmt = stmt.offset(skip)
-        if limit:
-            stmt = stmt.limit(limit)
-        stmt = stmt.order_by(self._model_cls.created_at.desc())
+        stmt = self.paginate(self.default_select(), skip, limit)
         return list(self._session.scalars(stmt).all())
 
     def update(self, pk, **kwargs) -> T | None:
@@ -126,11 +147,20 @@ class BaseSQLAlchemyRepository[T: ORMBase]:
         self._session.flush()
         return True
 
-    def count(self) -> int:
-        """Return the total number of rows in the table.
+    def count(self, *whereclause) -> int:
+        """Return the number of rows in the table, optionally filtered.
+
+        The filter must match whatever the corresponding ``list`` call
+        applies, or the pagination metadata will describe a different result
+        set than the one being returned.
+
+        Args:
+            *whereclause: Optional SQLAlchemy filter expressions.
 
         Returns:
             An integer count.
         """
         stmt = select(func.count()).select_from(self._model_cls)
+        if whereclause:
+            stmt = stmt.where(*whereclause)
         return self._session.scalar(stmt) or 0
