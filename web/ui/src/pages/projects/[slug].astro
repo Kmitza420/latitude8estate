@@ -5,21 +5,15 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import ContactForm from "../../components/react/ContactForm";
-import { getAllProperties, getProperty } from "../../services";
+import { projects } from "../../data/projects";
 
-// Paths come from the summary listing; each page then loads its own detail,
-// which is the only response carrying specs, gallery and agent.
-export const getStaticPaths: GetStaticPaths = async () => {
-  const all = await getAllProperties();
-  return all.map((project) => ({ params: { slug: project.slug } }));
-};
+export const getStaticPaths: GetStaticPaths = () =>
+  projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
 
-const { slug } = Astro.params;
-const project = await getProperty(slug!);
-
-if (!project) {
-  throw new Error(`No property found for slug "${slug}"`);
-}
+const { project } = Astro.props;
 
 ---
 
@@ -278,11 +272,7 @@ if (!project) {
                 shortly.
               </p>
 
-              <ContactForm
-                client:visible
-                subject={project.name}
-                propertySlug={project.slug}
-              />
+              <ContactForm client:visible subject={project.name} />
 
               <div
                 class="mt-8 flex items-center space-x-4 border-t border-outline-variant pt-8"

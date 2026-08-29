@@ -10,21 +10,11 @@ interface Props {
    */
   variant?: "card" | "compact" | "overlay";
   class?: string;
-  /**
-   * Display name for the post's category. Pages that have already loaded
-   * categories from the API pass it in so each card does not look one up.
-   */
-  categoryLabel?: string;
 }
 
-const {
-  post,
-  variant = "card",
-  class: className = "",
-  categoryLabel,
-} = Astro.props;
+const { post, variant = "card", class: className = "" } = Astro.props;
 const href = `/lifestyle/${post.slug}`;
-const label = categoryLabel ?? categoryName(post.category);
+const label = categoryName(post.category);
 ---
 
 {

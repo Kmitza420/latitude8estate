@@ -45,48 +45,6 @@ green once scrolled past it. Lettering is gold (`secondary-fixed`, `#ffdf9f`) in
 both states. The footer shares that same `primary` green band with gold
 lettering, so the two bookend the page identically.
 
-## Data / the API service layer
-
-Pages no longer import `src/data/` directly — they go through `src/services/`,
-which talks to the public web API (`web/api`).
-
-```
-src/services/
-  config.ts      base URL, timeout, fallback switch
-  http.ts        fetch wrapper: timeouts, ApiError, unreachable-API breaker
-  dto.ts         the wire contract (snake_case, as FastAPI emits it)
-  mappers.ts     DTO -> the camelCase domain models components already use
-  properties.ts  getProperties / getAllProperties / getFeaturedProperties / getProperty
-  posts.ts       getAllPosts / getPostsByCategory / getFeaturedPost / getPost /
-                 getCategories / getCategory / getCategoryLabels / getRelatedPosts
-  forms.ts       submitEnquiry / subscribeToNewsletter
-```
-
-**Reads run at build time.** Static routes are generated from the API:
-`getStaticPaths` asks it for slugs, then each page loads its own detail.
-
-**Writes run in the browser.** The enquiry and newsletter forms POST from the
-client and report failures — they never show a false confirmation.
-
-**The API is not implemented yet.** Every endpoint these call is a TODO in
-[`web/api/endpoints/v1/router.py`](../api/endpoints/v1/router.py). Until it
-exists, reads fall back to the placeholder fixtures in `src/data/`, log one
-warning, and the site builds normally. The first connection failure trips a
-breaker so a dead API costs one timeout per build, not one per request.
-
-Configuration:
-
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `PUBLIC_API_BASE_URL` | — | Preferred; Astro's own convention |
-| `VITE_API_BASE_URL` | `http://localhost:8001` | What docker-compose passes as a build arg |
-| `PUBLIC_API_TIMEOUT_MS` | `5000` | Per-request timeout |
-| `PUBLIC_API_FALLBACK` | `true` | Set `false` to make a missing API a build error — do this in CI once the API is live |
-
-Only `src/data/site.ts` and `src/data/collections.ts` stay local by design:
-navigation and routes are a build-time concern. `src/data/media.ts`,
-`projects.ts` and `posts.ts` are now fallback fixtures only.
-
 ## Heroes
 
 Every page opens on the same hero: a full-viewport image (`h-dvh`, min 600px)

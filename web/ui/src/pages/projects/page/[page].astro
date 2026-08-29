@@ -3,25 +3,24 @@ import type { GetStaticPaths } from "astro";
 
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import PortfolioView from "../../../components/PortfolioView.astro";
+import { projects } from "../../../data/projects";
 import { PAGE_SIZE } from "../../../data/pagination";
-import { getProperties } from "../../../services";
 
 // Page 1 is served by /projects, so only pages 2..n are generated here.
-export const getStaticPaths: GetStaticPaths = async () => {
-  const { total } = await getProperties(1);
-  const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1);
+export const getStaticPaths: GetStaticPaths = () => {
+  const totalPages = Math.ceil(projects.length / PAGE_SIZE);
 
-  const pages = Array.from({ length: Math.max(totalPages - 1, 0) }, (_, i) => i + 2);
-
-  return Promise.all(
-    pages.map(async (page) => {
-      const { projects } = await getProperties(page);
-      return {
-        params: { page: String(page) },
-        props: { page, totalPages, pageProjects: projects },
-      };
-    }),
-  );
+  return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        page,
+        totalPages,
+        pageProjects: projects.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+      },
+    };
+  });
 };
 
 const { page, totalPages, pageProjects } = Astro.props;

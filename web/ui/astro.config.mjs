@@ -13,8 +13,5 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
-    // docker-compose passes VITE_API_BASE_URL as a build arg, so allow that
-    // prefix through alongside Astro's own PUBLIC_.
-    envPrefix: ['PUBLIC_', 'VITE_'],
   },
 });

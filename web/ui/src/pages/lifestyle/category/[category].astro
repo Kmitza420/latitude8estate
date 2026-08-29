@@ -3,28 +3,15 @@ import type { GetStaticPaths } from "astro";
 
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import Hero from "../../../components/Hero.astro";
-import {
-  getCategories,
-  getCategory,
-  getCategoryLabels,
-  getPostsByCategory,
-} from "../../../services";
+import { categories, categoryName, postsByCategory } from "../../../data/posts";
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const categories = await getCategories();
-  return categories.map((category) => ({ params: { category: category.slug } }));
-};
+export const getStaticPaths: GetStaticPaths = () =>
+  categories.map((category) => ({
+    params: { category: category.slug },
+    props: { category, posts: postsByCategory(category.slug) },
+  }));
 
-const { category: slug } = Astro.params;
-const [category, posts, categoryLabels] = await Promise.all([
-  getCategory(slug!),
-  getPostsByCategory(slug!),
-  getCategoryLabels(),
-]);
-
-if (!category) {
-  throw new Error(`No category found for slug "${slug}"`);
-}
+const { category, posts } = Astro.props;
 ---
 
 <BaseLayout
@@ -77,7 +64,7 @@ if (!category) {
               ]}
             >
               <span class="font-label-md text-label-md tracking-widest text-secondary uppercase">
-                {categoryLabels[post.category] ?? post.category}
+                {categoryName(post.category)}
               </span>
               <h2 class="font-headline-lg text-headline-lg-mobile text-primary md:text-headline-lg">
                 <a href={`/lifestyle/${post.slug}`}>{post.title}</a>

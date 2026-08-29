@@ -1,14 +1,20 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PortfolioView from "../../components/PortfolioView.astro";
-import { getProperties } from "../../services";
+import { projects } from "../../data/projects";
+import { PAGE_SIZE } from "../../data/pagination";
 
-const { projects, totalPages } = await getProperties(1);
+const totalPages = Math.ceil(projects.length / PAGE_SIZE);
+const pageProjects = projects.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout
   title="The Portfolio"
   description="A curated collection of the world's most prestigious residences."
 >
-  <PortfolioView projects={projects} currentPage={1} totalPages={totalPages} />
+  <PortfolioView
+    projects={pageProjects}
+    currentPage={1}
+    totalPages={totalPages}
+  />
 </BaseLayout>
