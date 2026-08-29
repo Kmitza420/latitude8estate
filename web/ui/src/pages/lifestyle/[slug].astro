@@ -5,20 +5,31 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import PostCard from "../../components/PostCard.astro";
+import { formatDate } from "../../data/posts";
 import {
-  categoryName,
-  formatDate,
-  posts,
-  relatedPosts,
-} from "../../data/posts";
+  getAllPosts,
+  getCategoryLabels,
+  getPost,
+  getRelatedPosts,
+} from "../../services";
 
-export const getStaticPaths: GetStaticPaths = () =>
-  posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post, related: relatedPosts(post.slug) },
-  }));
+export const getStaticPaths: GetStaticPaths = async () => {
+  const all = await getAllPosts();
+  return all.map((post) => ({ params: { slug: post.slug } }));
+};
 
-const { post, related } = Astro.props;
+const { slug } = Astro.params;
+const [post, related, categoryLabels] = await Promise.all([
+  getPost(slug!),
+  getRelatedPosts(slug!),
+  getCategoryLabels(),
+]);
+
+if (!post) {
+  throw new Error(`No post found for slug "${slug}"`);
+}
+
+const categoryLabel = categoryLabels[post.category] ?? post.category;
 
 const prose =
   "prose prose-lg max-w-none prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-h2:text-secondary prose-h2:mb-6 prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary";
@@ -27,7 +38,7 @@ const prose =
 <BaseLayout title={post.title} description={post.excerpt}>
   <Hero
     image={post.image}
-    eyebrow={categoryName(post.category)}
+    eyebrow={categoryLabel}
     title={post.title}
     overlay="gradient"
   >
@@ -88,7 +99,7 @@ const prose =
         href={`/lifestyle/category/${post.category}`}
         class="font-label-md text-label-md text-secondary transition-colors hover:text-primary"
       >
-        More in {categoryName(post.category)}
+        More in {categoryLabel}
       </a>
     </div>
   </article>
@@ -111,7 +122,15 @@ const prose =
       </div>
 
       <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {related.map((item) => <PostCard post={item} variant="overlay" />)}
+        {
+          related.map((item) => (
+            <PostCard
+              post={item}
+              variant="overlay"
+              categoryLabel={categoryLabels[item.category]}
+            />
+          ))
+        }
       </div>
     </div>
   </section>

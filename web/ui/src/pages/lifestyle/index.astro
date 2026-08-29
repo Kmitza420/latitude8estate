@@ -6,10 +6,24 @@ import Icon from "../../components/Icon.astro";
 import Newsletter from "../../components/Newsletter.astro";
 import PostCard from "../../components/PostCard.astro";
 import { media } from "../../data/media";
-import { categories, featuredPost, posts } from "../../data/posts";
+import {
+  getAllPosts,
+  getCategories,
+  getCategoryLabels,
+  getFeaturedPost,
+} from "../../services";
+
+const [categories, featuredPost, posts, categoryLabels] = await Promise.all([
+  getCategories(),
+  getFeaturedPost(),
+  getAllPosts(),
+  getCategoryLabels(),
+]);
 
 const tiles = categories.filter((category) => category.featured);
-const latest = posts.filter((post) => !post.featured).slice(0, 3);
+const latest = posts
+  .filter((post) => post.slug !== featuredPost.slug)
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -100,7 +114,11 @@ const latest = posts.filter((post) => !post.featured).slice(0, 3);
       </div>
 
       <div class="grid grid-cols-1 gap-gutter md:grid-cols-3">
-        {latest.map((post) => <PostCard post={post} />)}
+        {
+          latest.map((post) => (
+            <PostCard post={post} categoryLabel={categoryLabels[post.category]} />
+          ))
+        }
       </div>
     </section>
 

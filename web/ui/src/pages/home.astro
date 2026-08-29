@@ -9,16 +9,26 @@ import PropertyCard from "../components/PropertyCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import { media } from "../data/media";
 import { collections } from "../data/collections";
-import { featuredProjects } from "../data/projects";
-import { getPost } from "../data/posts";
 import { site } from "../data/site";
+import {
+  getAllPosts,
+  getCategoryLabels,
+  getFeaturedPost,
+  getFeaturedProperties,
+} from "../services";
 
-const lifestyleLead = getPost("brutalist-elegance")!;
-const lifestyleRail = [
-  getPost("subtle-luxury-kitchens")!,
-  getPost("private-island-retreats")!,
-  getPost("invisible-tech")!,
-];
+const [featuredProjects, lifestyleLead, allPosts, categoryLabels] =
+  await Promise.all([
+    getFeaturedProperties(),
+    getFeaturedPost(),
+    getAllPosts(),
+    getCategoryLabels(),
+  ]);
+
+// Three most recent posts that are not the one already headlining the section.
+const lifestyleRail = allPosts
+  .filter((post) => post.slug !== lifestyleLead.slug)
+  .slice(0, 3);
 
 const testimonial = {
   quote:
@@ -118,7 +128,7 @@ const testimonial = {
             <span
               class="font-label-md text-label-md mb-4 block tracking-widest text-secondary-fixed uppercase"
             >
-              Architecture
+              {categoryLabels[lifestyleLead.category] ?? lifestyleLead.category}
             </span>
             <h3
               class="font-headline-md text-headline-md mb-4 leading-tight text-on-primary"
@@ -145,7 +155,11 @@ const testimonial = {
             lifestyleRail.map((post, index) => (
               <>
                 {index > 0 && <div class="h-px w-full bg-outline-variant/30" />}
-                <PostCard post={post} variant="compact" />
+                <PostCard
+                  post={post}
+                  variant="compact"
+                  categoryLabel={categoryLabels[post.category]}
+                />
               </>
             ))
           }
