@@ -1,0 +1,36 @@
+---
+import Hero from "./Hero.astro";
+import Pagination from "./Pagination.astro";
+import PropertyCard from "./PropertyCard.astro";
+import { media } from "../data/media";
+import type { Project } from "../data/projects";
+
+interface Props {
+  projects: Project[];
+  currentPage: number;
+  totalPages: number;
+}
+
+const { projects, currentPage, totalPages } = Astro.props;
+---
+
+<Hero
+  image={media.clifftopReserve}
+  title="The Portfolio"
+  lead="A curated collection of the world's most prestigious residences."
+  overlay="tint"
+/>
+
+<main
+  class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+>
+  <div class="grid grid-cols-1 gap-gutter md:grid-cols-2 lg:grid-cols-3">
+    {projects.map((project) => <PropertyCard project={project} variant="tile" />)}
+  </div>
+
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    base="/projects"
+  />
+</main>

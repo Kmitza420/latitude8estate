@@ -1,0 +1,108 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Hero from "../../../components/Hero.astro";
+import { categories, categoryName, postsByCategory } from "../../../data/posts";
+
+export const getStaticPaths: GetStaticPaths = () =>
+  categories.map((category) => ({
+    params: { category: category.slug },
+    props: { category, posts: postsByCategory(category.slug) },
+  }));
+
+const { category, posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`${category.name} — Lifestyle`}
+  description={category.blurb}
+>
+  <Hero
+    image={category.image}
+    eyebrow={`Lifestyle / ${category.name}`}
+    title={category.name}
+    lead={category.blurb}
+    overlay="tint"
+  />
+
+  <main
+    class="mx-auto flex w-full max-w-page flex-col gap-section-gap px-margin-mobile py-section-gap md:px-margin-desktop"
+  >
+    {
+      posts.map((post, index) => {
+        // Alternate which side the image sits on down the list.
+        const imageFirst = index % 2 === 0;
+
+        return (
+          <article
+            class:list={[
+              "group flex items-center gap-gutter",
+              imageFirst
+                ? "flex-col md:flex-row"
+                : "flex-col-reverse md:flex-row",
+            ]}
+          >
+            {imageFirst && (
+              <a
+                href={`/lifestyle/${post.slug}`}
+                class="aspect-[4/3] w-full overflow-hidden rounded md:w-1/2"
+              >
+                <img
+                  src={post.image.src}
+                  alt={post.image.alt}
+                  loading="lazy"
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </a>
+            )}
+
+            <div
+              class:list={[
+                "flex w-full flex-col gap-6 md:w-1/2",
+                imageFirst ? "md:pl-8" : "md:pr-8",
+              ]}
+            >
+              <span class="font-label-md text-label-md tracking-widest text-secondary uppercase">
+                {categoryName(post.category)}
+              </span>
+              <h2 class="font-headline-lg text-headline-lg-mobile text-primary md:text-headline-lg">
+                <a href={`/lifestyle/${post.slug}`}>{post.title}</a>
+              </h2>
+              <p class="font-body-md text-body-md max-w-xl text-on-surface-variant">
+                {post.excerpt}
+              </p>
+              <div class="pt-4">
+                <a
+                  href={`/lifestyle/${post.slug}`}
+                  class:list={[
+                    "font-label-md text-label-md inline-flex rounded-full px-8 py-3 transition-colors duration-300",
+                    imageFirst
+                      ? "bg-primary text-on-primary hover:bg-secondary hover:text-on-secondary"
+                      : "border border-secondary text-secondary hover:bg-secondary hover:text-on-secondary",
+                  ]}
+                >
+                  Read More
+                </a>
+              </div>
+            </div>
+
+            {!imageFirst && (
+              <a
+                href={`/lifestyle/${post.slug}`}
+                class="aspect-[4/3] w-full overflow-hidden rounded md:w-1/2"
+              >
+                <img
+                  src={post.image.src}
+                  alt={post.image.alt}
+                  loading="lazy"
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </a>
+            )}
+          </article>
+        );
+      })
+    }
+  </main>
+</BaseLayout>

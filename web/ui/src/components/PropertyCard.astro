@@ -1,0 +1,105 @@
+---
+import Icon from "./Icon.astro";
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+  /**
+   * card - surfaced card with padding, used in the home page rail
+   * tile - bare image over text, used in the portfolio grid
+   */
+  variant?: "card" | "tile";
+  class?: string;
+}
+
+const { project, variant = "card", class: className = "" } = Astro.props;
+const href = `/projects/${project.slug}`;
+
+const stats = [
+  { icon: "bed", label: `${project.beds} Beds` },
+  { icon: "bathtub", label: `${project.baths} Baths` },
+  { icon: "square_foot", label: project.area },
+];
+---
+
+{
+  variant === "card" ? (
+    <article class:list={["group", className]}>
+      <a
+        href={href}
+        class="luxury-shadow block overflow-hidden rounded-lg bg-surface"
+      >
+        <div class="relative h-80 overflow-hidden">
+          <div
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+            style={`background-image: url('${project.hero.src}')`}
+            role="img"
+            aria-label={project.hero.alt}
+          />
+          {project.badge && (
+            <span class="font-label-md absolute top-4 right-4 rounded-full bg-primary px-3 py-1 text-xs tracking-wider text-secondary-fixed uppercase">
+              {project.badge}
+            </span>
+          )}
+        </div>
+
+        <div class="p-8">
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <span class="font-label-md text-label-md text-on-secondary-container">
+              {project.city}
+            </span>
+            <span class="font-label-md text-label-md text-primary">
+              {project.price}
+            </span>
+          </div>
+
+          <h3 class="font-headline-sm text-headline-sm mb-4 text-primary transition-colors group-hover:text-on-secondary-container">
+            {project.name}
+          </h3>
+
+          <div class="font-label-md flex flex-wrap gap-6 border-t border-outline-variant pt-4 text-sm text-on-surface-variant">
+            {stats.map((stat) => (
+              <span class="flex items-center gap-2">
+                <Icon name={stat.icon} class="text-lg" />
+                {stat.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </a>
+    </article>
+  ) : (
+    <article class:list={["group", className]}>
+      <a href={href} class="block">
+        <div class="relative mb-6 aspect-[4/3] overflow-hidden">
+          <img
+            src={project.hero.src}
+            alt={project.hero.alt}
+            loading="lazy"
+            class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2 px-4">
+          <p class="font-label-md text-label-md text-secondary uppercase">
+            {project.price}
+          </p>
+          <h2 class="font-headline-md text-headline-md text-primary transition-colors group-hover:text-secondary">
+            {project.name}
+          </h2>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            {project.city}
+          </p>
+          <div class="font-label-md text-label-md mt-2 flex flex-wrap gap-8 text-outline">
+            {stats.map((stat) => (
+              <span class="flex items-center gap-1">
+                <Icon name={stat.icon} class="text-sm" />
+                {stat.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </a>
+    </article>
+  )
+}

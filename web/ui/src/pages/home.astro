@@ -1,0 +1,198 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CategoryTile from "../components/CategoryTile.astro";
+import Hero from "../components/Hero.astro";
+import Icon from "../components/Icon.astro";
+import Newsletter from "../components/Newsletter.astro";
+import PostCard from "../components/PostCard.astro";
+import PropertyCard from "../components/PropertyCard.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { media } from "../data/media";
+import { collections } from "../data/collections";
+import { featuredProjects } from "../data/projects";
+import { getPost } from "../data/posts";
+import { site } from "../data/site";
+
+const lifestyleLead = getPost("brutalist-elegance")!;
+const lifestyleRail = [
+  getPost("subtle-luxury-kitchens")!,
+  getPost("private-island-retreats")!,
+  getPost("invisible-tech")!,
+];
+
+const testimonial = {
+  quote:
+    "The level of discretion and understanding of the ultra-luxury market is unmatched. They didn't just find us a property; they secured a legacy asset that perfectly aligned with our vision.",
+  name: "Alexander Sterling",
+  detail: "Acquired Beverly Hills Estate, 2023",
+};
+---
+
+<BaseLayout title={site.tagline}>
+  {/* Hero copy sits over the image, anchored to its lower-left corner. */}
+  <Hero
+    image={media.heroEstate}
+    title="Architectural Masterpieces."
+    lead={site.description}
+    overlay="scrim"
+    animate
+  />
+
+  <main>
+    {/* Categories, mirroring the top bar and drawer */}
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {
+          collections.map((collection) => (
+            <CategoryTile
+              title={collection.label}
+              href={collection.href}
+              image={collection.image}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    {/* Featured estates */}
+    <section
+      class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="mx-auto max-w-page">
+        <SectionHeading
+          eyebrow="Exclusive Portfolio"
+          title="Featured Estates"
+          class="mb-16"
+        >
+          <a
+            href="/projects"
+            class="font-label-md text-label-md hidden items-center gap-2 text-primary transition-all hover:gap-4 md:flex"
+          >
+            View the portfolio
+            <Icon name="arrow_forward" />
+          </a>
+        </SectionHeading>
+
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {
+            featuredProjects.map((project, index) => (
+              <PropertyCard
+                project={project}
+                class={index === 2 ? "hidden md:block" : undefined}
+              />
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* Lifestyle bento */}
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <SectionHeading
+        eyebrow="Lifestyle"
+        title="Insights & Editorial"
+        align="center"
+        class="mb-16"
+      />
+
+      <div class="grid grid-cols-1 gap-8 lg:h-[600px] lg:grid-cols-12">
+        <article
+          class="luxury-shadow group relative h-[400px] overflow-hidden rounded-xl lg:col-span-8 lg:h-full"
+        >
+          <div
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+            style={`background-image: url('${media.journalBrutalist.src}')`}
+            role="img"
+            aria-label={media.journalBrutalist.alt}
+          >
+          </div>
+          <div
+            class="absolute inset-0 bg-linear-to-t from-primary via-primary/40 to-transparent opacity-90"
+          >
+          </div>
+          <div class="absolute bottom-0 left-0 w-full p-10 lg:w-3/4">
+            <span
+              class="font-label-md text-label-md mb-4 block tracking-widest text-secondary-fixed uppercase"
+            >
+              Architecture
+            </span>
+            <h3
+              class="font-headline-md text-headline-md mb-4 leading-tight text-on-primary"
+            >
+              {lifestyleLead.title}
+            </h3>
+            <p
+              class="font-body-md text-body-md mb-6 hidden text-on-primary/80 md:block"
+            >
+              {lifestyleLead.excerpt}
+            </p>
+            <a
+              href={`/lifestyle/${lifestyleLead.slug}`}
+              class="font-label-md inline-flex items-center gap-2 text-secondary-fixed transition-all hover:gap-4"
+            >
+              Read Story
+              <Icon name="arrow_forward" />
+            </a>
+          </div>
+        </article>
+
+        <div class="flex h-full flex-col gap-8 lg:col-span-4">
+          {
+            lifestyleRail.map((post, index) => (
+              <>
+                {index > 0 && <div class="h-px w-full bg-outline-variant/30" />}
+                <PostCard post={post} variant="compact" />
+              </>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {/* Testimonial */}
+    <section
+      class="relative overflow-hidden bg-sand px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div
+        class="absolute inset-0 opacity-5"
+        style="background-image: radial-gradient(#06362D 1px, transparent 1px); background-size: 32px 32px;"
+      >
+      </div>
+
+      <figure class="relative z-10 mx-auto max-w-4xl text-center">
+        <Icon
+          name="format_quote"
+          class="mb-8 block text-6xl text-primary opacity-20"
+        />
+        <blockquote
+          class="font-headline-lg text-headline-lg-mobile mb-12 leading-relaxed text-primary md:text-headline-lg"
+        >
+          {testimonial.quote}
+        </blockquote>
+        <figcaption class="flex flex-col items-center justify-center">
+          <span class="font-label-md text-label-md font-bold text-primary">
+            {testimonial.name}
+          </span>
+          <span class="font-body-md text-body-md mt-1 text-primary/70">
+            {testimonial.detail}
+          </span>
+        </figcaption>
+      </figure>
+    </section>
+
+    {/* Newsletter */}
+    <section class="bg-surface px-margin-mobile py-section-gap md:px-margin-desktop">
+      <div class="mx-auto max-w-page">
+        <Newsletter
+          heading="Curated Excellence,<br />Delivered."
+          body="Subscribe to our private list for exclusive off-market listings, architectural insights, and market intelligence."
+          note="By subscribing, you agree to our Privacy Policy. We respect your discretion."
+        />
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import type { Media } from "../data/media";
+
+interface Props {
+  title: string;
+  href: string;
+  image: Media;
+  /** Tall tile (home page grid) or square tile (lifestyle category row). */
+  shape?: "tall" | "square";
+}
+
+const { title, href, image, shape = "tall" } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "luxury-shadow group relative block overflow-hidden rounded-lg",
+    shape === "tall" ? "h-96" : "aspect-square",
+  ]}
+>
+  <div
+    class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+    style={`background-image: url('${image.src}')`}
+    role="img"
+    aria-label={image.alt}
+  >
+  </div>
+  <div
+    class="absolute inset-0 bg-linear-to-t from-primary/90 via-primary/20 to-transparent"
+  >
+  </div>
+  <div class="absolute bottom-0 left-0 w-full p-8">
+    <h3 class="font-headline-sm text-headline-sm mb-2 text-secondary-fixed">
+      {title}
+    </h3>
+    <div
+      class="h-[2px] w-0 bg-secondary-fixed transition-all duration-500 group-hover:w-12"
+    >
+    </div>
+  </div>
+</a>

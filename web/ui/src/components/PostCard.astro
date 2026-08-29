@@ -1,0 +1,107 @@
+---
+import { categoryName, type Post } from "../data/posts";
+
+interface Props {
+  post: Post;
+  /**
+   * card    - surfaced card with excerpt (journal index)
+   * compact - thumbnail beside a title (home page journal list)
+   * overlay - title laid over the image (article page related rail)
+   */
+  variant?: "card" | "compact" | "overlay";
+  class?: string;
+}
+
+const { post, variant = "card", class: className = "" } = Astro.props;
+const href = `/lifestyle/${post.slug}`;
+const label = categoryName(post.category);
+---
+
+{
+  variant === "card" && (
+    <a
+      href={href}
+      class:list={[
+        "luxury-shadow group flex h-full flex-col overflow-hidden rounded-lg bg-surface pb-6 transition-colors duration-300 hover:bg-surface-container-low",
+        className,
+      ]}
+    >
+      <div class="relative aspect-[4/3] w-full overflow-hidden">
+        <img
+          src={post.image.src}
+          alt={post.image.alt}
+          loading="lazy"
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+      <div class="flex flex-grow flex-col px-6 pt-6">
+        <span class="font-label-md text-label-md mb-3 tracking-widest text-secondary uppercase">
+          {label}
+        </span>
+        <h3 class="font-headline-sm text-headline-sm mb-4 text-primary">
+          {post.title}
+        </h3>
+        <p class="font-body-md text-body-md mb-6 flex-grow text-on-surface-variant">
+          {post.excerpt}
+        </p>
+        <span class="font-label-md text-label-md self-start border-b border-transparent pb-1 text-primary transition-colors group-hover:border-secondary group-hover:text-secondary">
+          Read More
+        </span>
+      </div>
+    </a>
+  )
+}
+
+{
+  variant === "compact" && (
+    <a
+      href={href}
+      class:list={["group flex flex-1 items-center gap-6", className]}
+    >
+      <div class="h-32 w-32 shrink-0 overflow-hidden rounded-lg">
+        <div
+          class="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+          style={`background-image: url('${post.image.src}')`}
+          role="img"
+          aria-label={post.image.alt}
+        />
+      </div>
+      <div>
+        <span class="font-label-md mb-2 block text-xs tracking-wider text-on-secondary-container uppercase">
+          {label}
+        </span>
+        <h4 class="font-headline-sm text-lg leading-tight text-primary transition-colors group-hover:text-on-secondary-container">
+          {post.title}
+        </h4>
+      </div>
+    </a>
+  )
+}
+
+{
+  variant === "overlay" && (
+    <a
+      href={href}
+      class:list={[
+        "group relative block h-80 overflow-hidden rounded-lg",
+        className,
+      ]}
+    >
+      <div
+        class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+        style={`background-image: url('${post.image.src}')`}
+        role="img"
+        aria-label={post.image.alt}
+      />
+      <div class="absolute inset-0 bg-linear-to-t from-primary via-primary/30 to-transparent" />
+      <div class="absolute bottom-0 left-0 w-full p-8">
+        <span class="font-label-md text-label-md mb-3 block tracking-widest text-secondary-fixed uppercase">
+          {label}
+        </span>
+        <h3 class="font-headline-sm text-headline-sm text-on-primary transition-colors group-hover:text-secondary-fixed">
+          {post.title}
+        </h3>
+      </div>
+    </a>
+  )
+}

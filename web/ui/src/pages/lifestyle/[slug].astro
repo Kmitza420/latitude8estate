@@ -1,0 +1,118 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Hero from "../../components/Hero.astro";
+import Icon from "../../components/Icon.astro";
+import PostCard from "../../components/PostCard.astro";
+import {
+  categoryName,
+  formatDate,
+  posts,
+  relatedPosts,
+} from "../../data/posts";
+
+export const getStaticPaths: GetStaticPaths = () =>
+  posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post, related: relatedPosts(post.slug) },
+  }));
+
+const { post, related } = Astro.props;
+
+const prose =
+  "prose prose-lg max-w-none prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-h2:text-secondary prose-h2:mb-6 prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary";
+---
+
+<BaseLayout title={post.title} description={post.excerpt}>
+  <Hero
+    image={post.image}
+    eyebrow={categoryName(post.category)}
+    title={post.title}
+    overlay="gradient"
+  >
+    <div
+      class="font-label-md text-label-md mt-6 flex items-center gap-4 text-on-primary/80"
+    >
+      <span>By {post.author}</span>
+      <span class="h-1 w-1 rounded-full bg-secondary-fixed"></span>
+      <time datetime={post.date}>{formatDate(post.date)}</time>
+    </div>
+  </Hero>
+
+  <article class="mx-auto max-w-[700px] px-margin-mobile py-section-gap md:px-0">
+    <div class={prose} set:html={post.bodyTop} />
+  </article>
+
+  {
+    post.interruption && (
+      <figure class="relative mb-section-gap h-[60dvh] min-h-[400px] w-full">
+        <div
+          class="absolute inset-0 h-full w-full bg-cover bg-center"
+          style={`background-image: url('${post.interruption.image.src}')`}
+          role="img"
+          aria-label={post.interruption.image.alt}
+        />
+        <figcaption class="font-label-md text-label-md absolute right-4 bottom-4 rounded bg-surface/90 px-4 py-2 text-on-surface backdrop-blur">
+          {post.interruption.caption}
+        </figcaption>
+      </figure>
+    )
+  }
+
+  <article class="mx-auto max-w-[700px] px-margin-mobile pb-section-gap md:px-0">
+    {post.bodyBottom && <div class={prose} set:html={post.bodyBottom} />}
+
+    <div
+      class="mt-16 flex items-center justify-between border-t border-outline-variant/30 pt-8"
+    >
+      <div class="flex items-center gap-4">
+        <span class="font-label-md text-label-md text-outline">Share</span>
+        <a
+          href={`mailto:?subject=${encodeURIComponent(post.title)}`}
+          aria-label="Share by email"
+          class="text-on-surface transition-colors hover:text-secondary"
+        >
+          <Icon name="mail" class="text-xl" />
+        </a>
+        <a
+          href={`/lifestyle/${post.slug}`}
+          aria-label="Copy link"
+          class="text-on-surface transition-colors hover:text-secondary"
+        >
+          <Icon name="link" class="text-xl" />
+        </a>
+      </div>
+
+      <a
+        href={`/lifestyle/category/${post.category}`}
+        class="font-label-md text-label-md text-secondary transition-colors hover:text-primary"
+      >
+        More in {categoryName(post.category)}
+      </a>
+    </div>
+  </article>
+
+  <section
+    class="bg-surface-container px-margin-mobile py-section-gap md:px-margin-desktop"
+  >
+    <div class="mx-auto max-w-page">
+      <div class="mb-12 flex items-end justify-between">
+        <h2 class="font-headline-md text-headline-md text-on-surface">
+          More from Lifestyle
+        </h2>
+        <a
+          href="/lifestyle"
+          class="font-label-md text-label-md flex items-center gap-1 text-secondary transition-colors hover:text-primary"
+        >
+          View All
+          <Icon name="arrow_forward" class="text-[18px]" />
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {related.map((item) => <PostCard post={item} variant="overlay" />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

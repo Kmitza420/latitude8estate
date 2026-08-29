@@ -1,0 +1,17 @@
+---
+interface Props {
+  /** Material Symbols ligature name, e.g. "arrow_forward". */
+  name: string;
+  class?: string;
+  /** Render the filled variant. */
+  filled?: boolean;
+}
+
+const { name, class: className = "", filled = false } = Astro.props;
+---
+
+<span
+  class:list={["material-symbols-outlined", className]}
+  style={filled ? "font-variation-settings: 'FILL' 1;" : undefined}
+  aria-hidden="true">{name}</span
+>

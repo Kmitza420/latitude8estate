@@ -1,0 +1,123 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import Icon from "../components/Icon.astro";
+import ContactForm from "../components/react/ContactForm";
+import { media } from "../data/media";
+import { site } from "../data/site";
+
+// Placeholder contact details — no mockup existed for this page.
+const details = [
+  {
+    icon: "mail",
+    label: "Email",
+    value: "enquiries@latitude8estate.com",
+    href: "mailto:enquiries@latitude8estate.com",
+  },
+  {
+    icon: "call",
+    label: "Telephone",
+    value: "+1 (310) 555 0148",
+    href: "tel:+13105550148",
+  },
+  {
+    icon: "schedule",
+    label: "Hours",
+    value: "Monday to Friday, 9:00 — 18:00 PT",
+  },
+];
+
+const offices = [
+  { city: "Malibu", lines: ["29400 Pacific Coast Hwy", "Malibu, California"] },
+  { city: "New York", lines: ["217 West 57th Street", "New York, NY"] },
+  { city: "Lake Como", lines: ["Via Regina 44", "Tremezzina, Italy"] },
+];
+---
+
+<BaseLayout
+  title="Contact Us"
+  description={`Speak with a ${site.name} specialist about acquiring or selling an architecturally significant residence.`}
+>
+  <Hero
+    image={media.estateGlassPavilion}
+    eyebrow="Contact Us"
+    title="Start a conversation."
+    lead="Tell us what you are looking for, or what you are considering selling. Every enquiry is handled in confidence by a principal."
+    overlay="dark"
+  />
+
+  <main>
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+        {/* Details */}
+        <div class="space-y-12 lg:col-span-5">
+          <div class="space-y-6">
+            {
+              details.map((detail) => (
+                <div class="flex items-start gap-4">
+                  <Icon name={detail.icon} class="text-3xl text-secondary" />
+                  <div>
+                    <p class="font-label-md text-label-md mb-1 tracking-wider text-on-surface-variant uppercase">
+                      {detail.label}
+                    </p>
+                    {detail.href ? (
+                      <a
+                        href={detail.href}
+                        class="font-body-lg text-body-lg text-primary transition-colors hover:text-secondary"
+                      >
+                        {detail.value}
+                      </a>
+                    ) : (
+                      <p class="font-body-lg text-body-lg text-primary">
+                        {detail.value}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+
+          <div>
+            <h2 class="font-headline-sm text-headline-sm mb-6 text-primary">
+              Offices
+            </h2>
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-1">
+              {
+                offices.map((office) => (
+                  <address class="rounded-xl border border-surface-container-high bg-surface-container-low p-6 not-italic">
+                    <p class="font-label-md text-label-md mb-2 tracking-wider text-secondary uppercase">
+                      {office.city}
+                    </p>
+                    {office.lines.map((line) => (
+                      <p class="font-body-md text-body-md text-on-surface-variant">
+                        {line}
+                      </p>
+                    ))}
+                  </address>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        {/* Form */}
+        <div class="lg:col-span-7">
+          <div
+            class="rounded-xl border border-outline-variant/30 bg-surface-container-highest p-8 shadow-xl md:p-12"
+          >
+            <h2 class="font-headline-sm text-headline-sm mb-2 text-primary">
+              Send an enquiry
+            </h2>
+            <p class="font-body-md mb-6 text-sm text-on-surface-variant">
+              Leave your details and a specialist will contact you shortly.
+            </p>
+            <ContactForm client:visible submitLabel="Send Enquiry" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

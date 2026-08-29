@@ -1,0 +1,313 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Hero from "../../components/Hero.astro";
+import Icon from "../../components/Icon.astro";
+import ContactForm from "../../components/react/ContactForm";
+import { projects } from "../../data/projects";
+
+export const getStaticPaths: GetStaticPaths = () =>
+  projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+
+const { project } = Astro.props;
+
+---
+
+<BaseLayout title={project.name} description={project.tagline}>
+  <main class="flex flex-grow flex-col">
+    <Hero
+      image={project.hero}
+      eyebrow="Exclusive Listing"
+      title={project.name}
+      lead={project.tagline}
+      overlay="scrim"
+    >
+      <div class="flex flex-wrap items-center gap-4 pt-4">
+        <a
+          href="/contact-us"
+          class="font-label-md text-label-md inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 tracking-wider text-on-primary uppercase transition-colors duration-300 hover:bg-secondary"
+        >
+          Schedule Tour
+        </a>
+        <a
+          href="#gallery"
+          class="font-label-md text-label-md inline-flex items-center justify-center rounded-full border-2 border-on-primary px-8 py-4 tracking-wider text-on-primary uppercase transition-colors duration-300 hover:bg-on-primary hover:text-primary"
+        >
+          <Icon name="photo_library" class="mr-2" />
+          View all images
+        </a>
+      </div>
+    </Hero>
+
+    <section
+      class="mx-auto w-full max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+        {/* Detail column */}
+        <div class="space-y-section-gap lg:col-span-8">
+          <div class="space-y-8">
+            <div>
+              <h2
+                class="font-headline-lg text-headline-lg-mobile text-primary md:text-headline-lg"
+              >
+                {project.name}
+              </h2>
+              <p class="font-headline-md text-headline-md mt-2 text-secondary">
+                {project.price}
+              </p>
+            </div>
+
+            <div class="h-px w-full bg-outline-variant"></div>
+
+            <div>
+              <h3 class="font-headline-sm text-headline-sm mb-6 text-primary">
+                Quick Specs
+              </h3>
+              <dl
+                class="grid grid-cols-2 gap-6 rounded-xl border border-surface-container-high bg-surface-container-low p-8 md:grid-cols-4"
+              >
+                {
+                  project.quickSpecs.map((spec) => (
+                    <div class="flex flex-col space-y-1">
+                      <dt class="font-label-md text-label-md tracking-wider text-on-surface-variant uppercase">
+                        {spec.label}
+                      </dt>
+                      <dd class="font-body-md text-body-md font-medium text-primary">
+                        {spec.value}
+                      </dd>
+                    </div>
+                  ))
+                }
+              </dl>
+            </div>
+          </div>
+
+          {/* Location */}
+          <div class="space-y-6">
+            <h3 class="font-headline-md text-headline-md text-primary">
+              Location
+            </h3>
+            <address
+              class="flex items-start gap-4 rounded-xl border border-surface-container-high bg-surface-container-low p-8 not-italic"
+            >
+              <Icon name="location_on" class="text-3xl text-secondary" />
+              <div>
+                {
+                  project.address.map((line, index) => (
+                    <p
+                      class:list={[
+                        index === 0
+                          ? "font-body-lg text-body-lg font-medium text-primary"
+                          : "font-body-md text-body-md text-on-surface-variant",
+                      ]}
+                    >
+                      {line}
+                    </p>
+                  ))
+                }
+              </div>
+            </address>
+          </div>
+
+          {/* Spaces */}
+          <div class="space-y-6">
+            <h3 class="font-headline-md text-headline-md text-primary">Spaces</h3>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              {
+                [
+                  { title: "Interior", rows: project.interior },
+                  { title: "Exterior", rows: project.exterior },
+                ].map((group) => (
+                  <div>
+                    <h4 class="font-headline-sm text-headline-sm mb-4 border-b border-outline-variant pb-2 text-primary">
+                      {group.title}
+                    </h4>
+                    <ul class="space-y-3">
+                      {group.rows.map((row) => (
+                        <li class="font-body-md flex items-center justify-between text-on-surface-variant">
+                          <span>{row.label}</span>
+                          <span class="font-medium text-primary">
+                            {row.value}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          {/* Facilities */}
+          <div class="space-y-6">
+            <h3 class="font-headline-md text-headline-md text-primary">
+              Facilities &amp; Features
+            </h3>
+            <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+              {
+                project.facilities.map((facility) => (
+                  <div class="flex flex-col items-center rounded-xl border border-surface-container-high bg-surface-container-low p-6 text-center">
+                    <Icon name={facility.icon} class="mb-3 text-4xl text-secondary" />
+                    <span class="font-body-md text-body-md text-primary">
+                      {facility.label}
+                    </span>
+                  </div>
+                ))
+              }
+            </div>
+
+            <div>
+              <h4 class="font-headline-sm text-headline-sm mb-4 text-primary">
+                Technical Features
+              </h4>
+              <ul class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {
+                  project.technical.map((feature) => (
+                    <li class="font-body-md text-body-md flex items-center gap-3 text-on-surface-variant">
+                      <Icon name="check" class="text-lg text-secondary" />
+                      {feature}
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </div>
+
+          {/* Nearby */}
+          <div class="space-y-6">
+            <h3 class="font-headline-md text-headline-md text-primary">
+              Nearby Places
+            </h3>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              {
+                project.nearby.map((group) => (
+                  <div>
+                    <h4 class="font-label-md mb-4 tracking-wider text-on-surface-variant uppercase">
+                      {group.title}
+                    </h4>
+                    <ul class="space-y-3">
+                      {group.places.map((place) => (
+                        <li class="font-body-md flex items-center justify-between border-b border-outline-variant/40 pb-3 text-on-surface-variant">
+                          <span>{place.label}</span>
+                          <span class="font-medium text-primary">
+                            {place.value}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          {/* Documents */}
+          <div class="space-y-6">
+            <h3 class="font-headline-md text-headline-md text-primary">
+              Floor Plans &amp; Documents
+            </h3>
+            <ul class="space-y-4">
+              {
+                project.documents.map((doc) => (
+                  <li>
+                    <a
+                      href={doc.href}
+                      class="group flex items-center gap-4 rounded-xl border border-surface-container-high bg-surface-container-low p-6 transition-colors hover:bg-surface-container"
+                    >
+                      <Icon name="picture_as_pdf" class="text-3xl text-secondary" />
+                      <span class="flex-1">
+                        <span class="font-body-md text-body-md block font-medium text-primary">
+                          {doc.title}
+                        </span>
+                        <span class="font-body-md block text-sm text-on-surface-variant">
+                          {doc.meta}
+                        </span>
+                      </span>
+                      <Icon
+                        name="download"
+                        class="text-on-surface-variant transition-colors group-hover:text-secondary"
+                      />
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          {/* Gallery */}
+          <div class="space-y-6" id="gallery">
+            <h3 class="font-headline-md text-headline-md text-primary">Gallery</h3>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {
+                project.gallery.map((shot) => (
+                  <div class="aspect-[4/3] overflow-hidden rounded-lg">
+                    <img
+                      src={shot.src}
+                      alt={shot.alt}
+                      loading="lazy"
+                      class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        {/* Inquiry sidebar */}
+        <div class="relative lg:col-span-4">
+          <div class="sticky top-32 space-y-8">
+            <div
+              class="rounded-xl border border-outline-variant/30 bg-surface-container-highest p-8 shadow-xl"
+            >
+              <h3 class="font-headline-sm text-headline-sm mb-2 text-primary">
+                Inquire About This Property
+              </h3>
+              <p class="font-body-md mb-6 text-sm text-on-surface-variant">
+                Leave your details and our luxury specialist will contact you
+                shortly.
+              </p>
+
+              <ContactForm client:visible subject={project.name} />
+
+              <div
+                class="mt-8 flex items-center space-x-4 border-t border-outline-variant pt-8"
+              >
+                <div
+                  class="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-surface-dim"
+                >
+                  <img
+                    src={project.agent.portrait.src}
+                    alt={project.agent.portrait.alt}
+                    loading="lazy"
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <p
+                    class="font-label-md text-label-md mb-1 tracking-wider text-on-surface-variant uppercase"
+                  >
+                    Listed By
+                  </p>
+                  <p class="font-headline-sm text-headline-sm text-primary">
+                    {project.agent.name}
+                  </p>
+                  <a
+                    href={`mailto:${project.agent.email}`}
+                    class="font-body-md text-body-md text-secondary transition-colors hover:text-primary"
+                  >
+                    Contact Specialist
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

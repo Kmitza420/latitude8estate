@@ -1,0 +1,115 @@
+---
+import type { Media } from "../data/media";
+
+interface Props {
+  image: Media;
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  /** Bottom-left (estate pages) or centred (journal pages). */
+  align?: "start" | "center";
+  /** Full viewport height, or the shorter 80vh band used on the journal index. */
+  size?: "full" | "tall";
+  /**
+   * scrim    - dark vertical gradient (home, property detail)
+   * tint     - flat primary multiply wash (portfolio, lifestyle)
+   * gradient - heavy bottom-up primary gradient (article)
+   * dark     - heaviest wash, for pages whose artwork needs holding back
+   */
+  overlay?: "scrim" | "tint" | "gradient" | "dark";
+  /** Slow Ken Burns push-in on the background image. */
+  animate?: boolean;
+}
+
+const {
+  image,
+  title,
+  eyebrow,
+  lead,
+  align = "start",
+  size = "full",
+  overlay = "scrim",
+  animate = false,
+} = Astro.props;
+
+const centered = align === "center";
+---
+
+<header
+  class:list={[
+    "relative w-full overflow-hidden",
+    size === "full" ? "h-dvh min-h-[600px]" : "h-[80dvh] min-h-[600px]",
+    centered
+      ? "flex items-center justify-center"
+      : "flex items-end pb-24 md:pb-section-gap",
+    "px-margin-mobile md:px-margin-desktop",
+  ]}
+>
+  <div
+    class:list={[
+      "absolute inset-0 z-0 h-full w-full bg-cover bg-center",
+      animate && "scale-105 animate-[kenburns_20s_ease-out_forwards]",
+    ]}
+    style={`background-image: url('${image.src}')`}
+    role="img"
+    aria-label={image.alt}
+  >
+  </div>
+
+  <div
+    class:list={[
+      "pointer-events-none absolute inset-0 z-10",
+      overlay === "scrim" && "hero-overlay",
+      overlay === "tint" && "bg-primary/60 mix-blend-multiply",
+      overlay === "gradient" &&
+        "bg-linear-to-t from-primary/90 via-primary/40 to-transparent",
+      overlay === "dark" &&
+        "bg-linear-to-t from-primary/95 via-primary/80 to-primary/60",
+    ]}
+  >
+  </div>
+
+  <div
+    class:list={[
+      "relative z-20 mx-auto w-full max-w-page",
+      centered && "mt-20 flex max-w-4xl flex-col items-center gap-6 text-center",
+    ]}
+  >
+    {
+      eyebrow && (
+        <span
+          class:list={[
+            "font-label-md text-label-md block text-secondary-fixed uppercase tracking-widest",
+            !centered && "mb-4",
+          ]}
+        >
+          {eyebrow}
+        </span>
+      )
+    }
+
+    <h1
+      class:list={[
+        "font-display-lg text-headline-lg-mobile leading-tight text-on-primary md:text-display-lg",
+        !centered && "mb-6",
+      ]}
+    >
+      {title}
+    </h1>
+
+    {
+      lead && (
+        <p
+          class:list={[
+            "font-body-lg text-body-lg text-on-primary/90",
+            centered ? "max-w-2xl" : "max-w-xl",
+          ]}
+        >
+          {lead}
+        </p>
+      )
+    }
+
+    <slot />
+  </div>
+</header>

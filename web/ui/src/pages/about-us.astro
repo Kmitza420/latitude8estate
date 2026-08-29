@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import Icon from "../components/Icon.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { media } from "../data/media";
+import { site } from "../data/site";
+
+// Placeholder agency copy — no mockup existed for this page.
+const pillars = [
+  {
+    icon: "visibility_off",
+    title: "Discretion",
+    body: "A large share of what we transact never reaches an open listing. Confidentiality is the service, not a courtesy attached to it.",
+  },
+  {
+    icon: "architecture",
+    title: "Architectural Literacy",
+    body: "We advise on buildings, not just square footage. Every listing is assessed for the qualities that hold value across decades.",
+  },
+  {
+    icon: "public",
+    title: "Global Reach",
+    body: "Coastal, alpine, urban and historic holdings across Europe and North America, represented by one team end to end.",
+  },
+];
+
+const stats = [
+  { value: "18", label: "Years advising" },
+  { value: "$2.4B", label: "Transacted" },
+  { value: "9", label: "Markets" },
+  { value: "74%", label: "Off-market" },
+];
+---
+
+<BaseLayout
+  title="About Us"
+  description={`${site.name} advises on the acquisition and sale of architecturally significant private residences.`}
+>
+  <Hero
+    image={media.catCoastal}
+    eyebrow="About Us"
+    title="Quiet counsel on remarkable buildings."
+    lead={`${site.name} advises a small number of clients on the acquisition and sale of architecturally significant private residences.`}
+    overlay="dark"
+  />
+
+  <main>
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <SectionHeading eyebrow="Our Practice" title="How we work" />
+        </div>
+        <div class="space-y-6 lg:col-span-7">
+          <p class="font-body-lg text-body-lg text-on-surface-variant">
+            We were founded on a straightforward conviction: that the market for
+            exceptional houses is badly served by volume brokerage. A building
+            worth owning for thirty years deserves more than a fortnight of
+            attention and a photo gallery.
+          </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            So we keep the roster deliberately small. Each client works with one
+            principal from first conversation through closing, and we decline
+            more instructions than we accept. That constraint is what lets us
+            know every property on our books in genuine detail — its structure,
+            its provenance, its running costs, and the honest case against it.
+          </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            The result is a portfolio assembled slowly and represented
+            carefully, and a practice that measures itself on the quality of what
+            it declines as much as what it lists.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="mx-auto max-w-page">
+        <SectionHeading
+          eyebrow="What Guides Us"
+          title="Three commitments"
+          align="center"
+          class="mb-16"
+        />
+
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {
+            pillars.map((pillar) => (
+              <div class="luxury-shadow rounded-lg bg-surface p-10">
+                <Icon name={pillar.icon} class="mb-6 text-4xl text-secondary" />
+                <h3 class="font-headline-sm text-headline-sm mb-4 text-primary">
+                  {pillar.title}
+                </h3>
+                <p class="font-body-md text-body-md text-on-surface-variant">
+                  {pillar.body}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="bg-primary px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <dl
+        class="mx-auto grid max-w-page grid-cols-2 gap-8 text-center md:grid-cols-4"
+      >
+        {
+          stats.map((stat) => (
+            <div>
+              <dt class="sr-only">{stat.label}</dt>
+              <dd>
+                <span class="font-display-lg text-headline-lg block text-secondary-fixed">
+                  {stat.value}
+                </span>
+                <span class="font-label-md text-label-md mt-2 block tracking-wider text-secondary-fixed/70 uppercase">
+                  {stat.label}
+                </span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap text-center md:px-margin-desktop"
+    >
+      <h2
+        class="font-headline-lg text-headline-lg-mobile mb-6 text-primary md:text-headline-lg"
+      >
+        Considering a sale, or a search?
+      </h2>
+      <p
+        class="font-body-lg text-body-lg mx-auto mb-10 max-w-xl text-on-surface-variant"
+      >
+        Tell us what you are looking for. The first conversation is
+        confidential and carries no obligation.
+      </p>
+      <a
+        href="/contact-us"
+        class="font-label-md text-label-md inline-flex items-center gap-2 rounded-full bg-primary px-10 py-4 tracking-wider text-secondary-fixed uppercase transition-all hover:gap-4"
+      >
+        Contact Us
+        <Icon name="arrow_forward" />
+      </a>
+    </section>
+  </main>
+</BaseLayout>
