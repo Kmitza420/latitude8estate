@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Portfolio - Estate Collective</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&amp;family=Playfair+Display:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#414846",
+                      "secondary-fixed-dim": "#e7c275",
+                      "tertiary-fixed-dim": "#d2c5b2",
+                      "on-secondary-container": "#795d1a",
+                      "surface": "#fcf9f3",
+                      "on-background": "#1c1c18",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#ebe8e2",
+                      "secondary": "#765a18",
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#dcdad4",
+                      "surface-tint": "#3c665b",
+                      "on-secondary-fixed": "#261a00",
+                      "surface-container": "#f0eee8",
+                      "on-primary-fixed": "#00201a",
+                      "outline": "#717976",
+                      "tertiary-fixed": "#efe1cd",
+                      "tertiary": "#20190e",
+                      "on-tertiary-fixed": "#211b0f",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#31312d",
+                      "on-tertiary-container": "#a19584",
+                      "surface-variant": "#e5e2dc",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed-variant": "#4e4638",
+                      "surface-container-highest": "#e5e2dc",
+                      "surface-container-low": "#f6f3ed",
+                      "secondary-container": "#ffd889",
+                      "inverse-primary": "#a3d0c3",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#234e44",
+                      "secondary-fixed": "#ffdf9f",
+                      "on-tertiary": "#ffffff",
+                      "primary": "#001f19",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#5b4300",
+                      "surface-bright": "#fcf9f3",
+                      "primary-fixed-dim": "#a3d0c3",
+                      "primary-container": "#06362d",
+                      "inverse-on-surface": "#f3f0ea",
+                      "on-primary-container": "#74a094",
+                      "primary-fixed": "#beecde",
+                      "on-surface": "#1c1c18",
+                      "tertiary-container": "#362e21",
+                      "outline-variant": "#c0c8c4",
+                      "on-secondary": "#ffffff",
+                      "background": "#fcf9f3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "80px",
+                      "section-gap": "120px",
+                      "container-max": "1440px",
+                      "margin-mobile": "24px",
+                      "gutter": "32px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "label-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "headline-sm": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-transparent backdrop-blur-md transition-colors duration-300" id="navbar">
+<div class="flex justify-between items-center px-margin-desktop py-unit-3 max-w-container-max mx-auto">
+<a class="font-headline-sm text-headline-sm text-on-primary" href="#">ESTATE</a>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="font-label-md text-label-md uppercase tracking-wider text-secondary-fixed font-bold border-b-2 border-secondary-fixed pb-1 hover:opacity-80 transition-opacity" href="#">Properties</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-primary hover:text-secondary-fixed transition-colors duration-200" href="#">Services</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-primary hover:text-secondary-fixed transition-colors duration-200" href="#">About</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-primary hover:text-secondary-fixed transition-colors duration-200" href="#">Contact</a>
+</div>
+<div class="flex items-center gap-unit-3">
+<button class="hidden md:block font-label-md text-label-md uppercase tracking-wider text-on-primary border border-secondary-fixed px-unit-6 py-unit-2 rounded-full hover:bg-secondary-fixed hover:text-primary transition-colors duration-200">Book Viewing</button>
+<button class="text-on-primary md:hidden">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative h-screen w-full flex items-end">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="A breathtaking, cinematic shot of an ultra-luxury modern villa at twilight. The architecture features extensive glass walls, cantilevered concrete, and a glowing infinity pool. The lighting is moody and sophisticated, highlighting the property's prestige. Shot in high-contrast editorial style with deep shadows and warm interior lighting. The overall color palette leans heavily into deep greens, warm golds, and sleek greys." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1_Zmd-79XMTZFDyMAoSz8H3pORXQQPwbMtkzVmDzLfCz_jb1PJXGMydvrpMfAypw_xGww3-TxFd1i1E4KoT2gmarfoUgFaMJJN23w6AwVSl0NTBfF5PxPSOtkQtnDJQFgWvGGD7DzCkqMufF88z6apj2y4zbs8Ongy6bw4XuxNnoopMQ4kru8Lv3RKq6ltDWt6MJfUWlpu5P8-R7H23bksvnQLL2mGYq-fHu6Xt0k0poTLoUyFjqusw')"></div>
+<div class="absolute inset-0 bg-primary/60 mix-blend-multiply"></div>
+</div>
+<div class="relative z-10 w-full max-w-container-max mx-auto px-margin-desktop pb-section-gap text-on-primary">
+<h1 class="font-display-lg text-display-lg mb-unit-3">The Portfolio</h1>
+<p class="font-body-lg text-body-lg max-w-lg opacity-90">A curated collection of the world's most prestigious residences.</p>
+</div>
+</header>
+<!-- Listings Section -->
+<main class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Property Card 1 -->
+<article class="group cursor-pointer">
+<div class="relative overflow-hidden mb-unit-3 aspect-[4/3]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A stunning high-end property exterior featuring a seamless blend of natural stone and minimalist modern design, surrounded by lush, manicured landscaping. The lighting is golden hour, casting long, elegant shadows and highlighting the deep emerald green foliage against warm beige stone textures. Shot with a sense of calm aspiration and architectural integrity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWitiBd6NQt8wQPbDgY9d9K1JkR-mikY40rdYs0nrDL_xfyr5l6PtnarXREjcpTqrZxSZrusbcTi-TLpsmTC46BU4uxdwl3jDahJoin3_BX85Rw-cDw2kbk0HOUvzX6XY9Zg7L0RCNrSdQQxM7b6Hbpfj2vucQtOz4VgSbJuEaMxjtog2AcFvky0fPGqMR63XGZbTtYDP2fW9yfTcqDAVmR0D0WM5zDYJtwXxACO-5o1D-6v8qalLlcg"/>
+</div>
+<div class="flex flex-col gap-unit-1 p-unit-2">
+<p class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-wider">$12,500,000</p>
+<h2 class="font-headline-md text-headline-md text-primary">Villa Serenity</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Lake Como, Italy</p>
+<div class="flex gap-unit-4 mt-unit-2 font-label-md text-label-md text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="bed">bed</span> 5</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="bathtub">bathtub</span> 6</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="square_foot">square_foot</span> 8,200 sqft</span>
+</div>
+</div>
+</article>
+<!-- Property Card 2 -->
+<article class="group cursor-pointer">
+<div class="relative overflow-hidden mb-unit-3 aspect-[4/3]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A luxurious penthouse interior overlooking a glittering city skyline at night. The living room is styled with bespoke minimalist furniture in beige and cream tones, accented with subtle gold fixtures. Floor-to-ceiling windows provide a cinematic view, establishing a mood of urban exclusivity and sophisticated modern living." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVxsBlLZja4AnZGRdodk8nmvxPvfb2hrnWlSrsE6Hrubn0xPvQppWXNJVDPlFF9CUgjMcqIDbqizEueHIqy65mIfshf1N08IpOeA59bLsDQbFVX-B5I3rxMdqrr8IvsiA9seMlQdqEh2vzC_coJ1QAnNl6q4XolhPq77O-kE9XXzRSJT_2adygk3Lb-SDP8_QpN-B1wtoxsRvVkCr19lANDoYRcr5EHyQcRs5EdgNAYmCYvHUKYWuqMg"/>
+</div>
+<div class="flex flex-col gap-unit-1 p-unit-2">
+<p class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-wider">$18,200,000</p>
+<h2 class="font-headline-md text-headline-md text-primary">The Apex Penthouse</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">New York City, USA</p>
+<div class="flex gap-unit-4 mt-unit-2 font-label-md text-label-md text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="bed">bed</span> 4</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="bathtub">bathtub</span> 4.5</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="square_foot">square_foot</span> 6,500 sqft</span>
+</div>
+</div>
+</article>
+<!-- Property Card 3 -->
+<article class="group cursor-pointer">
+<div class="relative overflow-hidden mb-unit-3 aspect-[4/3]">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A sprawling modern estate nestled in a coastal cliffside. The architecture utilizes expansive glass, raw concrete, and warm timber, harmonizing with the natural rugged landscape. The ocean stretches out to the horizon under a soft, overcast sky, evoking a sense of quiet luxury and secluded prestige. The color palette focuses on earthy tones, deep ocean blues, and warm gold lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmujGx3YfS2yZVsVKZmeo5HJkuhGpUgkwkFyrTh2lNLmuPgz3x0N2DVV4m5vge9xEpIiPPDcZWGxspqcLr-mxT34vZvC8aA1-mAsEX5QeWx0lMGBv4v1efedKI79NXnYyCcjmO_0uSIPnECPX6TiTocBOMIKg9LPfVD05NPvXHeMu6Px9Ogi7PuohKC7oDxeG4MRbUDgMpO2Tv1sMPhvO6tdCygYGkfz5u9wnZE1ENY9izge92FBFrHg"/>
+</div>
+<div class="flex flex-col gap-unit-1 p-unit-2">
+<p class="font-label-md text-label-md text-secondary-fixed-dim uppercase tracking-wider">$24,000,000</p>
+<h2 class="font-headline-md text-headline-md text-primary">Clifftop Reserve</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Malibu, California</p>
+<div class="flex gap-unit-4 mt-unit-2 font-label-md text-label-md text-outline">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="bed">bed</span> 7</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="bathtub">bathtub</span> 9</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm" data-icon="square_foot">square_foot</span> 12,000 sqft</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="mt-section-gap flex justify-center items-center gap-unit-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-on-primary font-label-md text-label-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant text-primary font-label-md text-label-md transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant text-primary font-label-md text-label-md transition-colors">3</button>
+<span class="text-primary font-label-md text-label-md px-2">...</span>
+<button class="flex items-center justify-center rounded-full px-4 py-2 hover:bg-surface-variant text-primary font-label-md text-label-md uppercase tracking-wider transition-colors">Next <span class="material-symbols-outlined ml-1 text-sm" data-icon="arrow_forward">arrow_forward</span></button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full pt-section-gap pb-unit-10 bg-surface-container-highest flex flex-col items-center justify-center space-y-unit-6 px-margin-desktop">
+<a class="font-headline-md text-headline-md text-primary" href="#">ESTATE</a>
+<div class="flex gap-gutter">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Portfolio</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Exclusives</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Investment</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Contact</a>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-8 opacity-70">© 2024 Estate Collective. All architectural integrity preserved.</p>
+</footer>
+<script>
+        // Navbar Scroll Logic
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const navLinks = navbar.querySelectorAll('a, button, span');
+            if (window.scrollY > 100) {
+                navbar.classList.remove('bg-transparent');
+                navbar.classList.add('bg-primary');
+                
+            } else {
+                navbar.classList.add('bg-transparent');
+                navbar.classList.remove('bg-primary');
+            }
+        });
+    </script>
+</body></html>

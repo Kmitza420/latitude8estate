@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Glass Pavilion | Estate Collective</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "primary": "#06362D",
+                "on-primary": "#ffffff",
+                "secondary": "#9A7B36",
+                "on-secondary": "#ffffff",
+                "background": "#F9F6F0",
+                "on-background": "#1c1c18",
+                "surface": "#F9F6F0",
+                "on-surface": "#1c1c18",
+                "surface-container-high": "#EADCC9",
+                "surface-container-low": "#f6f3ed",
+                "surface-container-highest": "#EADCC9",
+                "on-surface-variant": "#414846",
+                "outline": "#717976",
+                "outline-variant": "#c0c8c4",
+              },
+              "borderRadius": {
+                "DEFAULT": "0.5rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "margin-desktop": "80px",
+                "section-gap": "120px",
+                "container-max": "1440px",
+                "margin-mobile": "24px",
+                "gutter": "32px",
+                "unit": "8px",
+                "unit-3": "24px",
+                "unit-6": "48px",
+                "unit-10": "80px"
+              },
+              "fontFamily": {
+                "body-md": ["Plus Jakarta Sans"],
+                "headline-lg": ["Playfair Display"],
+                "label-md": ["Plus Jakarta Sans"],
+                "headline-md": ["Playfair Display"],
+                "display-lg": ["Playfair Display"],
+                "body-lg": ["Plus Jakarta Sans"],
+                "headline-lg-mobile": ["Playfair Display"],
+                "headline-sm": ["Playfair Display"]
+              },
+              "fontSize": {
+                "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                "headline-lg": ["48px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                "headline-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .nav-scrolled {
+            background-color: theme('colors.primary');
+            backdrop-filter: blur(0px);
+        }
+        .nav-scrolled .nav-text {
+            color: theme('colors.on-primary');
+        }
+        .nav-transparent .nav-text {
+            color: theme('colors.on-primary');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav aria-label="Main Navigation" class="fixed top-0 w-full z-50 bg-transparent backdrop-blur-md transition-all duration-300 bg-black/20" id="navbar">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-unit-3 max-w-container-max mx-auto">
+<a class="font-headline-sm text-headline-sm text-on-primary nav-text transition-colors duration-300" href="#">ESTATE</a>
+<div class="hidden md:flex space-x-gutter items-center">
+<a class="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold border-b-2 border-secondary pb-1 nav-text transition-colors duration-200" href="#">Properties</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-primary hover:text-secondary nav-text transition-colors duration-200" href="#">Services</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-primary hover:text-secondary nav-text transition-colors duration-200" href="#">About</a>
+<a class="font-label-md text-label-md uppercase tracking-wider text-on-primary hover:text-secondary nav-text transition-colors duration-200" href="#">Contact</a>
+</div>
+<div class="flex items-center space-x-unit-3">
+<button class="hidden md:inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:bg-secondary transition-colors duration-300 shadow-lg">Book Viewing</button>
+<button aria-label="Menu" class="md:hidden text-on-primary nav-text transition-colors duration-300">
+<span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col">
+<!-- Hero Section (Full-screen) -->
+<section class="relative w-full h-screen min-h-[600px]">
+<div class="absolute inset-0 w-full h-full">
+<img alt="The Glass Pavilion Exterior" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9DvCtaLaa3luWBPaxapKMPg42gRoE0R0t2LnRB_KNwgxmvhr88-v9Ycwkjf3CeWdm7p9pT1jkqKAxARQPOq4J5nMF45EBvfbeupCgAefKuWRjhYNjCs26i7kY8nVsa6z1MTTvnMNMyZ_RGBuOE6pyxGAxhV24SU3E0I5SyWzm157ERvDkfmsxCINDI-SHIlhQdl3xPo7XnZjS3gO69B8enhu_JkAuZS9HMxg-ZsOfLgE2C5RCAc_2AA"/>
+<!-- Dark overlay -->
+<div class="absolute inset-0 bg-black/50"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full px-margin-mobile md:px-margin-desktop pb-20 pt-10">
+<div class="max-w-container-max mx-auto flex flex-col items-start space-y-6">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Exclusive Listing</span>
+<h1 class="font-headline-lg-mobile md:font-display-lg text-headline-lg-mobile md:text-display-lg text-on-primary">The Glass Pavilion</h1>
+<p class="font-body-lg text-body-lg text-surface-container-highest max-w-2xl">A masterpiece of contemporary architecture seamlessly integrating minimal design with the surrounding natural beauty of the Malibu coastline.</p>
+<div class="flex items-center space-x-4 pt-4">
+<button class="inline-flex items-center justify-center px-8 py-4 rounded-full bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:bg-secondary transition-colors duration-300">
+                        Schedule Tour
+                    </button>
+<button class="inline-flex items-center justify-center px-8 py-4 rounded-full border-2 border-on-primary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:bg-on-primary hover:text-primary transition-colors duration-300">
+<span class="material-symbols-outlined mr-2">photo_library</span>
+                        View all images
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Property Details & Sidebar Layout -->
+<section class="px-margin-mobile md:px-margin-desktop py-section-gap max-w-container-max mx-auto w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Content (8 columns) -->
+<div class="lg:col-span-8 space-y-section-gap">
+<!-- Property Header & Quick Specs -->
+<div class="space-y-8">
+<div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">The Glass Pavilion</h2>
+<p class="font-headline-md text-headline-md text-secondary mt-2">$12,500,000</p>
+</div>
+</div>
+<div class="w-full h-[1px] bg-outline-variant"></div>
+<!-- Quick Specs Block -->
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-6">Quick Specs</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 bg-surface-container-low p-8 rounded-xl border border-surface-container-high">
+<div class="flex flex-col space-y-1">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</span>
+<span class="font-body-md text-body-md text-primary font-medium">Available</span>
+</div>
+<div class="flex flex-col space-y-1">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Completion Date</span>
+<span class="font-body-md text-body-md text-primary font-medium">2023</span>
+</div>
+<div class="flex flex-col space-y-1">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Distance to Beach</span>
+<span class="font-body-md text-body-md text-primary font-medium">0.1 Miles</span>
+</div>
+<div class="flex flex-col space-y-1">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Units</span>
+<span class="font-body-md text-body-md text-primary font-medium">1 Single Family</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Location Block -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Location</h3>
+<div class="bg-surface-container-low p-8 rounded-xl border border-surface-container-high flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-3xl">location_on</span>
+<div>
+<p class="font-body-lg text-body-lg text-primary font-medium">29400 Pacific Coast Hwy</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Western Malibu District</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Malibu, California</p>
+<p class="font-body-md text-body-md text-on-surface-variant">United States</p>
+</div>
+</div>
+</div>
+<!-- Spaces Block -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Spaces</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Interior</h4>
+<ul class="space-y-3">
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Bedrooms</span>
+<span class="font-medium text-primary">5</span>
+</li>
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Bathrooms</span>
+<span class="font-medium text-primary">6.5</span>
+</li>
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Living Room</span>
+<span class="font-medium text-primary">Open Plan</span>
+</li>
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Dining Room</span>
+<span class="font-medium text-primary">Formal</span>
+</li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Outdoor</h4>
+<ul class="space-y-3">
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Terrace</span>
+<span class="font-medium text-primary">Cantilevered</span>
+</li>
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Garden</span>
+<span class="font-medium text-primary">Landscaped</span>
+</li>
+<li class="flex items-center justify-between font-body-md text-on-surface-variant">
+<span>Outdoor Kitchen</span>
+<span class="font-medium text-primary">Included</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Facilities & Technical Features -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Facilities &amp; Features</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="flex flex-col items-center justify-center p-6 bg-surface-container-low rounded-xl border border-surface-container-high text-center">
+<span class="material-symbols-outlined text-secondary text-4xl mb-3">pool</span>
+<span class="font-label-md text-primary">Infinity Pool</span>
+</div>
+<div class="flex flex-col items-center justify-center p-6 bg-surface-container-low rounded-xl border border-surface-container-high text-center">
+<span class="material-symbols-outlined text-secondary text-4xl mb-3">fitness_center</span>
+<span class="font-label-md text-primary">Fitness Center</span>
+</div>
+<div class="flex flex-col items-center justify-center p-6 bg-surface-container-low rounded-xl border border-surface-container-high text-center">
+<span class="material-symbols-outlined text-secondary text-4xl mb-3">security</span>
+<span class="font-label-md text-primary">24/7 Security</span>
+</div>
+<div class="flex flex-col items-center justify-center p-6 bg-surface-container-low rounded-xl border border-surface-container-high text-center">
+<span class="material-symbols-outlined text-secondary text-4xl mb-3">directions_car</span>
+<span class="font-label-md text-primary">4-Car Garage</span>
+</div>
+</div>
+<div class="mt-8">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4">Technical Features</h4>
+<div class="flex flex-wrap gap-3">
+<span class="px-4 py-2 bg-surface-container-highest rounded-full font-body-md text-primary text-sm">Smart Home Integration</span>
+<span class="px-4 py-2 bg-surface-container-highest rounded-full font-body-md text-primary text-sm">Central AC</span>
+<span class="px-4 py-2 bg-surface-container-highest rounded-full font-body-md text-primary text-sm">Chef's Kitchen Appliances</span>
+<span class="px-4 py-2 bg-surface-container-highest rounded-full font-body-md text-primary text-sm">Climate-controlled Wine Cellar</span>
+</div>
+</div>
+</div>
+<!-- Nearby Places -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Nearby Places</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-low p-6 rounded-xl border border-surface-container-high">
+<h4 class="font-label-md text-on-surface-variant uppercase tracking-wider mb-4">Transportation</h4>
+<ul class="space-y-3">
+<li class="flex justify-between font-body-md">
+<span class="text-primary">LAX Airport</span>
+<span class="text-on-surface-variant">22 Miles</span>
+</li>
+</ul>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border border-surface-container-high">
+<h4 class="font-label-md text-on-surface-variant uppercase tracking-wider mb-4">Education &amp; Recreation</h4>
+<ul class="space-y-3">
+<li class="flex justify-between font-body-md">
+<span class="text-primary">Malibu High School</span>
+<span class="text-on-surface-variant">3.5 Miles</span>
+</li>
+<li class="flex justify-between font-body-md">
+<span class="text-primary">Malibu Golf Club</span>
+<span class="text-on-surface-variant">8 Miles</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Resources/Files Section -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Floor Plans &amp; Documents</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<a class="flex items-center p-4 bg-surface-container-highest rounded-lg hover:bg-surface-dim transition-colors group" href="#">
+<div class="w-12 h-12 bg-primary rounded-md flex items-center justify-center mr-4 text-on-primary">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-primary group-hover:text-secondary transition-colors">Main Floor Plan</p>
+<p class="text-sm text-on-surface-variant">PDF, 2.4 MB</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">download</span>
+</a>
+<a class="flex items-center p-4 bg-surface-container-highest rounded-lg hover:bg-surface-dim transition-colors group" href="#">
+<div class="w-12 h-12 bg-primary rounded-md flex items-center justify-center mr-4 text-on-primary">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-primary group-hover:text-secondary transition-colors">Property Brochure</p>
+<p class="text-sm text-on-surface-variant">PDF, 8.1 MB</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">download</span>
+</a>
+</div>
+</div>
+<!-- Gallery (Preserved) -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-primary">Gallery</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="w-full h-64 md:h-80 rounded-lg overflow-hidden relative group">
+<img alt="Living Room" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjD0ksaJoJfcmV-SDiffTnHFvT3PH6LOdxxTbrZjF5eWJBeGZFDTokzVPg-NIu3bc5WEYr1mKxpMpaPXPFR8toeVv3_cgGAbL_JEKP2S5fJkzyN1YHSnvdI7GqWulfkDaqCi5dJziMjJDhSMJ_smfu-y7PpGxTENxeZFm2R25yARLZLEncgdTOClt8InqC813aajUigklF3VjuY1H9_zaqvaew_B5iKsykaqFL8WhEZJXnF7R1XwsynQ"/>
+</div>
+<div class="w-full h-64 md:h-80 rounded-lg overflow-hidden relative group">
+<img alt="Kitchen" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRu0Ba38Fcd3EZvZ9VSVkXLP5gyWm6NsqTwPtb8XDCiFJ1N4QqZb0LFU1xWCAymEMuWze-ZIJipJKiTMFnf2sAr50fnz84UY3gwnBvLlyKfhwgaAT79oI_hkNNrCsy7a5tVwWb3p4VE3xa7DBJIH_CUMZHspDBpH6hmthDUakPwVm4YI10N3z4jc9mLMnZvoJ6WdRbomG7dx1mLJ1iCeDJg_zLtsasjbz9XdJHffCqgJdv8PQQKWsusQ"/>
+</div>
+<div class="md:col-span-2 w-full h-64 md:h-96 rounded-lg overflow-hidden relative group">
+<img alt="Infinity Pool" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ6OduU6zyncx2W67GESiv2onN-XyBAFvUQf3KrMFXgKu-WEKogrfaRJzlsQRi1lY9JZi5I-xcD9n6-ABTOs5iwaOPCytEprHx-J70xzAC0ql8HCSOdX3Yz_6_4ea7vkbYAq3S8A1Jwi6mhLx_Yr3R7x4O9yQGrp6G8s1bN5uaibgmKfmprxfCNZcODZmtgpY-x5Zw0qq_jyWsrmuoxOfoYNduO7xFm9uEyRHt7GWgjoU3Y6ibCyvVGA"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar (4 columns) -->
+<div class="lg:col-span-4 relative">
+<!-- Sticky Container -->
+<div class="sticky top-32 space-y-8">
+<!-- Contact Card -->
+<div class="bg-surface-container-highest rounded-xl p-8 shadow-xl border border-outline-variant/30">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2">Inquire About This Property</h3>
+<p class="font-body-md text-on-surface-variant mb-6 text-sm">Leave your details and our luxury specialist will contact you shortly.</p>
+<form class="space-y-6">
+<div class="space-y-4">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider" for="name">Full Name</label>
+<input class="w-full bg-surface border border-outline-variant rounded-md focus:border-secondary focus:ring-1 focus:ring-secondary px-4 py-3 font-body-md text-on-surface transition-colors" id="name" name="name" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider" for="email">Email Address</label>
+<input class="w-full bg-surface border border-outline-variant rounded-md focus:border-secondary focus:ring-1 focus:ring-secondary px-4 py-3 font-body-md text-on-surface transition-colors" id="email" name="email" type="email"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider" for="phone">Phone Number</label>
+<input class="w-full bg-surface border border-outline-variant rounded-md focus:border-secondary focus:ring-1 focus:ring-secondary px-4 py-3 font-body-md text-on-surface transition-colors" id="phone" name="phone" type="tel"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-wider" for="message">Message</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-md focus:border-secondary focus:ring-1 focus:ring-secondary px-4 py-3 font-body-md text-on-surface transition-colors" id="message" name="message" placeholder="I am interested in The Glass Pavilion..." rows="4"></textarea>
+</div>
+</div>
+<button class="w-full flex items-center justify-center px-6 py-4 rounded-md bg-primary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:bg-secondary transition-colors duration-300" type="submit">
+                                Send Inquiry
+                            </button>
+</form>
+<div class="mt-8 pt-8 border-t border-outline-variant flex items-center space-x-4">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-dim flex-shrink-0">
+<img alt="Agent Portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHuZw38z7yrEp6HwRaEIMFi7KXgaG2KrWrxJJKp-tk8kFXTKKm2rGpXCZUXR6QXcCz237sb4JRDcK_iN0aMRnmUX1vxVzmsunULaRMUwB8vAt7518jBFOOp3CcOMgMQxjOZCeMY9ylccxFUZOANBuB-qBkEbRVQZVaje2BF7raY_z4TU__M_pqBwo01wyVUL20PfafOCRNgRE1I4P3fd2_X8NaQIxmYAnWWofqo18akdM7nySsuGQZFg"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Listed By</p>
+<p class="font-headline-sm text-headline-sm text-primary">Eleanor Vance</p>
+<a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors" href="mailto:eleanor@estatecollective.com">Contact Specialist</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest w-full pt-section-gap pb-unit-10 flex flex-col items-center justify-center space-y-unit-6 px-margin-mobile md:px-margin-desktop">
+<div class="font-headline-md text-headline-md text-primary">ESTATE</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Portfolio</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Exclusives</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Investment</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Contact</a>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-center max-w-md">
+        © 2024 Estate Collective. All architectural integrity preserved.
+    </p>
+</footer>
+<!-- Navbar Scroll Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navbar = document.getElementById('navbar');
+        
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('nav-scrolled');
+                navbar.classList.remove('bg-black/20');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+                navbar.classList.add('bg-black/20');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        // Initial check
+        handleScroll();
+    });
+</script>
+</body></html>

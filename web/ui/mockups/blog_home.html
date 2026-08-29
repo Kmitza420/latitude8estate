@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Journal | AESTHETE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#74a094",
+                        "surface": "#fcf9f3",
+                        "on-surface-variant": "#414846",
+                        "surface-container": "#f0eee8",
+                        "outline-variant": "#c0c8c4",
+                        "tertiary": "#20190e",
+                        "primary-container": "#06362d",
+                        "on-secondary-fixed": "#261a00",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#d2c5b2",
+                        "on-tertiary-fixed": "#211b0f",
+                        "secondary-fixed-dim": "#e7c275",
+                        "surface-tint": "#3c665b",
+                        "surface-variant": "#e5e2dc",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#234e44",
+                        "on-background": "#1c1c18",
+                        "on-surface": "#1c1c18",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#a3d0c3",
+                        "on-tertiary-container": "#a19584",
+                        "inverse-primary": "#a3d0c3",
+                        "surface-bright": "#fcf9f3",
+                        "secondary": "#765a18",
+                        "outline": "#717976",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "secondary-container": "#ffd889",
+                        "inverse-surface": "#31312d",
+                        "tertiary-container": "#362e21",
+                        "surface-container-low": "#f6f3ed",
+                        "tertiary-fixed": "#efe1cd",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#ebe8e2",
+                        "inverse-on-surface": "#f3f0ea",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#ffdf9f",
+                        "on-primary-fixed": "#00201a",
+                        "surface-container-highest": "#e5e2dc",
+                        "background": "#fcf9f3",
+                        "on-secondary-container": "#795d1a",
+                        "primary-fixed": "#beecde",
+                        "on-tertiary-fixed-variant": "#4e4638",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#001f19",
+                        "surface-dim": "#dcdad4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "120px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "container-max": "1440px",
+                        "margin-desktop": "80px",
+                        "margin-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Playfair Display"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .nav-scrolled {
+            @apply bg-primary/95 dark:bg-primary/95 backdrop-blur-md shadow-sm;
+        }
+        .nav-transparent {
+            @apply bg-transparent backdrop-blur-[10px] bg-white/5 shadow-none border-none;
+        }
+        
+        .soft-shadow {
+            box-shadow: 0px 20px 40px rgba(6, 54, 45, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 transition-all duration-300 nav-transparent border-none" id="mainNav">
+<a class="text-headline-md font-headline-md text-on-primary dark:text-on-primary tracking-widest uppercase" href="#">
+            AESTHETE
+        </a>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-label-md font-label-md text-on-primary/80 hover:text-on-primary transition-colors hover:text-secondary-fixed transition-all duration-300" href="#">Properties</a>
+<a class="text-label-md font-label-md text-secondary-fixed font-bold border-b-2 border-secondary-fixed pb-1 opacity-80 transition-opacity hover:text-secondary-fixed transition-all duration-300" href="#">Journal</a>
+<a class="text-label-md font-label-md text-on-primary/80 hover:text-on-primary transition-colors hover:text-secondary-fixed transition-all duration-300" href="#">Curations</a>
+<a class="text-label-md font-label-md text-on-primary/80 hover:text-on-primary transition-colors hover:text-secondary-fixed transition-all duration-300" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:block px-6 py-2 rounded-full border border-secondary-fixed text-secondary-fixed font-label-md text-label-md hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors">
+                Inquire
+            </button>
+<button class="md:hidden text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative w-full h-[80vh] min-h-[600px] flex items-center justify-center">
+<div class="absolute inset-0 z-0" data-alt="A breathtaking, wide-angle architectural photograph of a luxurious, modern estate at dusk. The building features expansive floor-to-ceiling glass walls, warm interior lighting spilling out onto a pristine, reflective infinity pool. The sky is a gradient of deep twilight blues and purples. The composition emphasizes minimal, clean lines and a sense of quiet exclusivity within a lush, dark green forested setting. Editorial luxury style, high contrast, cinematic mood." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAfENHt9YO-xkm6xukSDUlNXSL8hFgrN85xWTrY3f1HtIk1GWVmfmqVWScogCFZhPp4MTAEcg8AYDtQcnmwiDZQlvFm27BkZqqAj--0y1GtQ1zocNXTc2vhAoe9CH68SgO8iD6khYkxq21fzQmtnBK6zSrlFz-z8wjryo4NIexbeY44cCc3ACYL9hPKzy4qDKTEw__otTMB8ixKLO7TC-uHc_SCYJRJ0EQ16515gH6dXOTIh7Tean_n4A')">
+<div class="absolute inset-0 bg-primary/60 mix-blend-multiply"></div>
+</div>
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto flex flex-col items-center gap-6">
+<h1 class="text-display-lg font-display-lg text-on-primary">The Journal</h1>
+<p class="text-body-lg font-body-lg text-on-primary/90 max-w-2xl">
+                Insights into the world's most exclusive residences and architectural trends.
+            </p>
+</div>
+</header>
+<main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-section-gap">
+<!-- Categories Section -->
+<section class="mt-section-gap">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<a class="group relative aspect-square overflow-hidden rounded-DEFAULT cursor-pointer soft-shadow" href="#">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A dramatic aerial view of a sleek, modern coastal home perched on a rugged cliff. The ocean waves crash below in deep navy blues, contrasting with the warm, beige concrete and expansive glass of the architecture. The lighting is early morning, casting long, soft shadows and highlighting the minimalistic design. High-end real estate photography, editorial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCG18OwS0FsDdHuyK7IMlQ-DL9D6VLgwuiNYFtMudmlNNux3DTWDABd5JdMcqiAO7XXH_Rujp-RbUdez8ZhfgteAGq5DMEwei3rmVr8UItvrzIuUynr10j9VybIadDXuoyOd8PafkAH5RHUB52sQaqEJ06iSLI-0oCqYRskbbYUcUSVbmEr1oldnv2FuX5HiXL89J8eO0aixJ0lSC7F1l-YSAZt-g9bRjWfPOmN02PzONF02kBIFmrt8Q"/>
+<div class="absolute inset-0 bg-primary/40 group-hover:bg-primary/20 transition-colors duration-500"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<h3 class="text-headline-sm font-headline-sm text-secondary-fixed">Coastal</h3>
+</div>
+</a>
+<a class="group relative aspect-square overflow-hidden rounded-DEFAULT cursor-pointer soft-shadow" href="#">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An interior shot of an ultra-luxurious urban penthouse at night. The room features dark, moody tones with warm, ambient uplighting. Floor-to-ceiling windows reveal a sweeping, illuminated city skyline. The furniture is minimalist, featuring deep velvet textures and metallic gold accents. The atmosphere is sophisticated, quiet, and exclusive. Editorial luxury photography, high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-2_UAMb2iRsmcFOPRn51h6FLS16IPN2jfH2r_AeT9Kr68XQlRkxqgGZLCmrRrKF4Bde6ZctCoWLiw4PiMixcAkhAKd8UK1copFGw8c3WwyM-hS5G-c6R_gCbQrnRwGKRnBHWHht6gEeSLmRC-kFqGbck2jJbdfGkfqrgavqcYmW8opO8WJB-CkwBAbAlADksV_XthhhjscyP81LkliLxtZ_HHjPF5NEwEDPMrIfVrkkIbdrZzTwaoww"/>
+<div class="absolute inset-0 bg-primary/40 group-hover:bg-primary/20 transition-colors duration-500"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<h3 class="text-headline-sm font-headline-sm text-secondary-fixed">Urban</h3>
+</div>
+</a>
+<a class="group relative aspect-square overflow-hidden rounded-DEFAULT cursor-pointer soft-shadow" href="#">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautifully restored historic chateau in the countryside, captured during golden hour. The stone facade glows with warm, golden light, while deep, rich green ivy climbs the walls. The scene is framed by ancient, manicured trees. The composition balances traditional grandeur with a clean, modern photographic approach, emphasizing texture and history. Editorial luxury real estate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi_vzzxgiVytSukcPrx603cqsSEjO1mIleE2F41w9klW-tFdBuPw1_v5290l6rxpO2DMQm2OD3_va0_PjmdFkjaPDA2r_fRIqiIG53srVFz7WOVaL1fVT12xuVZX-buyPsmTF7x3_nV9fjyoSH5Aa-RsZjtdgEM-ehCoVJUYxqmCiTTGbQRmbPPOgN16Mr7o115oIqm3MtvLXtwBnwt6v8tBXXZ3p7OskZO2m5x08OT1gTAsiRHG8CWg"/>
+<div class="absolute inset-0 bg-primary/40 group-hover:bg-primary/20 transition-colors duration-500"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<h3 class="text-headline-sm font-headline-sm text-secondary-fixed">Historic</h3>
+</div>
+</a>
+<a class="group relative aspect-square overflow-hidden rounded-DEFAULT cursor-pointer soft-shadow" href="#">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A striking modern home situated in a vast, arid desert landscape. The architecture features long, low horizontal lines of raw concrete and rusted corten steel, blending seamlessly with the surrounding sand and dry brush. The sky is a clear, pale gradient. The harsh midday sun casts sharp, geometric shadows across the structure. Minimalist, architectural editorial photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrA6bMNSsrvKn8q1SqGlo8N6CpXrfG2Hl05PyFyVbxHPFXcWsuaWFiLDzAFZotrZsgjAHrAB6QLs49tElmYIXOGFURoyk5Fj-k0fyTPsLL8vNgzhcvidcJJBxXwl_3TfneUn2PeBpKh3Sj4rZJwUy-AyqtKYGpWRAmIkJhofFtTnBlV3lnEiazVYIe6OJw9X7Jdc9ZAoaQ-EM8Zja-hFvPQRi8mSnsaebtcUcUJEuTpwgYUBQ7r4wpYA"/>
+<div class="absolute inset-0 bg-primary/40 group-hover:bg-primary/20 transition-colors duration-500"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<h3 class="text-headline-sm font-headline-sm text-secondary-fixed">Desert</h3>
+</div>
+</a>
+</div>
+</section>
+<!-- Featured Blog Section -->
+<section class="mt-section-gap">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-7 relative h-[500px] rounded-lg overflow-hidden soft-shadow group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up architectural shot of a massive, brutalist concrete structure softened by lush, overgrown tropical foliage. The raw, textured grey concrete contrasts sharply with the vibrant, deep greens of the plants cascading over the edges. Soft, diffused lighting emphasizes the monumental scale and the textural interplay between nature and stark geometry. High-end editorial architectural photography, quiet and imposing mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMnzIRo-x5HenyL1ZADGw4ec03BkqTHqvkvroSuFX2CzY_u16ymRShf-LkwmffmW81t0Wr7wCCMLdQIJxeSomZ-m4pRfewnoLvUQFhZ-kn7j1uLuayExCGUAeM0kdtfoHTB0Ix1kQx8U1HTQWHeRhihNLGT0mDDCOdRuxkc8RNEeumKB7iRHkbcdz8MwJdhom3_Y_ufD5Nk186N6DN5zrz-EsrxhVCTkxMrZ3zCzivlo_kMp6OJaELrQ"/>
+</div>
+<div class="lg:col-span-5 bg-surface-container p-8 md:p-12 rounded-lg lg:-ml-12 relative z-10 soft-shadow">
+<span class="text-label-md font-label-md text-secondary tracking-widest uppercase mb-4 block">Featured</span>
+<h2 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg text-primary mb-6">The Resurgence of Brutalist Elegance</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mb-8">
+                        Exploring how stark concrete forms are being softened by lush landscapes, creating environments that balance monumental weight with organic tranquility in modern luxury estates.
+                    </p>
+<a class="inline-flex items-center justify-center px-8 py-3 bg-primary text-on-primary rounded-full text-label-md font-label-md hover:bg-secondary hover:text-on-secondary transition-colors duration-300" href="#">
+                        Read Article
+                    </a>
+</div>
+</div>
+</section>
+<!-- Latest Blogs Section -->
+<section class="mt-section-gap">
+<div class="flex justify-between items-end mb-12 border-b border-outline-variant/30 pb-4">
+<h2 class="text-headline-md font-headline-md text-primary">Latest Narratives</h2>
+<a class="text-label-md font-label-md text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
+                    View All <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Blog Card 1 -->
+<a class="group flex flex-col gap-6 soft-shadow rounded-lg bg-surface hover:bg-surface-container-low transition-colors duration-300 pb-6 h-full" href="#">
+<div class="relative w-full aspect-[4/3] overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An immaculate, minimalist living space featuring a curated selection of mid-century modern furniture. The room is bathed in soft, natural light from a hidden skylight. The color palette is strictly neutral: off-whites, soft beiges, and warm woods, with a single, dramatic piece of abstract dark art on the wall. The mood is serene, refined, and effortlessly luxurious. Editorial interior photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBnvOhywN6byiAFL5S-dtg7tMdTXe4DGfiMv99HYv8uryfranqEjj8Ta-NNFZd8FszNfjMP3_-7Li34c1kCLfCrI0JxJBrkOCInK59o8BgTeZ2RWGvOjYu6QI8O0xa78_nB6dv4agChZ-cLFCDB8meSZrteDcscnb3t1QHwsj0UPhcbgZKP6YBryUKGoR8oWHazAw24-IXBIWRHTaZtuWIEVC6UZhFhNlPoZxjWGYSfA9L7Bk4a_OO6w"/>
+</div>
+<div class="px-6 flex flex-col flex-grow">
+<span class="text-label-md font-label-md text-secondary tracking-widest uppercase mb-3">Interior</span>
+<h3 class="text-headline-sm font-headline-sm text-primary mb-4">Curating the Minimalist Sanctuary</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">
+                            How top designers are utilizing negative space and monochromatic palettes to cultivate spaces of ultimate mental clarity.
+                        </p>
+<span class="text-label-md font-label-md text-primary group-hover:text-secondary transition-colors border-b border-transparent group-hover:border-secondary self-start pb-1">Read More</span>
+</div>
+</a>
+<!-- Blog Card 2 -->
+<a class="group flex flex-col gap-6 soft-shadow rounded-lg bg-surface hover:bg-surface-container-low transition-colors duration-300 pb-6 h-full" href="#">
+<div class="relative w-full aspect-[4/3] overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A stunning infinity edge pool seamlessly blending into a calm, expansive lake at sunset. The sky reflects vibrant hues of orange, pink, and deep violet onto the dark, still water. The surrounding architecture is sleek and dark, emphasizing the natural beauty of the horizon. The atmosphere is peaceful, romantic, and highly exclusive. High-end luxury lifestyle photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL7-BiX-0PG5fBIQs6jjVTjvyp2jU89XXquLZBwdojb5cKWcKNQkIyKkESLZ4D3M5-nS42_aclrdR-MvhT3dlptmPoPqZ9vqsd-nLOG3IrzODyMvZgUhokDUUBgv3wGJgerNSektNUpkoZWEeMVnaw6t3oWCjJDen5sGNrZ_2XfNFfULZj-_7WRRYN7jFMrcyEarLxRTRce2EGB6e7V5okBa1G4RbNud5dryQERnkrjzVPZBorz2iU1A"/>
+</div>
+<div class="px-6 flex flex-col flex-grow">
+<span class="text-label-md font-label-md text-secondary tracking-widest uppercase mb-3">Lifestyle</span>
+<h3 class="text-headline-sm font-headline-sm text-primary mb-4">The Art of the Infinity Edge</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">
+                            Examining the psychological impact of boundaryless water features in high-altitude luxury properties.
+                        </p>
+<span class="text-label-md font-label-md text-primary group-hover:text-secondary transition-colors border-b border-transparent group-hover:border-secondary self-start pb-1">Read More</span>
+</div>
+</a>
+<!-- Blog Card 3 -->
+<a class="group flex flex-col gap-6 soft-shadow rounded-lg bg-surface hover:bg-surface-container-low transition-colors duration-300 pb-6 h-full" href="#">
+<div class="relative w-full aspect-[4/3] overflow-hidden rounded-t-lg">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A detailed shot of a bespoke wine cellar in a luxury estate. The walls are lined with dark, rich mahogany racks holding hundreds of bottles, illuminated by subtle, warm LED strip lighting. The floor is made of ancient reclaimed stone. In the center sits a minimalist glass tasting table. The mood is rich, established, and deeply sophisticated. Editorial real estate photography, low key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAK8l7oJcTjVwDlfy5eW20i7aS7Rdqi9_Klv0H2j1VEw1tnBJiOBbILl6QJiKRwXnm-Jfq_sZFISkl_XDo4effIzYfO073r186g_hY5XjuWK1jm2DB0Eao9jmqlzH8UwPtQSr9m9MBZcREfmQgVh20knjT9BWnhnYJrmlfex3g5tepjeKIxnjM3JTGGivZVa19hAvzTW8T2NIp-gZDjRDIYhnI0Gur4STyFJhrQHR-YU7_KVrOcag5yUw"/>
+</div>
+<div class="px-6 flex flex-col flex-grow">
+<span class="text-label-md font-label-md text-secondary tracking-widest uppercase mb-3">Architecture</span>
+<h3 class="text-headline-sm font-headline-sm text-primary mb-4">Subterranean Sophistication</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">
+                            The growing trend of expansive, highly designed subterranean spaces, from private galleries to advanced wellness centers.
+                        </p>
+<span class="text-label-md font-label-md text-primary group-hover:text-secondary transition-colors border-b border-transparent group-hover:border-secondary self-start pb-1">Read More</span>
+</div>
+</a>
+</div>
+</section>
+<!-- Newsletter Section -->
+<section class="mt-section-gap">
+<div class="bg-primary rounded-xl p-12 md:p-24 flex flex-col items-center text-center soft-shadow relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container rounded-full blur-3xl opacity-50 -mr-32 -mt-32"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-surface-tint rounded-full blur-3xl opacity-30 -ml-32 -mb-32"></div>
+<h2 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg text-secondary-fixed mb-6 relative z-10">Curated Excellence, Delivered.</h2>
+<p class="text-body-lg font-body-lg text-on-primary/80 max-w-xl mb-10 relative z-10">
+                    Join our exclusive readership to receive a monthly digest of architectural marvels, market insights, and the art of fine living.
+                </p>
+<form class="w-full max-w-md flex flex-col sm:flex-row gap-4 relative z-10">
+<input class="flex-grow bg-transparent border-b border-outline-variant/30 text-on-primary placeholder:text-on-primary/50 focus:outline-none focus:border-secondary-fixed focus:ring-0 py-3 text-body-md font-body-md" placeholder="Enter your email address" required="" type="email"/>
+<button class="px-8 py-3 bg-secondary-fixed text-on-secondary-fixed rounded-full text-label-md font-label-md hover:bg-secondary-fixed-dim transition-colors whitespace-nowrap" type="submit">
+                        Subscribe
+                    </button>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-mobile md:px-margin-desktop flex flex-col items-center gap-8 bg-tertiary-container dark:bg-tertiary-container text-tertiary-fixed dark:text-tertiary-fixed-dim bg-tertiary-container border-t border-outline-variant/10">
+<a class="text-headline-sm font-headline-sm text-secondary-fixed uppercase tracking-widest" href="#">
+            AESTHETE
+        </a>
+<div class="flex flex-wrap justify-center gap-6 md:gap-12">
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-on-tertiary-container hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Privacy Policy</a>
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-on-tertiary-container hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Terms of Service</a>
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-on-tertiary-container hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Press Kit</a>
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-on-tertiary-container hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Contact</a>
+</div>
+<p class="text-body-md font-body-md text-on-tertiary-container/40 text-center mt-4 text-sm">
+            © 2024 AESTHETE EDITORIAL LUXURY REAL ESTATE. ALL RIGHTS RESERVED.
+        </p>
+</footer>
+<script>
+        // Navbar scroll effect
+        const nav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.remove('nav-transparent');
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.add('nav-transparent');
+                nav.classList.remove('nav-scrolled');
+            }
+        });
+    </script>
+</body></html>

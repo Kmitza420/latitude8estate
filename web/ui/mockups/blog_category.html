@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AESTHETE - Architectural Trends</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-container": "#74a094",
+                      "surface": "#fcf9f3",
+                      "on-surface-variant": "#414846",
+                      "surface-container": "#f0eee8",
+                      "outline-variant": "#c0c8c4",
+                      "tertiary": "#20190e",
+                      "primary-container": "#06362d",
+                      "on-secondary-fixed": "#261a00",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#d2c5b2",
+                      "on-tertiary-fixed": "#211b0f",
+                      "secondary-fixed-dim": "#e7c275",
+                      "surface-tint": "#3c665b",
+                      "surface-variant": "#e5e2dc",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#234e44",
+                      "on-background": "#1c1c18",
+                      "on-surface": "#1c1c18",
+                      "error": "#ba1a1a",
+                      "primary-fixed-dim": "#a3d0c3",
+                      "on-tertiary-container": "#a19584",
+                      "inverse-primary": "#a3d0c3",
+                      "surface-bright": "#fcf9f3",
+                      "secondary": "#765a18",
+                      "outline": "#717976",
+                      "on-secondary-fixed-variant": "#5b4300",
+                      "secondary-container": "#ffd889",
+                      "inverse-surface": "#31312d",
+                      "tertiary-container": "#362e21",
+                      "surface-container-low": "#f6f3ed",
+                      "tertiary-fixed": "#efe1cd",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#ebe8e2",
+                      "inverse-on-surface": "#f3f0ea",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#ffdf9f",
+                      "on-primary-fixed": "#00201a",
+                      "surface-container-highest": "#e5e2dc",
+                      "background": "#fcf9f3",
+                      "on-secondary-container": "#795d1a",
+                      "primary-fixed": "#beecde",
+                      "on-tertiary-fixed-variant": "#4e4638",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#001f19",
+                      "surface-dim": "#dcdad4"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-gap": "120px",
+                      "unit": "8px",
+                      "gutter": "32px",
+                      "container-max": "1440px",
+                      "margin-desktop": "80px",
+                      "margin-mobile": "24px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Playfair Display"
+                      ],
+                      "headline-sm": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for horizontal lists */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Navbar transition */
+        #top-navbar {
+            transition: background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out;
+        }
+        #top-navbar.scrolled {
+            background-color: theme('colors.primary');
+            backdrop-filter: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 backdrop-blur-md bg-primary/20 dark:bg-primary/95 shadow-sm docked full-width" id="top-navbar">
+<div class="flex items-center">
+<span class="text-headline-md font-headline-md text-on-primary tracking-widest cursor-pointer">AESTHETE</span>
+</div>
+<!-- Desktop Nav -->
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-primary/80 hover:text-on-primary transition-colors text-label-md font-label-md hover:text-secondary-fixed transition-all duration-300" href="#">Properties</a>
+<a class="text-secondary-fixed font-bold border-b-2 border-secondary-fixed pb-1 text-label-md font-label-md hover:text-secondary-fixed transition-all duration-300" href="#">Journal</a>
+<a class="text-on-primary/80 hover:text-on-primary transition-colors text-label-md font-label-md hover:text-secondary-fixed transition-all duration-300" href="#">Curations</a>
+<a class="text-on-primary/80 hover:text-on-primary transition-colors text-label-md font-label-md hover:text-secondary-fixed transition-all duration-300" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center justify-center text-on-primary hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="px-6 py-2 rounded-full border border-secondary-fixed text-secondary-fixed text-label-md font-label-md hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors">Inquire</button>
+<button class="md:hidden flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img alt="Modern Minimalist Villa" class="w-full h-full object-cover" data-alt="A breathtaking view of a modern minimalist architectural villa at twilight. The villa features expansive floor-to-ceiling glass walls, sleek concrete lines, and subtle warm interior lighting glowing against the cool blue evening sky. The setting is serene, emphasizing an editorial luxury aesthetic with high-contrast shadows and quiet minimalism. High-resolution, cinematic real estate photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB9HUe8ffbOMedtM9QMtk1fFisdPQrOQWZ5ISFzjeozFCgKEaHSd_D-QpZsXA6KABvPf5ZGs5YuNqa5t6e4I9lI6fLtkAF005J83hHTPO2eqDBD46dE1dNVzs_NI3Bb978vDmYONE3EZ1JKoM8sWZqMZpcsem5i3obb1z2dyZIl7XELclNvJdtEoHsN2v9ZMBxLmDpq0vtvcEtXdmJ7Tilx9gka-eP10DsfvVPMJGYAEbjKcSGw7s6Ew"/>
+<div class="absolute inset-0 bg-primary/60 mix-blend-multiply"></div>
+</div>
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto flex flex-col items-center gap-6 mt-20">
+<span class="text-secondary-fixed text-label-md font-label-md uppercase tracking-widest">Journal / Architecture</span>
+<h1 class="text-display-lg font-display-lg text-on-primary leading-tight">Architectural Trends</h1>
+<p class="text-body-lg font-body-lg text-on-primary/90 max-w-2xl mx-auto">From brutalism to biophilic design, explore the styles shaping luxury living.</p>
+</div>
+</header>
+<!-- Blogs Section -->
+<main class="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col gap-section-gap">
+<!-- Card 1 -->
+<article class="flex flex-col md:flex-row gap-gutter items-center group cursor-pointer">
+<div class="w-full md:w-1/2 overflow-hidden aspect-[4/3] rounded">
+<img alt="Glass Pavilion" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An expansive, light-filled living room showcasing a massive floor-to-ceiling glass wall that seamlessly connects the indoors with a lush, green exterior landscape. The interior features minimalist furniture in neutral beige and off-white tones, bathed in soft, natural daylight. The composition highlights transparency and the integration of nature into modern luxury living, photographed with an editorial, high-end real estate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHJSftJXeowQBM68Qt_XD8GhEjjdbtn0iWBg12wEAab1cDJIZId8iJBZqOepwUTcZokZTn3dVKimje_FeqrgEGR4NNUl_qc0nQzGPgCG6GPN2QLXHIC2Hj9k4wt-XHaz5CqXSJ7GBguVaa3uHlnL2wR72UiRo4tIRYKiYxsQqy6kFlXbKaboOxZ9AZ7nVON5Yb4ZcqdNhaoM0kHvhqBZALKoJX5MbfV9jqadySlw6vtb_RI1vZc2T4Gw"/>
+</div>
+<div class="w-full md:w-1/2 flex flex-col gap-6 md:pl-8">
+<span class="text-secondary text-label-md font-label-md tracking-widest uppercase">Architecture</span>
+<h2 class="text-headline-lg font-headline-lg text-primary">The Glass Pavilion: A Study in Transparency</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-xl">How floor-to-ceiling glass is redefining the boundary between nature and shelter, creating homes that breathe with their surroundings.</p>
+<div class="pt-4">
+<button class="px-8 py-3 rounded-full bg-primary text-on-primary text-label-md font-label-md hover:bg-secondary hover:text-on-secondary transition-colors duration-300">Read More</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="flex flex-col-reverse md:flex-row gap-gutter items-center group cursor-pointer">
+<div class="w-full md:w-1/2 flex flex-col gap-6 md:pr-8">
+<span class="text-secondary text-label-md font-label-md tracking-widest uppercase">Interior</span>
+<h2 class="text-headline-lg font-headline-lg text-primary">The Velvet Revolution</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-xl">Rich textures and deep tones are returning to the primary suite, replacing stark minimalism with tactile warmth and cocooning luxury.</p>
+<div class="pt-4">
+<button class="px-8 py-3 rounded-full border border-secondary text-secondary text-label-md font-label-md hover:bg-secondary hover:text-on-secondary transition-colors duration-300">Read More</button>
+</div>
+</div>
+<div class="w-full md:w-1/2 overflow-hidden aspect-[4/3] rounded">
+<img alt="Velvet Revolution" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A luxurious primary bedroom suite featuring deep, moody tones. The focal point is a plush, forest green velvet headboard set against a textured, dark feature wall. Subtle metallic gold reading lamps cast warm, ambient light, highlighting the rich textures of the bedding. The aesthetic is sophisticated, quiet, and deeply comfortable, reflecting high-end editorial interior design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBWn_U8BMuR1VC_SczkSSwTl_NhsvW5Mj7mDl7M7eJBPkGsEGc6OW2nlscZI5NDCFps2LxSS9BRkaQpjouHV-egK7Omgx98RcTeqdtJrmiOSZrUCrvsK4YDrU0Jf3pf262w68RP2Xsl6Ay-RyBf6EICW5pu27YcVC9ZeyxdlusjDByRIlN2IIcrgFfEqJHpijXYaGwidzMFLO9G1VhXAqEmJSFHeIRcHwhVW9ndZkCNr05208W1x9gjg"/>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="flex flex-col md:flex-row gap-gutter items-center group cursor-pointer">
+<div class="w-full md:w-1/2 overflow-hidden aspect-[4/3] rounded">
+<img alt="Solar Elegance" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A striking modern home exterior showcasing seamlessly integrated solar panels on a sleek, flat roofline. The architecture features clean lines, warm timber cladding, and expanses of glass, demonstrating how sustainable technology can enhance rather than detract from aesthetic integrity. The scene is lit by bright, clear morning sunlight, emphasizing a clean, progressive luxury aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyf7tSImXfR3qVFvxUekz67xN9-V7YsNJ1YBQPRFtUUtlfQLSzFJcVH2-V_xzZw0h92T4Tmi9KuTrXfzdbGK7mKASAPxy6Zr_vxRhhzpPv671dbwyFOsGORfAgR8SEz4Mxy4GZsxlFd5iRYPNoLg14hwTTJDGgqNtmJRbSYmPif0_1GcxOSgwMLlcRen2HKm5QprWOm7SceQbxswkVC5AVK34C9ROHGEs1OTrIRKb1ouGPid__wLz4IQ"/>
+</div>
+<div class="w-full md:w-1/2 flex flex-col gap-6 md:pl-8">
+<span class="text-secondary text-label-md font-label-md tracking-widest uppercase">Sustainability</span>
+<h2 class="text-headline-lg font-headline-lg text-primary">Solar Elegance</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-xl">Integrating renewable energy without compromising aesthetic integrity. A look at the new wave of invisible green technology in luxury estates.</p>
+<div class="pt-4">
+<button class="px-8 py-3 rounded-full bg-primary text-on-primary text-label-md font-label-md hover:bg-secondary hover:text-on-secondary transition-colors duration-300">Read More</button>
+</div>
+</div>
+</article>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-mobile md:px-margin-desktop flex flex-col items-center gap-8 bg-tertiary-container dark:bg-tertiary-container border-t border-outline-variant/10 full-width">
+<div class="text-headline-sm font-headline-sm text-secondary-fixed tracking-widest">AESTHETE</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-on-tertiary-container/60 hover:text-on-tertiary-container text-label-md font-label-md hover:text-secondary-fixed transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-on-tertiary-container/60 hover:text-on-tertiary-container text-label-md font-label-md hover:text-secondary-fixed transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-on-tertiary-container/60 hover:text-on-tertiary-container text-label-md font-label-md hover:text-secondary-fixed transition-colors duration-200" href="#">Press Kit</a>
+<a class="text-on-tertiary-container/60 hover:text-on-tertiary-container text-label-md font-label-md hover:text-secondary-fixed transition-colors duration-200" href="#">Contact</a>
+</div>
+<div class="text-body-md font-body-md text-tertiary-fixed dark:text-tertiary-fixed-dim text-center opacity-70 mt-8">
+            © 2024 AESTHETE EDITORIAL LUXURY REAL ESTATE. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+<script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('top-navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+                navbar.classList.remove('bg-primary/20', 'backdrop-blur-md');
+            } else {
+                navbar.classList.remove('scrolled');
+                navbar.classList.add('bg-primary/20', 'backdrop-blur-md');
+            }
+        });
+    </script>
+</body></html>

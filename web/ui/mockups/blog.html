@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Resurgence of Brutalist Elegance - AESTHETE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-container": "#74a094",
+                        "surface": "#fcf9f3",
+                        "on-surface-variant": "#414846",
+                        "surface-container": "#f0eee8",
+                        "outline-variant": "#c0c8c4",
+                        "tertiary": "#20190e",
+                        "primary-container": "#06362d",
+                        "on-secondary-fixed": "#261a00",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#d2c5b2",
+                        "on-tertiary-fixed": "#211b0f",
+                        "secondary-fixed-dim": "#e7c275",
+                        "surface-tint": "#3c665b",
+                        "surface-variant": "#e5e2dc",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#234e44",
+                        "on-background": "#1c1c18",
+                        "on-surface": "#1c1c18",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#a3d0c3",
+                        "on-tertiary-container": "#a19584",
+                        "inverse-primary": "#a3d0c3",
+                        "surface-bright": "#fcf9f3",
+                        "secondary": "#765a18",
+                        "outline": "#717976",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "secondary-container": "#ffd889",
+                        "inverse-surface": "#31312d",
+                        "tertiary-container": "#362e21",
+                        "surface-container-low": "#f6f3ed",
+                        "tertiary-fixed": "#efe1cd",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#ebe8e2",
+                        "inverse-on-surface": "#f3f0ea",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#ffdf9f",
+                        "on-primary-fixed": "#00201a",
+                        "surface-container-highest": "#e5e2dc",
+                        "background": "#fcf9f3",
+                        "on-secondary-container": "#795d1a",
+                        "primary-fixed": "#beecde",
+                        "on-tertiary-fixed-variant": "#4e4638",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#001f19",
+                        "surface-dim": "#dcdad4"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "section-gap": "120px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "container-max": "1440px",
+                        "margin-desktop": "80px",
+                        "margin-mobile": "24px"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Playfair Display"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"]
+                    },
+                    fontSize: {
+                        "headline-md": ["32px", { lineHeight: "1.3", fontWeight: "500" }],
+                        "headline-sm": ["24px", { lineHeight: "1.4", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "display-lg": ["64px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "600" }],
+                        "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "1.2", letterSpacing: "0.05em", fontWeight: "600" }],
+                        "headline-lg": ["48px", { lineHeight: "1.2", fontWeight: "500" }],
+                        "headline-lg-mobile": ["36px", { lineHeight: "1.2", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-nav {
+            background: rgba(0, 31, 25, 0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .glass-nav.scrolled {
+            background: rgba(0, 31, 25, 0.95);
+            border-bottom: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .drop-cap::first-letter {
+            float: left;
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            line-height: 4rem;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-left: 3px;
+            color: #765a18; /* secondary */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-secondary selection:text-on-secondary">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 glass-nav" id="navbar">
+<!-- Logo -->
+<a class="text-headline-md font-headline-md text-on-primary tracking-widest z-10 transition-colors duration-300" href="#">
+            AESTHETE
+        </a>
+<!-- Desktop Nav Links -->
+<div class="hidden md:flex items-center gap-8 text-label-md font-label-md text-on-primary z-10 transition-colors duration-300">
+<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors" href="#">Properties</a>
+<a class="text-secondary-fixed font-bold border-b-2 border-secondary-fixed pb-1 opacity-80 transition-opacity" href="#">Journal</a>
+<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors" href="#">Curations</a>
+<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors" href="#">About</a>
+</div>
+<!-- Trailing Action -->
+<div class="z-10">
+<button class="hidden md:flex items-center justify-center rounded-full bg-primary text-on-primary px-6 py-2 text-label-md font-label-md hover:bg-secondary hover:text-on-secondary transition-colors border border-on-primary/20 hover:border-transparent">
+                Inquire
+            </button>
+<button aria-label="Menu" class="md:hidden text-on-primary">
+<span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
+</button>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<header class="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0 bg-primary">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-70" data-alt="A breathtaking, wide-angle architectural photograph of a brutalist luxury home nestled in a dense, lush forest. The structure features vast expanses of raw, textured concrete contrasting beautifully with large, floor-to-ceiling glass panels reflecting the surrounding greenery. Soft, diffuse morning light filters through the canopy, illuminating the concrete's subtle variations and casting gentle shadows. The mood is serene, grounded, and intensely sophisticated, capturing the harmony between stark human engineering and wild nature. The overall color palette emphasizes deep forest greens, cool grays, and the warm, earthy tones of natural light." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAuomSXDfwqJNqjlUSpELsPvOTjVvSSoXiil_pIGXR1V19-sS8J6R6iMVLSE6QC2caX-eQBk-cWn-OmLcSvFWfesu4ol9z4vLs5km7vL5_YotPGAcpYwMQvlUfmFAE4QyE5O5lCrdG1heIHp6UOly9up8CeJL1m3f1HLE5phfCQvthamfQWZwmUuHlRstFPcPN15dNrZX_HOZufvWKMmhQDU8vpzKmNToOByii_-QweTWsX4JdDijrP4w')"></div>
+<!-- Gradient Overlay for legibility -->
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
+</div>
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto mt-20">
+<span class="block text-secondary-fixed text-label-md font-label-md uppercase tracking-[0.1em] mb-6">Architecture &amp; Design</span>
+<h1 class="text-headline-lg-mobile md:text-display-lg font-display-lg text-on-primary mb-8 drop-shadow-lg">
+                    The Resurgence of Brutalist Elegance
+                </h1>
+<div class="flex items-center justify-center gap-4 text-on-primary/80 text-label-md font-label-md">
+<span>By The Aesthete Editorial</span>
+<span class="w-1 h-1 bg-secondary-fixed rounded-full"></span>
+<span>October 24, 2024</span>
+</div>
+</div>
+</header>
+<!-- Article Body -->
+<article class="max-w-[700px] mx-auto px-margin-mobile md:px-0 py-section-gap">
+<div class="prose prose-lg prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary max-w-none">
+<p class="drop-cap mb-8">
+                    Brutalism, once maligned as the cold, unforgiving architectural language of utilitarian institutions, is experiencing a profound renaissance within the realm of luxury real estate. This resurgence is not a simple repetition of the past; rather, it is an evolution. Today's brutalism—what we might term 'warm brutalism' or 'brutalist elegance'—retains the structural honesty of raw concrete while introducing organic textures, abundant natural light, and meticulous landscaping to soften its edges.
+                </p>
+<p class="mb-12">
+                    The appeal lies in its unapologetic permanence. In an era often characterized by the ephemeral, there is an immense luxury in a structure that feels inextricably anchored to the earth. The massive forms and austere geometry offer a profound sense of shelter and quietude, creating a sanctuary shielded from the noise of the modern world.
+                </p>
+<h2 class="text-secondary mb-6 font-headline-md text-headline-md">The Alchemy of Texture</h2>
+<p class="mb-12">
+                    The modern application of brutalism relies heavily on material contrast. The starkness of board-formed concrete is deliberately offset by the inclusion of rich, tactile materials. Think sweeping panels of warm walnut, expansive use of bronze or brass hardware that will patinate over time, and lush, overgrown indoor gardens. It is the friction between the raw and the refined that elevates the aesthetic to true luxury.
+                </p>
+</div>
+</article>
+<!-- Full Width Image Interruption -->
+<figure class="w-full h-[60vh] min-h-[400px] relative mb-section-gap">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full" data-alt="An interior shot of a luxurious living room blending brutalist architecture with warm, inviting design. A massive, board-formed concrete wall serves as the backdrop, its raw texture highlighted by dramatic, raking sunlight from unseen clerestory windows. In the foreground, a sleek, low-profile curved sofa upholstered in deep, moss-green velvet sits on a highly textured, hand-woven cream rug. A sculptural bronze coffee table rests in the center. The mood is quiet, monumental, and undeniably wealthy, emphasizing the stark contrast between hard concrete and soft, opulent furnishings." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBAZu6bLtGgSvyTxX6ewQmvQE3ggIIDsf5zLNTnF9dU_ToPKGGANQ80JY2r2ZyFys9Rhh51jYQHmaZKaVHVm_qK-iClisuB_1dad3Lfz6XfIBAsbwokGIw5vtU67DyYWYx7AAoH-VGmVZHb34wGNLZrvaTm0qAY_wKoRrXhvak7LG4CrD4h3Fd2tOlVGMxyuzJ8DUqkr65_PT2lDRbx1gzAmpHN99u9XAnXn3tycL0RTWO9sfj2uyyFBQ')"></div>
+<figcaption class="absolute bottom-4 right-4 bg-surface/90 backdrop-blur px-4 py-2 text-label-md font-label-md text-on-surface rounded">
+                The Villa Koshido, Hokkaido. Concrete softened by tactile textiles.
+            </figcaption>
+</figure>
+<article class="max-w-[700px] mx-auto px-margin-mobile md:px-0 pb-section-gap">
+<div class="prose prose-lg prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed max-w-none">
+<h2 class="text-secondary mb-6 font-headline-md text-headline-md">Integrating the Environment</h2>
+<p class="mb-8">
+                    Perhaps the most significant shift in contemporary brutalist design is its relationship with the surrounding landscape. The original brutalist structures often stood in stark defiance of their environment. Today's iterations are designed to frame and absorb it. Expansive, frameless glazing dissolves the boundary between interior and exterior, allowing nature to become a vital, ever-changing component of the architecture itself.
+                </p>
+<p>
+                    As the concrete weathers, it begins to mimic the natural rock formations of its setting, further blurring the line between the built environment and the organic world. This deep integration is the hallmark of modern brutalist elegance—a testament to human design yielding to the profound beauty of the natural landscape.
+                </p>
+</div>
+<!-- Article Footer / Share -->
+<div class="mt-16 pt-8 border-t border-outline-variant/30 flex justify-between items-center">
+<div class="flex gap-4">
+<span class="text-label-md font-label-md text-outline">Share</span>
+<a class="text-on-surface hover:text-secondary transition-colors" href="#"><span class="material-symbols-outlined" style="font-size: 20px;">link</span></a>
+<a class="text-on-surface hover:text-secondary transition-colors" href="#"><span class="material-symbols-outlined" style="font-size: 20px;">mail</span></a>
+</div>
+</div>
+</article>
+<!-- Similar Blogs (Bento Grid Style) -->
+<section class="bg-surface-container py-section-gap px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="flex justify-between items-end mb-12">
+<h2 class="text-headline-md font-headline-md text-on-surface">More from The Journal</h2>
+<a class="text-label-md font-label-md text-secondary hover:text-on-surface transition-colors flex items-center gap-1" href="#">
+                        View All <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Card 1 -->
+<a class="group block h-[450px] relative overflow-hidden rounded-lg rounded-DEFAULT" href="#">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105" data-alt="A serene, minimalist bedroom interior featuring extensive use of light blonde wood paneling and vast windows overlooking a calm ocean at twilight. The lighting is soft, ambient, and cool, contrasting with the warm wood tones. The aesthetic is definitively Japanese-inspired minimalism, focusing on emptiness and tranquility. The bed is low to the ground with crisp white linens. A single, delicate branch in a ceramic vase rests on a minimal nightstand." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBR0r87qHhdY9gm3v3vdVgU0jhNPfQeujJfwOS6ieR830SyD0pKbst-M7Ag8vWd_eneOu44Iy0iUVxQp3t-9pLiXPxTL1ECLGVVedQjV8-11cgVTP_QOcvzSXXQYbEUuzAiHLAbEpoEe_Ag22shI0XmTAw1UXHtbESXYDsmDTWwpji33yxh2LUQjNHdQGyagXVfIXBSwk6X19LxAWewsDX8HE1WvpUgtjSzFMvPTruzem2YpNORdVXAsw')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-secondary-fixed text-label-md font-label-md mb-2 block">Interior Design</span>
+<h3 class="text-headline-sm font-headline-sm text-on-primary group-hover:text-secondary-fixed transition-colors">The Art of Japanese Minimalism in Coastal Retreats</h3>
+</div>
+</a>
+<!-- Card 2 -->
+<a class="group block h-[450px] relative overflow-hidden rounded-lg rounded-DEFAULT" href="#">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105" data-alt="An exterior shot of a highly modern, sleek glass and black steel pavilion house situated in a stark, arid desert landscape at sunset. The sky is a dramatic gradient of deep oranges and purples. The house glows warmly from within, showcasing a sophisticated, open-plan living area. The stark, rectilinear geometry of the architecture contrasts sharply with the undulating, rugged desert terrain and cacti. The overall mood is remote, exclusive, and cutting-edge." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKAtdYfliFohR_0PAejMpHgdYV6KZTSfk6o58Cp9L8ezrESzijNkb28uP5IzoxQS6i8YPY5AP7Z1xvInisENYBIm-_YqdpLm9mvFbPHRe1-V_v5Bl12ecxnoFhaF5-Z-_OzCLFJS38ABjJ0tCUDmyRtqIexCnOo5iTBRxYwC9rl1YDlW4bf_BB9YTLFIomRbtjs6ei0_j6S-DRic6uC54Sjp-wd_wO2eqQhFeF6rluwn0ga6JlKDHzCQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-secondary-fixed text-label-md font-label-md mb-2 block">Architecture</span>
+<h3 class="text-headline-sm font-headline-sm text-on-primary group-hover:text-secondary-fixed transition-colors">Desert Pavilions: Living in Glass and Steel</h3>
+</div>
+</a>
+<!-- Card 3 -->
+<a class="group block h-[450px] relative overflow-hidden rounded-lg rounded-DEFAULT" href="#">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105" data-alt="A detailed, close-up photograph of architectural materials. A heavily textured, rough-hewn natural stone wall meets a smooth, perfectly polished panel of dark, oxidized bronze. A sliver of warm, golden sunlight slices across the intersection of the two materials, highlighting the contrasting textures. The composition is abstract and highly graphic, focusing purely on materiality and light. The aesthetic is luxurious, tactile, and grounded." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDhv712KCxGO5kvdtg4MUSrL6zlyOLU4kY0ABCI5--UnrTy-8ma7Rk3gwhIb3-ejDmtDn4W88k9z_mskDbyQAHpSAtMZD1Oc0ojcr7gFx_o4xdbxfpIEJV0uRw57Ge4ZriCUJH6JakdZRHTZ2f638iTga1UjvFkpfgvStuYR_mdFXBBV_UPqiDJw3S8uPhvRgqhZi_4YB9rFh8xhDgVZyLCdmlqobhnnmb1HBLNtH90B4JyPkZkBzLRCA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-secondary-fixed text-label-md font-label-md mb-2 block">Materials</span>
+<h3 class="text-headline-sm font-headline-sm text-on-primary group-hover:text-secondary-fixed transition-colors">Patina &amp; Permanence: Choosing Timeless Materials</h3>
+</div>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component from JSON -->
+<footer class="bg-tertiary-container dark:bg-tertiary-container border-t border-outline-variant/10 w-full py-section-gap px-margin-mobile md:px-margin-desktop flex flex-col items-center gap-8">
+<div class="text-headline-sm font-headline-sm text-secondary-fixed">
+            AESTHETE
+        </div>
+<nav class="flex flex-wrap justify-center gap-8">
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Privacy Policy</a>
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Terms of Service</a>
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Press Kit</a>
+<a class="text-label-md font-label-md text-on-tertiary-container/60 hover:text-secondary-fixed transition-colors duration-200 hover:translate-x-1 transition-transform" href="#">Contact</a>
+</nav>
+<div class="text-body-md font-body-md text-tertiary-fixed dark:text-tertiary-fixed-dim text-center mt-8">
+            © 2024 AESTHETE EDITORIAL LUXURY REAL ESTATE. ALL RIGHTS RESERVED.
+        </div>
+</footer>
+<script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+                // Ensure text remains visible against potentially lighter solid background if needed, though primary is dark
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body></html>
