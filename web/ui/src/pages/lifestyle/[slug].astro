@@ -1,0 +1,124 @@
+---
+import type { GetStaticPaths } from "astro";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Hero from "../../components/Hero.astro";
+import Icon from "../../components/Icon.astro";
+import PostCard from "../../components/PostCard.astro";
+import { formatDate } from "../../data/posts";
+import { getPostBySlug, getRelatedPosts, listAllPosts } from "../../services";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // The list route returns summaries — no body — so each article is fetched
+  // from the detail route for the page that renders it.
+  const posts = await listAllPosts();
+
+  return Promise.all(
+    posts.map(async (summary) => {
+      const [post, related] = await Promise.all([
+        getPostBySlug(summary.slug),
+        getRelatedPosts(summary.slug),
+      ]);
+      return {
+        params: { slug: summary.slug },
+        props: { post: post ?? summary, related },
+      };
+    }),
+  );
+};
+
+const { post, related } = Astro.props;
+
+/**
+ * The article body arrives as one sanitised HTML blob, which is how a CMS
+ * stores prose. The full-bleed image the design breaks the article across is
+ * expressed inside it as `<figure class="interruption">`, laid out by
+ * `global.css` — so an editor places it, rather than it being three columns on
+ * the table that only one layout can ever use.
+ */
+const prose =
+  "prose prose-lg max-w-none prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-h2:text-secondary prose-h2:mb-6 prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary";
+---
+
+<BaseLayout title={post.title} description={post.excerpt}>
+  <Hero
+    image={post.image}
+    eyebrow={post.category?.name}
+    title={post.title}
+    overlay="gradient"
+  >
+    <div
+      class="font-label-md text-label-md mt-6 flex items-center gap-4 text-on-primary/80"
+    >
+      {post.author && <span>By {post.author}</span>}
+      {
+        post.author && post.date && (
+          <span class="h-1 w-1 rounded-full bg-secondary-fixed" />
+        )
+      }
+      {post.date && <time datetime={post.date}>{formatDate(post.date)}</time>}
+    </div>
+  </Hero>
+
+  <article
+    class="article-body mx-auto max-w-[700px] px-margin-mobile py-section-gap md:px-0"
+  >
+    {post.body && <div class={prose} set:html={post.body} />}
+
+    <div
+      class="mt-16 flex items-center justify-between border-t border-outline-variant/30 pt-8"
+    >
+      <div class="flex items-center gap-4">
+        <span class="font-label-md text-label-md text-outline">Share</span>
+        <a
+          href={`mailto:?subject=${encodeURIComponent(post.title)}`}
+          aria-label="Share by email"
+          class="text-on-surface transition-colors hover:text-secondary"
+        >
+          <Icon name="mail" class="text-xl" />
+        </a>
+        <a
+          href={`/lifestyle/${post.slug}`}
+          aria-label="Copy link"
+          class="text-on-surface transition-colors hover:text-secondary"
+        >
+          <Icon name="link" class="text-xl" />
+        </a>
+      </div>
+
+      {
+        post.category && (
+          <a
+            href={`/lifestyle/category/${post.category.slug}`}
+            class="font-label-md text-label-md text-secondary transition-colors hover:text-primary"
+          >
+            More in {post.category.name}
+          </a>
+        )
+      }
+    </div>
+  </article>
+
+  <section
+    class="bg-surface-container px-margin-mobile py-section-gap md:px-margin-desktop"
+  >
+    <div class="mx-auto max-w-page">
+      <div class="mb-12 flex items-end justify-between">
+        <h2 class="font-headline-md text-headline-md text-on-surface">
+          More from Lifestyle
+        </h2>
+        <a
+          href="/lifestyle"
+          class="font-label-md text-label-md flex items-center gap-1 text-secondary transition-colors hover:text-primary"
+        >
+          View All
+          <Icon name="arrow_forward" class="text-[18px]" />
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {related.map((item) => <PostCard post={item} variant="overlay" />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

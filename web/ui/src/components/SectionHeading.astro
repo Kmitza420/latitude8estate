@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+  eyebrow?: string;
+  align?: "start" | "center";
+  class?: string;
+}
+
+const { title, eyebrow, align = "start", class: className = "" } = Astro.props;
+const centered = align === "center";
+---
+
+<div
+  class:list={[
+    "flex items-end justify-between gap-8",
+    centered && "flex-col items-center text-center",
+    className,
+  ]}
+>
+  <div>
+    {
+      eyebrow && (
+        <span class="font-label-md text-label-md mb-4 block tracking-widest text-on-secondary-container uppercase">
+          {eyebrow}
+        </span>
+      )
+    }
+    <h2 class="font-headline-lg text-headline-lg-mobile text-primary md:text-headline-lg">
+      {title}
+    </h2>
+  </div>
+  <slot />
+</div>

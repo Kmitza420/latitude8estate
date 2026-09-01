@@ -1,0 +1,53 @@
+---
+import Icon from "./Icon.astro";
+import { categories, cta, site, socials } from "../data/site";
+---
+
+{/*
+  Shares the header's `primary` green band with gold (`secondary-fixed`)
+  lettering, and repeats the same four categories as the top bar and drawer.
+*/}
+<footer
+  class="flex w-full flex-col items-start justify-between gap-8 bg-primary px-margin-mobile py-section-gap md:flex-row md:items-center md:px-margin-desktop"
+>
+  <div class="flex flex-col gap-6">
+    <a
+      href="/home"
+      class="font-headline-sm text-headline-sm tracking-tight text-secondary-fixed"
+    >
+      {site.name}
+    </a>
+    <span class="font-body-md text-body-md text-secondary-fixed/60">
+      {site.copyright}
+    </span>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-8">
+    <nav class="flex flex-wrap gap-8">
+      {
+        [...categories, cta].map((link) => (
+          <a
+            href={link.href}
+            class="font-body-md text-body-md text-secondary-fixed/80 transition-opacity hover:opacity-100"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="ml-0 flex gap-4 md:ml-8">
+      {
+        socials.map((social) => (
+          <a
+            href={social.href}
+            aria-label={social.label}
+            class="flex h-10 w-10 items-center justify-center rounded-full border border-secondary-fixed/40 text-secondary-fixed transition-colors hover:bg-secondary-fixed hover:text-primary"
+          >
+            <Icon name={social.icon} class="text-sm" />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>

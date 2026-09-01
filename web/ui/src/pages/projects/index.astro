@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PortfolioView from "../../components/PortfolioView.astro";
+import { PAGE_SIZE } from "../../data/pagination";
+import { listAllProjects, paginate } from "../../services";
+
+// Page 1. Pages 2..n come from page/[page].astro, sliced from the same list so
+// the two can never disagree about where the boundary falls.
+const { projects: pageProjects, totalPages } = paginate(
+  await listAllProjects(),
+  1,
+  PAGE_SIZE,
+);
+---
+
+<BaseLayout
+  title="The Portfolio"
+  description="A curated collection of the world's most prestigious residences."
+>
+  <PortfolioView
+    projects={pageProjects}
+    currentPage={1}
+    totalPages={totalPages}
+  />
+</BaseLayout>

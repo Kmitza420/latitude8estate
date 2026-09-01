@@ -1,0 +1,29 @@
+---
+/**
+ * Catch-all for unknown routes: send the visitor to the home page.
+ *
+ * This mirrors what Astro emits for the `/` -> `/home` redirect configured in
+ * `astro.config.mjs` — a meta refresh plus a real link, so it works with
+ * JavaScript disabled and degrades to something clickable if the refresh is
+ * blocked. It is deliberately not wrapped in `BaseLayout`: there is no point
+ * hydrating the nav and drawer for a page nobody stays on.
+ *
+ * The static host has to be told to serve this file for unknown paths. For the
+ * nginx image in `web/ui/Dockerfile` that is `error_page 404 /404.html;`.
+ */
+const target = "/home";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirecting to: {target}</title>
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={target} />
+  </head>
+  <body>
+    <a href={target}>Page not found — continue to the home page</a>
+  </body>
+</html>

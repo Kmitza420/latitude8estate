@@ -1,0 +1,52 @@
+---
+import NewsletterForm from "./react/NewsletterForm";
+
+interface Props {
+  heading: string;
+  body: string;
+  /** Side-by-side (home page) or stacked and centred (lifestyle index). */
+  layout?: "split" | "centered";
+  note?: string;
+}
+
+const { heading, body, layout = "split", note } = Astro.props;
+const centered = layout === "centered";
+---
+
+<div
+  class:list={[
+    "luxury-shadow relative overflow-hidden rounded-2xl bg-primary p-12 md:p-20",
+    centered
+      ? "flex flex-col items-center text-center"
+      : "flex flex-col items-center gap-12 md:flex-row",
+  ]}
+>
+  <div
+    class="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary-container opacity-50 blur-3xl"
+  >
+  </div>
+  {
+    centered && (
+      <div class="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-surface-tint opacity-30 blur-3xl" />
+    )
+  }
+
+  <div class:list={["relative z-10", centered ? "max-w-xl" : "md:w-1/2"]}>
+    <h2
+      class="font-headline-lg text-headline-lg-mobile mb-4 text-secondary-fixed md:text-headline-lg"
+      set:html={heading}
+    />
+    <p
+      class:list={[
+        "font-body-md text-body-md text-secondary-fixed/70",
+        centered ? "mb-10" : "max-w-md",
+      ]}
+    >
+      {body}
+    </p>
+  </div>
+
+  <div class:list={["relative z-10 w-full", centered ? "max-w-md" : "md:w-1/2"]}>
+    <NewsletterForm client:visible note={note} />
+  </div>
+</div>
