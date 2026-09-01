@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Local configuration. `core/settings.py` reads .env from the repository root;
+# it holds credentials, so only the example is tracked.
+.env
+.env.local
+
+# Node
+node_modules/
+dist/
+.astro/
