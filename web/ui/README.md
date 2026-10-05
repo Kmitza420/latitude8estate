@@ -23,6 +23,7 @@ rather than expecting Ctrl+C on a wrapper process to stop them.
 | `/projects` | `src/pages/projects/index.astro` | `mockups/projects.html` |
 | `/projects/page/[page]` | `src/pages/projects/page/[page].astro` | pagination control in `projects.html` |
 | `/projects/[slug]` | `src/pages/projects/[slug].astro` | `mockups/project.html` |
+| `/property-management` | `src/pages/property-management.astro` | `mockups/property-management.html` |
 | `/lifestyle` | `src/pages/lifestyle/index.astro` | `mockups/blog_home.html` |
 | `/lifestyle/category/[category]` | `src/pages/lifestyle/category/[category].astro` | `mockups/blog_category.html` |
 | `/lifestyle/[slug]` | `src/pages/lifestyle/[slug].astro` | `mockups/blog.html` |
@@ -40,10 +41,16 @@ The blog section is named **Lifestyle**; there is no `/journal`.
 
 ## Navigation
 
-`src/data/site.ts` holds the single category list — **Home, Projects, Lifestyle,
-About Us** — plus the **Contact Us** call to action. That one array drives the
-top bar, the hamburger drawer, the footer, and (via `src/data/collections.ts`)
-the tile grid on the home page, so the four categories cannot drift apart.
+`src/data/site.ts` holds the single category list — **Home, Projects, Property
+Management, Lifestyle, About Us** — plus the **Contact Us** call to action. That
+one array drives the top bar, the hamburger drawer, the footer, and (via
+`src/data/collections.ts`) the tile grid on the home page, so the five
+categories cannot drift apart.
+
+A link may carry an optional `short` label, used only by the desktop top bar
+where five labels share one row: Property Management appears there as
+**Management** and keeps its full name in the drawer, the footer and its home
+tile.
 
 ## Colour
 
@@ -60,7 +67,7 @@ varies, via `Hero.astro`'s `overlay` prop:
 
 | Overlay | Used by |
 | --- | --- |
-| `scrim` | `/home`, property detail — soft top-to-bottom gradient |
+| `scrim` | `/home`, `/property-management`, property detail — soft top-to-bottom gradient |
 | `tint` | `/projects`, `/lifestyle`, category pages — flat green multiply |
 | `gradient` | articles — heavy bottom-up green |
 | `dark` | `/about-us`, `/contact-us` — heaviest wash, holds the photo back |
@@ -101,9 +108,15 @@ src/
     CategoryTile.astro home tiles + lifestyle category tiles
     PropertyCard.astro card (home rail) + tile (portfolio grid)
     PostCard.astro     card / compact / overlay
+    MediaFrame.astro   background-image panel + legibility wash + caption slot
+    CtaButton.astro    the gold pill link (gold/outline, md/sm)
+    IconBadge.astro    gold icon on a filled green disc
+    Disclosure.astro   show/hide panel built on <details>, no JavaScript
+    ReasonCard, ServiceCard, ProcessStep, ConsultationCard
+                       the four /property-management card shapes
     Footer, Newsletter, Pagination, PortfolioView, SectionHeading, Icon
   data/           media.ts (generated), site.ts, collections.ts,
-                  projects.ts, posts.ts, pagination.ts
+                  projects.ts, posts.ts, pagination.ts, management.ts
   services/       everything that talks to web/api (see below)
     index.ts         the barrel pages import from
     config.ts        base URL, timeouts, feature flags, endpoint paths
@@ -124,6 +137,32 @@ scripts/
 drawer), `ContactForm` and `NewsletterForm` hydrate as islands — `client:load`
 for the nav, `client:visible` for the forms. Everything presentational stays in
 `.astro` and ships zero JavaScript.
+
+## Property management
+
+`/property-management` is the one page with no API behind it: the offer is
+static marketing copy, so `src/data/management.ts` is its source of truth
+rather than a fallback fixture. It reuses the existing media library — all six
+images were already in `media.ts`, so `scripts/gen-media.mjs` did not need to
+run and `mockups/property-management.html` is deliberately absent from that
+script's file list.
+
+The mockup drove its "More info" panels from a click handler that toggled
+`hidden` and rewrote the button label. That is a disclosure, so
+`Disclosure.astro` builds it on `<details>` instead: no JavaScript, keyboard
+and screen-reader operable, with the open state read off the element via
+`group-open/disclosure:`.
+
+Its enquiry form is the shared `ContactForm` island rather than a second form.
+Two props carry the difference: `tone="dark"` for the green panel, and
+`subjectOptions` for the required subject select, which sends a new `subject`
+field on the enquiry payload.
+
+**The copy makes commercial promises that need confirming** — a 15-minute SLA,
+a 24-hour guaranteed reply, certified artisans, NDA-bound staff. It also
+originally claimed submissions were "strictly encrypted", which was dropped:
+the form does not reach a backend at all yet. Replace the lot with what the
+agency actually commits to.
 
 ## Data
 

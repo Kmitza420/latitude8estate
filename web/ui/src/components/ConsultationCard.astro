@@ -1,0 +1,35 @@
+---
+import CtaButton from "./CtaButton.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  title: string;
+  body: string;
+  ctaLabel: string;
+  href: string;
+  icon?: string;
+  class?: string;
+}
+
+const {
+  title,
+  body,
+  ctaLabel,
+  href,
+  icon = "contact_mail",
+  class: className = "",
+} = Astro.props;
+---
+
+{/* Green prompt panel that sits beside the narrative artwork. */}
+<div
+  class:list={[
+    "luxury-shadow flex flex-col items-center justify-center rounded-2xl bg-primary p-8 text-center text-on-primary",
+    className,
+  ]}
+>
+  <Icon name={icon} class="mb-3 text-4xl text-secondary-fixed" />
+  <h3 class="font-headline-sm mb-2 text-xl text-on-primary">{title}</h3>
+  <p class="font-body-md mb-6 text-xs text-on-primary/70">{body}</p>
+  <CtaButton href={href} label={ctaLabel} icon="arrow_forward" size="sm" block />
+</div>

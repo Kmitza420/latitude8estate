@@ -3,6 +3,11 @@ export interface NavLink {
   href: string;
   /** Material Symbols name, shown beside the label in the hamburger drawer. */
   icon: string;
+  /**
+   * Shorter wording for the desktop top bar, where five labels share one row.
+   * The drawer, the footer and the home tiles always use the full `label`.
+   */
+  short?: string;
 }
 
 export interface SocialLink {
@@ -21,12 +26,18 @@ export const site = {
 
 /**
  * The single category list for the whole site. It drives the top bar, the
- * hamburger drawer, the footer, and the tile grid on the home page, so the four
+ * hamburger drawer, the footer, and the tile grid on the home page, so the five
  * categories stay in step everywhere.
  */
 export const categories: NavLink[] = [
   { label: "Home", href: "/home", icon: "home" },
   { label: "Projects", href: "/projects", icon: "domain" },
+  {
+    label: "Property Management",
+    short: "Management",
+    href: "/property-management",
+    icon: "home_repair_service",
+  },
   { label: "Lifestyle", href: "/lifestyle", icon: "auto_stories" },
   { label: "About Us", href: "/about-us", icon: "groups" },
 ];

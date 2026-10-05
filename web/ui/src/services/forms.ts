@@ -39,6 +39,8 @@ export interface EnquiryInput {
   message?: string;
   /** Present when the enquiry came from a property page. */
   projectSlug?: string;
+  /** Present when the form offered a subject to pick, as `/property-management` does. */
+  subject?: string;
 }
 
 function blankToUndefined(value: string | undefined): string | undefined {
@@ -55,6 +57,7 @@ export async function submitEnquiry(input: EnquiryInput): Promise<SubmissionResp
     phone: blankToUndefined(input.phone),
     message: blankToUndefined(input.message),
     project_slug: blankToUndefined(input.projectSlug),
+    subject: blankToUndefined(input.subject),
   };
 
   return apiPost<SubmissionResponseDto>(endpoints.enquiries, payload);

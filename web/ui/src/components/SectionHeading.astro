@@ -2,22 +2,46 @@
 interface Props {
   title: string;
   eyebrow?: string;
+  /**
+   * Standfirst under the title. Centred headings carry one on most sections,
+   * so it belongs here rather than being re-marked-up on every page.
+   */
+  lead?: string;
   align?: "start" | "center";
   class?: string;
 }
 
-const { title, eyebrow, align = "start", class: className = "" } = Astro.props;
+const {
+  title,
+  eyebrow,
+  lead,
+  align = "start",
+  class: className = "",
+} = Astro.props;
+
 const centered = align === "center";
 ---
 
+{/*
+  `items-end` and `items-center` must never both be emitted: Tailwind orders
+  `.items-end` after `.items-center` in the stylesheet, so the row alignment
+  would win over the centred one no matter which came later in the attribute,
+  pinning the whole heading block to the right edge.
+*/}
 <div
   class:list={[
-    "flex items-end justify-between gap-8",
-    centered && "flex-col items-center text-center",
+    "flex gap-8",
+    centered
+      ? "flex-col items-center text-center"
+      : "items-end justify-between",
     className,
   ]}
 >
-  <div>
+  {/*
+    A standfirst needs a readable measure whichever way the block is
+    aligned — left-aligned it would otherwise run the full 1440px page.
+  */}
+  <div class:list={[(centered || lead) && "max-w-2xl"]}>
     {
       eyebrow && (
         <span class="font-label-md text-label-md mb-4 block tracking-widest text-on-secondary-container uppercase">
@@ -28,6 +52,13 @@ const centered = align === "center";
     <h2 class="font-headline-lg text-headline-lg-mobile text-primary md:text-headline-lg">
       {title}
     </h2>
+    {
+      lead && (
+        <p class="font-body-md text-body-md mt-4 text-on-surface-variant">
+          {lead}
+        </p>
+      )
+    }
   </div>
   <slot />
 </div>

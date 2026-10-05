@@ -1,0 +1,39 @@
+---
+import Icon from "./Icon.astro";
+import IconBadge from "./IconBadge.astro";
+import type { Reason } from "../data/management";
+
+interface Props {
+  reason: Reason;
+}
+
+const { reason } = Astro.props;
+---
+
+{/* One of the four "Why Choose Us" cards on /property-management. */}
+<article
+  class="luxury-card-hover flex flex-col justify-between rounded-xl border border-outline-variant/40 bg-surface-container-low p-8"
+>
+  <div>
+    <IconBadge name={reason.icon} size="lg" tone="primary" class="mb-6" />
+
+    <span
+      class="font-label-md mb-2 block text-xs tracking-wider text-on-secondary-container uppercase"
+    >
+      {reason.eyebrow}
+    </span>
+
+    <h3 class="font-headline-sm mb-3 text-xl text-primary">{reason.title}</h3>
+
+    <p class="font-body-md text-sm leading-relaxed text-on-surface-variant">
+      {reason.body}
+    </p>
+  </div>
+
+  <div
+    class="font-label-md mt-6 flex items-center gap-2 border-t border-outline-variant/30 pt-6 text-xs font-bold text-primary"
+  >
+    <span>{reason.badge}</span>
+    <Icon name="check" class="text-sm text-secondary" />
+  </div>
+</article>

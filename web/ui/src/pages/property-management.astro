@@ -1,0 +1,289 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ConsultationCard from "../components/ConsultationCard.astro";
+import CtaButton from "../components/CtaButton.astro";
+import Hero from "../components/Hero.astro";
+import Icon from "../components/Icon.astro";
+import MediaFrame from "../components/MediaFrame.astro";
+import ProcessStepCard from "../components/ProcessStep.astro";
+import ReasonCard from "../components/ReasonCard.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import ContactForm from "../components/react/ContactForm";
+import {
+  enquiry,
+  hero,
+  narrative,
+  process,
+  reasons,
+  services,
+} from "../data/management";
+
+// Ported from mockups/property-management.html. The nav and footer are the
+// site's own (BaseLayout), not the mockup's, so the gold-on-green chrome and
+// the five shared categories come across unchanged.
+//
+// Breakpoints follow the rest of the site: one column until `md`, panels at
+// `p-8 md:p-12`, section headings at `text-headline-lg-mobile md:text-headline-lg`.
+---
+
+<BaseLayout title="Property Management" description={hero.lead}>
+  <Hero
+    image={hero.image}
+    eyebrow={hero.eyebrow}
+    title={hero.title}
+    lead={hero.lead}
+    overlay="scrim"
+    animate
+  >
+    <div class="mt-8">
+      <CtaButton href="#enquiry" label="Get In Touch" icon="arrow_forward" />
+    </div>
+  </Hero>
+
+  <main>
+    {/* Why choose us */}
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <SectionHeading
+        align="center"
+        eyebrow="Unrivalled Standards"
+        title="Why Choose Us"
+        lead="We safeguard your private sanctuaries with precision craftsmanship, unyielding discretion, and white-glove attentiveness."
+        class="mb-16"
+      />
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {reasons.map((reason) => <ReasonCard reason={reason} />)}
+      </div>
+    </section>
+
+    {/* Services */}
+    <section
+      class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="mx-auto max-w-page">
+        <SectionHeading
+          align="center"
+          eyebrow="Dedicated Solutions"
+          title="Our Services"
+          lead="Holistic physical maintenance and technical stewardship designed exclusively for luxury compounds, villas, and penthouses."
+          class="mb-16"
+        />
+
+        {/*
+          `items-start` matters here. A grid row defaults to
+          `align-items: stretch`, so all three cards take the height of the
+          tallest — and opening one card's "More info" grew the row, which
+          stretched the other two empty boxes along with it. Starting them
+          instead lets each card size to its own content, so a disclosure only
+          ever extends the card it belongs to.
+        */}
+        <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-3">
+          {services.map((service) => <ServiceCard service={service} />)}
+        </div>
+      </div>
+    </section>
+
+    {/* The process */}
+    <section
+      class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <SectionHeading
+        align="center"
+        eyebrow="Structured Methodology"
+        title="The Process"
+        lead="A seamless, systematised transition from initial estate audit to continuous proactive stewardship."
+        class="mb-16"
+      />
+
+      <ol class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {process.map((step) => <li><ProcessStepCard step={step} /></li>)}
+      </ol>
+    </section>
+
+    {/* Narrative — shares the sand band and dot grid with the home testimonial */}
+    <section
+      class="relative overflow-hidden bg-sand px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div
+        class="absolute inset-0 opacity-5"
+        style="background-image: radial-gradient(#06362D 1px, transparent 1px); background-size: 32px 32px;"
+      >
+      </div>
+
+      <div class="relative z-10 mx-auto max-w-page">
+        <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+          <div class="lg:col-span-5">
+            <span
+              class="font-label-md text-label-md mb-4 block tracking-widest text-secondary uppercase"
+            >
+              {narrative.eyebrow}
+            </span>
+
+            <h2
+              class="font-headline-lg text-headline-lg-mobile mb-6 leading-tight text-primary md:text-headline-lg"
+            >
+              {narrative.title}
+            </h2>
+
+            <p class="font-body-lg text-body-lg mb-6 leading-relaxed text-primary/80">
+              {narrative.body}
+            </p>
+
+            <div class="space-y-4 pt-2">
+              {
+                narrative.assurances.map((assurance) => (
+                  <div class="flex items-start gap-4">
+                    <Icon
+                      name={assurance.icon}
+                      class="mt-1 shrink-0 text-2xl text-secondary"
+                    />
+                    <div>
+                      <h3 class="font-headline-sm text-lg text-primary">
+                        {assurance.title}
+                      </h3>
+                      <p class="font-body-md text-sm text-primary/70">
+                        {assurance.body}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          {/*
+            Artwork and prompt stack on phones and sit side by side from `md`,
+            the same switch Newsletter.astro uses. The prompt keeps its fixed
+            width only once it is actually beside the image.
+          */}
+          <div class="flex flex-col gap-8 md:flex-row lg:col-span-7">
+            <MediaFrame
+              image={narrative.image}
+              class="h-80 w-full md:h-96 md:flex-1"
+              overlay="scrim"
+              rounded="rounded-2xl"
+              zoom
+            >
+              <span
+                class="font-label-md absolute bottom-6 left-6 rounded-full bg-primary/70 px-3 py-1 text-sm text-on-primary backdrop-blur-sm"
+              >
+                {narrative.imageCaption}
+              </span>
+            </MediaFrame>
+
+            <ConsultationCard
+              title="Private Consultation"
+              body="Schedule an executive inspection of your property."
+              ctaLabel="Get In Touch"
+              href="#enquiry"
+              class="md:w-56 md:shrink-0"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Enquiry */}
+    <section
+      id="enquiry"
+      class="bg-surface px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="mx-auto max-w-page">
+        <div class="grid grid-cols-1 items-stretch gap-12 lg:grid-cols-12">
+          {/* Left: the pitch */}
+          <div
+            class="flex flex-col justify-between rounded-2xl border border-outline-variant/30 bg-surface-container-low p-8 md:p-12 lg:col-span-6"
+          >
+            <div>
+              <span
+                class="font-label-md text-label-md mb-4 block tracking-widest text-on-secondary-container uppercase"
+              >
+                {enquiry.eyebrow}
+              </span>
+              <h2
+                class="font-headline-lg text-headline-lg-mobile mb-6 leading-tight text-primary md:text-headline-lg"
+              >
+                {enquiry.title}
+              </h2>
+              <p
+                class="font-body-md text-body-md mb-8 leading-relaxed text-on-surface-variant"
+              >
+                {enquiry.body}
+              </p>
+            </div>
+
+            <MediaFrame
+              image={enquiry.image}
+              class="my-4 h-64 md:h-72"
+              overlay="deep"
+              rounded="luxury-shadow rounded-xl"
+            >
+              <div class="absolute bottom-6 left-6 right-6">
+                <span
+                  class="font-label-md mb-1 block text-xs tracking-wider text-secondary-fixed uppercase"
+                >
+                  {enquiry.imageEyebrow}
+                </span>
+                <p class="font-headline-sm text-lg text-on-primary">
+                  {enquiry.imageCaption}
+                </p>
+              </div>
+            </MediaFrame>
+
+            <div
+              class="flex flex-col gap-4 border-t border-outline-variant/30 pt-6 text-sm text-on-surface-variant sm:flex-row sm:items-center sm:justify-between"
+            >
+              {
+                enquiry.guarantees.map((guarantee) => (
+                  <span class="flex items-center gap-2">
+                    <Icon name={guarantee.icon} class="text-lg text-secondary" />
+                    {guarantee.label}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+
+          {/* Right: the form */}
+          <div
+            class="luxury-shadow relative flex flex-col justify-between overflow-hidden rounded-2xl bg-primary p-8 text-on-primary md:p-12 lg:col-span-6"
+          >
+            <div
+              class="pointer-events-none absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-primary-container opacity-40 blur-3xl"
+            >
+            </div>
+
+            <div class="relative z-10">
+              <h2
+                class="font-headline-md text-headline-sm mb-2 text-on-primary md:text-headline-md"
+              >
+                {enquiry.formTitle}
+              </h2>
+              <p class="font-body-md mb-8 text-sm text-on-primary/70">
+                {enquiry.formLead}
+              </p>
+
+              <ContactForm
+                client:visible
+                tone="dark"
+                subjectOptions={enquiry.subjects}
+                phoneRequired
+                submitLabel="Submit Confidential Request"
+                submitIcon="lock"
+                messagePlaceholder="Provide property location, approximate square footage, current staffing, or key focus areas..."
+              />
+            </div>
+
+            <p class="font-body-md relative z-10 mt-6 text-xs text-on-primary/50">
+              Information submitted is protected under our private client
+              confidentiality agreement.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

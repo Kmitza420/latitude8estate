@@ -1,0 +1,77 @@
+---
+import type { Media } from "../data/media";
+
+interface Props {
+  image: Media;
+  /**
+   * Height or aspect classes for the frame, e.g. `"h-80 md:h-96"`. Sizing is
+   * the caller's business — the same artwork is a 256px card header in one
+   * place and a half-column panel in another.
+   */
+  class?: string;
+  /**
+   * none  — bare artwork
+   * scrim — light bottom-up wash, enough to float a pill caption
+   * deep   — heavy bottom-up wash, for stacked caption text
+   */
+  overlay?: "none" | "scrim" | "deep";
+  /** Slow zoom while the frame is hovered. */
+  zoom?: boolean;
+  /** Corner rounding, so a card header and a standalone panel can differ. */
+  rounded?: string;
+}
+
+const {
+  image,
+  class: className = "",
+  overlay = "none",
+  zoom = false,
+  rounded = "",
+} = Astro.props;
+---
+
+{/*
+  A background-image panel with an optional legibility wash.
+
+  Every image on the site is a CSS background rather than an `<img>`, because
+  the design tool emitted them that way and `src/data/media.ts` still carries
+  bare URLs — so each one needs `role="img"` and the alt text as an accessible
+  name by hand. Centralising that here means a later move to `astro:assets`
+  touches one file instead of every card. The caption slot is positioned by
+  the caller; this element is the containing block for it.
+*/}
+<div
+  class:list={[
+    "relative overflow-hidden",
+    zoom && "group",
+    rounded,
+    className,
+  ]}
+>
+  <div
+    class:list={[
+      "h-full w-full bg-cover bg-center",
+      zoom && "transition-transform duration-700 group-hover:scale-105",
+    ]}
+    style={`background-image: url('${image.src}')`}
+    role="img"
+    aria-label={image.alt}
+  >
+  </div>
+
+  {
+    overlay !== "none" && (
+      <div
+        class:list={[
+          "pointer-events-none absolute inset-0",
+          overlay === "scrim" &&
+            "bg-linear-to-t from-primary/60 via-transparent to-transparent",
+          overlay === "deep" &&
+            "bg-linear-to-t from-primary/80 via-primary/20 to-transparent",
+        ]}
+      />
+    )
+  }
+
+  <slot />
+</div>

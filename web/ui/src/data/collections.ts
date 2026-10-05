@@ -9,6 +9,8 @@ export interface Collection extends NavLink {
 const artwork: Record<string, Media> = {
   "/home": media.catHistoric,
   "/projects": media.catUrban,
+  // Craftsmanship close-up — the nearest the library has to estate care.
+  "/property-management": media.journalKitchen,
   "/lifestyle": media.journalBrutalist,
   "/about-us": media.catCoastal,
 };

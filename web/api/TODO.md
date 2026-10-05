@@ -179,9 +179,15 @@ time. Until they exist, `PUBLIC_API_FORMS_ENABLED` stays `false` in the UI and
 both forms show a notice saying they are not connected. Flip it once these ship.
 
 - [ ] **`POST /v1/enquiries/`**
-      Body `{name, email, phone?, message?, project_slug?}` → `201 {id, status}`.
+      Body `{name, email, phone?, message?, project_slug?, subject?}` →
+      `201 {id, status}`.
       `project_slug` is present when the enquiry came from a property page and
-      absent from `/contact-us`. Validate the email, reject an unknown
+      absent from `/contact-us`. `subject` is present only from
+      `/property-management`, whose form offers a fixed list of services
+      (`enquiry.subjects` in `web/ui/src/data/management.ts`) — decide whether
+      to validate it against that list server-side or store it as free text,
+      and note that it is the one field that tells the CRM an enquiry is about
+      management rather than a purchase. Validate the email, reject an unknown
       `project_slug`, rate-limit by IP, and return field-level errors as 422.
       Forward to the CRM and to the listing agent.
 - [ ] **`POST /v1/newsletter/subscriptions/`**

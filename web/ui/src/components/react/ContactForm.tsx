@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 
-import Field from "./Field";
+import Field, { type FieldTone } from "./Field";
+import Icon from "./Icon";
 // Imported from the module rather than the barrel: this file is a hydrated
 // island, and the barrel would drag the read services (and the fixtures behind
 // them) into the client bundle.
@@ -12,12 +13,30 @@ interface ContactFormProps {
   /** Set on a property page, so the enquiry reaches the right listing. */
   projectSlug?: string;
   submitLabel?: string;
+  /**
+   * When given, the form grows a required subject select over these values and
+   * sends the chosen one. Used by `/property-management`, where the enquiry has to say
+   * which service it is about.
+   */
+  subjectOptions?: string[];
+  /** Material Symbols name shown inside the submit button. */
+  submitIcon?: string;
+  /**
+   * `light` for a form on the page surface, `dark` for one on a `primary`
+   * green panel.
+   */
+  tone?: FieldTone;
+  /** Require a phone number. Off by default; on for the management enquiry. */
+  phoneRequired?: boolean;
+  /** Message box placeholder, when the `subject` hint is not the right prompt. */
+  messagePlaceholder?: string;
 }
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 /**
- * Enquiry form, shared by the property detail sidebar and `/contact-us`.
+ * Enquiry form, shared by the property detail sidebar, `/contact-us` and the
+ * property-management enquiry panel.
  *
  * `POST /v1/enquiries/` does not exist yet, so `formsEnabled` is off by default
  * and the form keeps saying so rather than firing a request that would fail.
@@ -28,6 +47,11 @@ export default function ContactForm({
   subject,
   projectSlug,
   submitLabel = "Send Inquiry",
+  subjectOptions,
+  submitIcon,
+  tone = "light",
+  phoneRequired = false,
+  messagePlaceholder,
 }: ContactFormProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
@@ -46,6 +70,7 @@ export default function ContactForm({
         email: String(data.get("email") ?? ""),
         phone: String(data.get("phone") ?? ""),
         message: String(data.get("message") ?? ""),
+        subject: String(data.get("subject") ?? ""),
         projectSlug,
       });
       form.reset();
@@ -57,30 +82,71 @@ export default function ContactForm({
   };
 
   const sending = status === "sending";
+  const dark = tone === "dark";
+
+  const placeholder =
+    messagePlaceholder ?? (subject ? `I am interested in ${subject}...` : undefined);
+
+  const email = <Field id="email" label="Email Address" type="email" required tone={tone} />;
+  const phone = (
+    <Field id="phone" label="Phone Number" type="tel" required={phoneRequired} tone={tone} />
+  );
 
   return (
     <form className="space-y-6" onSubmit={onSubmit}>
-      <div className="space-y-4">
-        <Field id="name" label="Full Name" required />
-        <Field id="email" label="Email Address" type="email" required />
-        <Field id="phone" label="Phone Number" type="tel" />
+      <div className={dark ? "space-y-6" : "space-y-4"}>
+        <Field id="name" label="Full Name" required tone={tone} />
+
+        {/*
+          Email and phone share a row on the dark panel, as the mockup has it.
+          The light tone keeps them as plain siblings rather than wrapping them
+          in a `display: contents` div, which would eat the parent's
+          `space-y-*` margin (it applies to the wrapper, which has no box).
+        */}
+        {dark ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {email}
+            {phone}
+          </div>
+        ) : (
+          <>
+            {email}
+            {phone}
+          </>
+        )}
+
+        {subjectOptions && (
+          <Field id="subject" label="Subject" options={subjectOptions} required tone={tone} />
+        )}
+
         <Field
           id="message"
-          label="Message"
+          label={dark ? "Estate Details & Message" : "Message"}
           rows={4}
-          placeholder={subject ? `I am interested in ${subject}...` : undefined}
+          placeholder={placeholder}
+          required={dark}
+          tone={tone}
         />
       </div>
 
       <button
         type="submit"
         disabled={sending}
-        className="font-label-md text-label-md flex w-full items-center justify-center rounded-md bg-primary px-6 py-4 tracking-wider text-on-primary uppercase transition-colors duration-300 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60"
+        className={`font-label-md text-label-md flex w-full items-center justify-center gap-3 tracking-wider uppercase transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${
+          dark
+            ? "rounded-full bg-secondary-fixed px-8 py-4 font-bold text-primary hover:bg-white"
+            : "rounded-md bg-primary px-6 py-4 text-on-primary hover:bg-secondary"
+        }`}
       >
-        {sending ? "Sending…" : submitLabel}
+        <span>{sending ? "Sending…" : submitLabel}</span>
+        {submitIcon && !sending && <Icon name={submitIcon} className="text-lg" />}
       </button>
 
-      <p role="status" aria-live="polite" className="font-body-md text-sm text-on-surface-variant">
+      <p
+        role="status"
+        aria-live="polite"
+        className={`font-body-md text-sm ${dark ? "text-on-primary/70" : "text-on-surface-variant"}`}
+      >
         {status === "sent" &&
           "Thank you — a specialist will be in touch with you shortly."}
         {status === "error" &&

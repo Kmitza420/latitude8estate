@@ -1,0 +1,51 @@
+---
+import IconBadge from "./IconBadge.astro";
+import type { ProcessStep } from "../data/management";
+
+interface Props {
+  step: ProcessStep;
+}
+
+const { step } = Astro.props;
+---
+
+{/* One of the four numbered stages in "The Process" on /property-management. */}
+<article
+  class="luxury-card-hover flex h-full flex-col justify-between rounded-xl border border-outline-variant/40 bg-surface p-8"
+>
+  <div>
+    <div class="mb-8 flex items-center justify-between">
+      {/*
+        Decorative: the stage number is already carried by the ordered list
+        and restated in the caption below, so reading it out loud is noise.
+
+        Colour is the dark end of the same secondary-fixed ramp the mockup
+        used. `secondary-fixed-dim/40` was 1.20:1 against this card's
+        `bg-surface`, and only 1.62:1 even at full opacity, so no amount of
+        opacity could have reached AAA; `on-secondary-fixed-variant` is the
+        readable pairing for that ramp and measures 8.89:1, which clears AAA
+        at any text size rather than relying on the large-text threshold.
+      */}
+      <span
+        class="font-display-lg text-3xl font-bold text-on-secondary-fixed-variant"
+        aria-hidden="true"
+      >
+        {step.ordinal}
+      </span>
+
+      <IconBadge name={step.icon} size="md" tone="container" />
+    </div>
+
+    <h3 class="font-headline-sm mb-3 text-xl text-primary">{step.title}</h3>
+
+    <p class="font-body-md text-sm leading-relaxed text-on-surface-variant">
+      {step.body}
+    </p>
+  </div>
+
+  <div
+    class="font-label-md mt-6 border-t border-outline-variant/20 pt-4 text-xs tracking-wider text-on-secondary-container uppercase"
+  >
+    {step.caption}
+  </div>
+</article>

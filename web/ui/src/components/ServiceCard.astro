@@ -1,0 +1,43 @@
+---
+import Disclosure from "./Disclosure.astro";
+import MediaFrame from "./MediaFrame.astro";
+import type { Service } from "../data/management";
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+---
+
+{/* One of the three service cards on /property-management. */}
+<article
+  class="luxury-shadow flex flex-col overflow-hidden rounded-xl border border-outline-variant/20 bg-surface"
+>
+  <MediaFrame image={service.image} class="h-56 md:h-64" overlay="scrim" zoom>
+    <span
+      class="font-label-md absolute bottom-4 left-4 rounded-full bg-primary/80 px-3 py-1 text-xs tracking-wider text-secondary-fixed uppercase backdrop-blur-md"
+    >
+      {service.category}
+    </span>
+  </MediaFrame>
+
+  <div class="flex flex-1 flex-col justify-between p-6 md:p-8">
+    <div>
+      <h3 class="font-headline-sm mb-3 text-xl text-primary md:text-2xl">
+        {service.title}
+      </h3>
+      <p class="font-body-md mb-4 text-sm leading-relaxed text-on-surface-variant">
+        {service.body}
+      </p>
+    </div>
+
+    <Disclosure class="mt-auto border-t border-outline-variant/20 pt-4">
+      <ul
+        class="font-body-md list-inside list-disc space-y-2 rounded-lg bg-surface-container-high/60 p-4 text-sm text-on-surface-variant"
+      >
+        {service.details.map((detail) => <li>{detail}</li>)}
+      </ul>
+    </Disclosure>
+  </div>
+</article>

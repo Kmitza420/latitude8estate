@@ -224,6 +224,12 @@ export interface EnquiryCreateDto {
   message?: string;
   /** Set when the enquiry came from a property page. */
   project_slug?: string;
+  /**
+   * Which service the enquiry is about. Sent by the property-management form, which
+   * offers a fixed list; absent from the property and `/contact-us` forms,
+   * which have no subject control.
+   */
+  subject?: string;
 }
 
 export interface NewsletterSubscriptionCreateDto {

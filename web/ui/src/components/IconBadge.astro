@@ -1,0 +1,26 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  name: string;
+  /** `lg` is the 56px disc on reason cards; `md` the 48px disc on process cards. */
+  size?: "md" | "lg";
+  /** Which green the disc is filled with. */
+  tone?: "primary" | "container";
+  class?: string;
+}
+
+const { name, size = "lg", tone = "primary", class: className = "" } = Astro.props;
+---
+
+{/* Gold icon on a filled green disc. */}
+<div
+  class:list={[
+    "flex shrink-0 items-center justify-center rounded-full text-secondary-fixed",
+    size === "lg" ? "h-14 w-14" : "h-12 w-12",
+    tone === "primary" ? "bg-primary" : "bg-primary-container",
+    className,
+  ]}
+>
+  <Icon name={name} class="text-2xl" />
+</div>

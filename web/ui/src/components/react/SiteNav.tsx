@@ -6,6 +6,8 @@ export interface NavItem {
   label: string;
   href: string;
   icon: string;
+  /** Shorter wording for the top bar; the drawer keeps the full label. */
+  short?: string;
 }
 
 interface SiteNavProps {
@@ -84,7 +86,8 @@ export default function SiteNav({ brand, links, cta, pathname }: SiteNavProps) {
           </a>
         </div>
 
-        <div className="hidden items-center gap-10 md:flex">
+        {/* gap tightens at md so all five categories fit beside the brand. */}
+        <div className="hidden items-center gap-6 md:flex lg:gap-10">
           {links.map((link) => (
             <a
               key={link.href}
@@ -96,7 +99,7 @@ export default function SiteNav({ brand, links, cta, pathname }: SiteNavProps) {
                   : "opacity-75"
               }`}
             >
-              {link.label}
+              {link.short ?? link.label}
             </a>
           ))}
         </div>

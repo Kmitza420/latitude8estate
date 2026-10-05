@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Estate Luxury — Management &amp; Maintenance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            "colors": {
+                "primary": "#001f19",
+                "on-secondary-container": "#795d1a",
+                "secondary-fixed": "#ffdf9f",
+                "tertiary-container": "#362e21",
+                "tertiary": "#20190e",
+                "on-background": "#1c1c18",
+                "on-primary-fixed": "#00201a",
+                "inverse-primary": "#a3d0c3",
+                "error": "#ba1a1a",
+                "on-tertiary-fixed-variant": "#4e4638",
+                "surface-bright": "#fcf9f3",
+                "inverse-surface": "#31312d",
+                "surface-variant": "#e5e2dc",
+                "primary-fixed": "#beecde",
+                "surface-container-highest": "#e5e2dc",
+                "surface-container": "#f0eee8",
+                "surface": "#fcf9f3",
+                "background": "#fcf9f3",
+                "secondary-fixed-dim": "#e7c275",
+                "on-error-container": "#93000a",
+                "tertiary-fixed": "#efe1cd",
+                "on-error": "#ffffff",
+                "tertiary-fixed-dim": "#d2c5b2",
+                "on-tertiary-container": "#a19584",
+                "on-surface-variant": "#414846",
+                "surface-dim": "#dcdad4",
+                "on-surface": "#1c1c18",
+                "primary-container": "#06362d",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed-variant": "#5b4300",
+                "on-primary-fixed-variant": "#234e44",
+                "secondary-container": "#ffd889",
+                "on-secondary-fixed": "#261a00",
+                "on-primary": "#ffffff",
+                "on-primary-container": "#74a094",
+                "secondary": "#765a18",
+                "inverse-on-surface": "#f3f0ea",
+                "outline": "#717976",
+                "surface-container-high": "#ebe8e2",
+                "on-secondary": "#ffffff",
+                "outline-variant": "#c0c8c4",
+                "on-tertiary": "#ffffff",
+                "surface-tint": "#3c665b",
+                "on-tertiary-fixed": "#211b0f",
+                "surface-container-low": "#f6f3ed",
+                "error-container": "#ffdad6",
+                "primary-fixed-dim": "#a3d0c3"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "gutter": "32px",
+                "margin-mobile": "24px",
+                "margin-desktop": "80px",
+                "section-gap": "120px",
+                "container-max": "1440px",
+                "unit": "8px"
+            },
+            "fontFamily": {
+                "label-md": ["Plus Jakarta Sans"],
+                "headline-lg": ["Playfair Display"],
+                "display-lg": ["Playfair Display"],
+                "headline-sm": ["Playfair Display"],
+                "body-md": ["Plus Jakarta Sans"],
+                "headline-md": ["Playfair Display"],
+                "headline-lg-mobile": ["Playfair Display"],
+                "body-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                "headline-lg": ["48px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                "headline-lg-mobile": ["36px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+            }
+        }
+    }
+}
+</script>
+<style>
+body { scroll-behavior: smooth; }
+.nav-scrolled {
+    background-color: theme('colors.primary-container');
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.luxury-shadow {
+    box-shadow: 0px 20px 40px rgba(6, 54, 45, 0.05);
+}
+.luxury-card-hover {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.luxury-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 24px 48px rgba(0, 31, 25, 0.12);
+}
+.hero-overlay {
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,31,25,0.85) 100%);
+}
+@keyframes kenburns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+}
+.animate-kenburns {
+    animation: kenburns 22s ease-out forwards;
+}
+</style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden selection:bg-secondary-fixed selection:text-primary">
+<!-- TopNavBar (with added Maintenance option) -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop py-6 bg-transparent backdrop-blur-md transition-colors duration-300" id="navbar">
+<div class="flex items-center gap-8">
+<button aria-label="Open Menu" class="text-on-primary hover:text-secondary-fixed transition-colors" id="openMenuBtn">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+<a class="flex items-center gap-3" href="#">
+<img alt="ESTATE Logo" class="h-8 w-auto invert brightness-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX0makrILF3L-j4EQQ26zWaqfUA_BvFmk-olsUJy_-vrGdF-1EkSJcRQ3APp8Itt63RuLAXdyk79Ci-9R0q0ZhhjWp3I9MUMyFqG_V7Duo3qcPe1-ybacmA9f47lMuEb-gJY9oG6EsfmDjyTYvX2_3_Js4RNbXdBOZ0y08I-_obg2Q16uvK2wbdiM8i1GbyEd7LZ7q-XVVUOb71zrOtFxY7zLOTegxffksL7aT57LyAEtt5H65UTcAJQ"/>
+<span class="text-headline-sm font-headline-sm text-on-primary tracking-tighter">ESTATE</span>
+</a>
+</div>
+<!-- Main Navigation with 'Maintenance' added -->
+<div class="hidden md:flex items-center gap-8 lg:gap-10">
+<a class="font-label-md text-label-md text-on-primary opacity-80 hover:text-secondary-fixed hover:opacity-100 transition-all" href="#">Properties</a>
+<a class="font-label-md text-label-md text-secondary-fixed border-b border-secondary-fixed pb-1 hover:text-secondary-fixed transition-all" href="#maintenance">Maintenance</a>
+<a class="font-label-md text-label-md text-on-primary opacity-80 hover:text-secondary-fixed hover:opacity-100 transition-all" href="#">Concierge</a>
+<a class="font-label-md text-label-md text-on-primary opacity-80 hover:text-secondary-fixed hover:opacity-100 transition-all" href="#">Collections</a>
+<a class="font-label-md text-label-md text-on-primary opacity-80 hover:text-secondary-fixed hover:opacity-100 transition-all" href="#">Journal</a>
+</div>
+<div class="flex items-center gap-6">
+<a class="hidden lg:flex font-label-md text-label-md bg-primary-container text-on-primary px-8 py-3 rounded-full hover:bg-secondary-fixed hover:text-primary transition-colors border border-transparent" href="#contact">
+            Book Viewing
+        </a>
+</div>
+</nav>
+<!-- SideNavBar -->
+<div class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300" id="sideNav">
+<aside class="h-screen w-80 fixed left-0 top-0 bg-primary shadow-2xl flex flex-col p-10 transform -translate-x-full transition-transform duration-500 ease-out">
+<div class="flex justify-between items-center mb-12">
+<div class="flex items-center gap-3">
+<span class="text-headline-md font-headline-md text-secondary-fixed">Estate Portal</span>
+</div>
+<button aria-label="Close Menu" class="text-on-primary hover:text-secondary-fixed" id="closeSideNav">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</div>
+<div class="text-sm text-secondary-fixed opacity-70 mb-8 tracking-widest uppercase">Exclusive Member Access</div>
+<nav class="flex-1 flex flex-col gap-6">
+<a class="flex items-center gap-4 text-headline-sm font-headline-sm text-on-primary opacity-70 hover:text-secondary-fixed hover:pl-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">domain</span>
+                Curated Estates
+            </a>
+<a class="flex items-center gap-4 text-headline-sm font-headline-sm text-secondary-fixed font-bold hover:pl-2 transition-all duration-300" href="#maintenance">
+<span class="material-symbols-outlined">home_repair_service</span>
+                Estate Maintenance
+            </a>
+<a class="flex items-center gap-4 text-headline-sm font-headline-sm text-on-primary opacity-70 hover:text-secondary-fixed hover:pl-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">waves</span>
+                Private Listings
+            </a>
+<a class="flex items-center gap-4 text-headline-sm font-headline-sm text-on-primary opacity-70 hover:text-secondary-fixed hover:pl-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">map</span>
+                Architectural Tours
+            </a>
+<a class="flex items-center gap-4 text-headline-sm font-headline-sm text-on-primary opacity-70 hover:text-secondary-fixed hover:pl-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">handshake</span>
+                Advisory
+            </a>
+<a class="flex items-center gap-4 text-headline-sm font-headline-sm text-on-primary opacity-70 hover:text-secondary-fixed hover:pl-2 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+                Insights
+            </a>
+</nav>
+<div class="mt-auto pt-8 border-t border-on-primary/10">
+<a class="block text-center w-full font-label-md text-label-md bg-transparent border border-secondary-fixed text-secondary-fixed px-6 py-4 rounded-full mb-6 hover:bg-secondary-fixed hover:text-primary transition-colors" href="#contact">
+                Contact Specialist
+            </a>
+<div class="flex gap-6 text-on-primary opacity-70">
+<a class="hover:text-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined">settings</span></a>
+<a class="hover:text-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined">shield</span></a>
+<a class="hover:text-secondary-fixed transition-colors ml-auto" href="#"><span class="material-symbols-outlined">logout</span></a>
+</div>
+</div>
+</aside>
+</div>
+<!-- SECTION 1: Hero Section (Copied styling and photo structure from homepage, with title, description, and Get in Touch button) -->
+<header class="relative h-screen w-full flex items-end pb-24 px-margin-mobile md:px-margin-desktop overflow-hidden" id="maintenance">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full z-0 transform scale-105 animate-kenburns" data-alt="A sweeping, majestic wide-angle photograph of an ultra-luxury modern architectural estate situated on a dramatic cliffside overlooking a serene, twilight ocean." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkYyVMS9RZ7LFVZoJ7jcCoHRYBuzce6cwZT82081yfjgpV_SxusBYrqYeDxSvgxNPNatgh00SvgO07Cb2r0UkQrcCKUgejTTzPoLMFzGpZxDeJSPXMSdIqdwXqT83Wj82aTIy9TB60Cx6la3nSQm3-M8m2_EntD5mK_vY2Sj_5c0plVaOatWotvY3B3hYbtgDKs1KldAfIrIYdqFeCqY5IIuyguJg5alF0BdQ6bHxdPCAOhlF49X3WIg')"></div>
+<div class="absolute inset-0 hero-overlay z-10 pointer-events-none"></div>
+<div class="relative z-20 max-w-4xl">
+<span class="font-label-md text-label-md text-secondary-fixed tracking-widest uppercase mb-4 block">Bespoke Estate Care</span>
+<h1 class="font-display-lg text-display-lg text-on-primary mb-6 leading-tight">
+            Comprehensive Estate <br/>Management &amp; Maintenance.
+        </h1>
+<p class="font-body-lg text-body-lg text-on-primary opacity-80 max-w-2xl mb-8">
+            Preserving architectural excellence, proactive facility engineering, and bespoke property stewardship for the world’s most discerning private residences and estates.
+        </p>
+<div>
+<a class="inline-flex items-center gap-3 font-label-md text-label-md bg-secondary-fixed text-primary px-9 py-4 rounded-full hover:bg-white transition-all shadow-lg hover:shadow-2xl" href="#contact">
+<span>Get In Touch</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</div>
+</header>
+<main>
+<!-- SECTION 2: Why Choose Us (Title at top + 4 horizontal elements giving reasons) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-md text-label-md text-on-secondary-container uppercase tracking-widest block mb-4">Unrivaled Standards</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">Why Choose Us</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-4">We safeguard your private sanctuaries with precision craftsmanship, unyielding discretion, and white-glove attentiveness.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Reason 1 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="w-14 h-14 rounded-full bg-primary text-secondary-fixed flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+<span class="font-label-md text-xs text-on-secondary-container uppercase tracking-wider mb-2 block">Discretion &amp; Trust</span>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Absolute Confidentiality</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">Vetted personnel operating under rigorous non-disclosure agreements, guaranteeing flawless privacy for high-profile principals.</p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/30 flex items-center gap-2 text-xs font-label-md text-primary font-bold">
+<span>Protocol Certified</span>
+<span class="material-symbols-outlined text-sm text-secondary">check</span>
+</div>
+</div>
+<!-- Reason 2 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="w-14 h-14 rounded-full bg-primary text-secondary-fixed flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-2xl">engineering</span>
+</div>
+<span class="font-label-md text-xs text-on-secondary-container uppercase tracking-wider mb-2 block">Preventative Care</span>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Proactive Engineering</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">Continuous sensor telemetry, HVAC calibrations, and structural preventative audits stop complications long before they arise.</p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/30 flex items-center gap-2 text-xs font-label-md text-primary font-bold">
+<span>Zero Downtime Target</span>
+<span class="material-symbols-outlined text-sm text-secondary">check</span>
+</div>
+</div>
+<!-- Reason 3 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="w-14 h-14 rounded-full bg-primary text-secondary-fixed flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-2xl">support_agent</span>
+</div>
+<span class="font-label-md text-xs text-on-secondary-container uppercase tracking-wider mb-2 block">Availability</span>
+<h3 class="font-headline-sm text-xl text-primary mb-3">24/7 Rapid Response</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">Dedicated estate directors and on-call specialist technicians ready at a moment’s notice for urgent mechanical or climate incidents.</p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/30 flex items-center gap-2 text-xs font-label-md text-primary font-bold">
+<span>15-Minute SLA</span>
+<span class="material-symbols-outlined text-sm text-secondary">check</span>
+</div>
+</div>
+<!-- Reason 4 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="w-14 h-14 rounded-full bg-primary text-secondary-fixed flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-2xl">architecture</span>
+</div>
+<span class="font-label-md text-xs text-on-secondary-container uppercase tracking-wider mb-2 block">Bespoke Knowledge</span>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Master Artisan Care</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">Certified restorers for bespoke Italian marble, museum-grade teak millwork, infinity pool acoustics, and smart automation.</p>
+</div>
+<div class="pt-6 mt-6 border-t border-outline-variant/30 flex items-center gap-2 text-xs font-label-md text-primary font-bold">
+<span>Artisan Certified</span>
+<span class="material-symbols-outlined text-sm text-secondary">check</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: Our Services (Title at top + 3 horizontal elements with picture on top, text bellow, more info button to show more text) -->
+<section class="py-section-gap bg-surface-container-low px-margin-mobile md:px-margin-desktop">
+<div class="max-w-container-max mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-md text-label-md text-on-secondary-container uppercase tracking-widest block mb-4">Dedicated Solutions</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">Our Services</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-4">Holistic physical maintenance and technical stewardship designed exclusively for luxury compounds, villas, and penthouses.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Service 1 -->
+<article class="bg-surface rounded-xl overflow-hidden luxury-shadow border border-outline-variant/20 flex flex-col">
+<div class="h-64 relative overflow-hidden group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Pristine interior living space of a luxury estate" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDBTOoaGXtJm3ligWUy1A-2vVeJdRA6s2ieaLA9h2VkfXImfpr7jd20yvobbqOO4ic0N9h6A5JG0zl-UeTbfJxP455Jra2dn-5Xig_jq4fATmi0Ongrc4AosY7uJ4Ze3nOleBfRnw7Irh91Kgsr-VVxDdACRUAePaKKXOUOOyaoEDX-f7wPihKCXzyeQN1UUb95ovzB_aUHLl7sxt6C0dv7fqnHV6r_snpu90xtF20vNnGc0nVaf1cxuA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent"></div>
+<span class="absolute bottom-4 left-4 bg-primary/80 backdrop-blur-md text-secondary-fixed text-xs font-label-md px-3 py-1 rounded-full uppercase tracking-wider">Infrastructure</span>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-sm text-2xl text-primary mb-3">Facility &amp; Mechanical Systems</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed mb-4">
+                                Full lifecycle maintenance for whole-home HVAC chillers, backup generators, water desalination, filtration plants, and electrical grid synchronization.
+                            </p>
+<!-- More info expandable container -->
+<div class="hidden overflow-hidden transition-all duration-300 text-sm text-on-surface-variant bg-surface-container-high/60 p-4 rounded-lg mb-4" id="service-info-1">
+<ul class="space-y-2 list-disc list-inside">
+<li>Automated seasonal climate switchovers and air purity diagnostics.</li>
+<li>Annual acoustic and vibration dampening testing on heavy plant machinery.</li>
+<li>Integration with municipal utilities and off-grid solar battery arrays.</li>
+</ul>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<button class="toggle-more-btn font-label-md text-xs uppercase tracking-wider text-secondary flex items-center gap-2 hover:text-primary transition-colors" data-target="service-info-1">
+<span class="btn-text">More Info</span>
+<span class="material-symbols-outlined text-sm transition-transform duration-300 icon-arrow">expand_more</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Service 2 -->
+<article class="bg-surface rounded-xl overflow-hidden luxury-shadow border border-outline-variant/20 flex flex-col">
+<div class="h-64 relative overflow-hidden group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Infinity swimming pool terrace overlooking ocean" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCTKOWig-oVnZ0dRq1gj_vQkZ773jKk80jVMclo6g64nyfo92ah_oazb38z_oquo5dup7wldsjGyd3Id9Fl91tRs68aauoaMxuuoJxn7Ar8FUI_HjCHG06QUIyVz7JcHsLXyNcc0aFGkEki01dpOXlzVV71qxE-o23ZQwy2co77sV52MoBH41jC5Ge_5-NCIBcYbg5Qo0EQgkMEySghvRvHyAKm6DZEQDXOu2wQKOppeFUvyxTslR7nKQ')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent"></div>
+<span class="absolute bottom-4 left-4 bg-primary/80 backdrop-blur-md text-secondary-fixed text-xs font-label-md px-3 py-1 rounded-full uppercase tracking-wider">Grounds &amp; Aquatic</span>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-sm text-2xl text-primary mb-3">Architectural Grounds &amp; Pools</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed mb-4">
+                                Meticulous upkeep of geometric gardens, specimen trees, heated saltwater infinity pools, fountains, exterior stone surfaces, and landscape lighting systems.
+                            </p>
+<!-- More info expandable container -->
+<div class="hidden overflow-hidden transition-all duration-300 text-sm text-on-surface-variant bg-surface-container-high/60 p-4 rounded-lg mb-4" id="service-info-2">
+<ul class="space-y-2 list-disc list-inside">
+<li>Bi-weekly mineral balancing and robotic optical pool cleaning.</li>
+<li>Horticultural care tailored to rare botanical specimens and topiary forms.</li>
+<li>Eco-friendly subterranean irrigation management and moisture sensor tracking.</li>
+</ul>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<button class="toggle-more-btn font-label-md text-xs uppercase tracking-wider text-secondary flex items-center gap-2 hover:text-primary transition-colors" data-target="service-info-2">
+<span class="btn-text">More Info</span>
+<span class="material-symbols-outlined text-sm transition-transform duration-300 icon-arrow">expand_more</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Service 3 -->
+<article class="bg-surface rounded-xl overflow-hidden luxury-shadow border border-outline-variant/20 flex flex-col">
+<div class="h-64 relative overflow-hidden group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Smart home control panel on walnut paneling" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuASn6UM0374P24U4eH8nt3Wx2JhY_pOzZGeAngomujHdbWXKvtHbScrynydexVpEvHtAwTmwqP0vervSDy3sZh4seZ5sisH2Gqgv8c6P-qHyHWtLKNgMW1IvKD6dC5rzzVoIIqHeT9w-J39v-3I-Vrrz15VEnyXbYX9DVO06wfoLZvA-hfERieSPmDKI9FHxqIMEQsmx3JrR-qOsTbPF2wzwk2zkjKB_Z7VAV2mZh7dlwiJNBArqbIgXA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent"></div>
+<span class="absolute bottom-4 left-4 bg-primary/80 backdrop-blur-md text-secondary-fixed text-xs font-label-md px-3 py-1 rounded-full uppercase tracking-wider">Technology &amp; Access</span>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-sm text-2xl text-primary mb-3">Smart Home &amp; Security Audits</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed mb-4">
+                                Firmware optimization, automated shades, Crestron/Lutron lighting matrix updates, perimeter biometrics, and secure encrypted estate network monitoring.
+                            </p>
+<!-- More info expandable container -->
+<div class="hidden overflow-hidden transition-all duration-300 text-sm text-on-surface-variant bg-surface-container-high/60 p-4 rounded-lg mb-4" id="service-info-3">
+<ul class="space-y-2 list-disc list-inside">
+<li>Cybersecurity hardening for all IoT cameras and internal networks.</li>
+<li>Custom multi-room audio calibration and home cinema performance checks.</li>
+<li>Integration of biometric access and automated guest vehicle verification.</li>
+</ul>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<button class="toggle-more-btn font-label-md text-xs uppercase tracking-wider text-secondary flex items-center gap-2 hover:text-primary transition-colors" data-target="service-info-3">
+<span class="btn-text">More Info</span>
+<span class="material-symbols-outlined text-sm transition-transform duration-300 icon-arrow">expand_more</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- SECTION 4: The Process (Title at top + 4 horizontal elements with text and icons) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-md text-label-md text-on-secondary-container uppercase tracking-widest block mb-4">Structured Methodology</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">The Process</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-4">A seamless, systematized transition from initial estate audit to continuous proactive stewardship.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+<!-- Step 1 -->
+<div class="relative bg-surface p-8 rounded-xl border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-display-lg text-3xl text-secondary-fixed-dim/40 font-bold">01</span>
+<div class="w-12 h-12 rounded-full bg-primary-container text-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">search_check</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Architectural Audit</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                        A rigorous multi-day cataloging of all mechanical assets, finish warranties, structural blue-prints, and smart automations.
+                    </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 text-xs font-label-md text-on-secondary-container tracking-wider uppercase">
+                    Step 1: On-Site Evaluation
+                </div>
+</div>
+<!-- Step 2 -->
+<div class="relative bg-surface p-8 rounded-xl border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-display-lg text-3xl text-secondary-fixed-dim/40 font-bold">02</span>
+<div class="w-12 h-12 rounded-full bg-primary-container text-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">rule_settings</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Custom Protocol</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                        Drafting bespoke operating routines, vendor schedules, emergency failover plans, and owner preference binders.
+                    </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 text-xs font-label-md text-on-secondary-container tracking-wider uppercase">
+                    Step 2: Operations Design
+                </div>
+</div>
+<!-- Step 3 -->
+<div class="relative bg-surface p-8 rounded-xl border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-display-lg text-3xl text-secondary-fixed-dim/40 font-bold">03</span>
+<div class="w-12 h-12 rounded-full bg-primary-container text-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">key</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Dedicated Onboarding</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                        Assignment of your dedicated Principal Estate Director and deployment of our encrypted real-time reporting portal.
+                    </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 text-xs font-label-md text-on-secondary-container tracking-wider uppercase">
+                    Step 3: Portal &amp; Team Launch
+                </div>
+</div>
+<!-- Step 4 -->
+<div class="relative bg-surface p-8 rounded-xl border border-outline-variant/40 luxury-card-hover flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-display-lg text-3xl text-secondary-fixed-dim/40 font-bold">04</span>
+<div class="w-12 h-12 rounded-full bg-primary-container text-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">military_tech</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-xl text-primary mb-3">Continuous Vigilance</h3>
+<p class="font-body-md text-sm text-on-surface-variant leading-relaxed">
+                        Year-round scheduled maintenance, monthly analytical health scorecards, and immediate emergency deployment.
+                    </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant/20 text-xs font-label-md text-on-secondary-container tracking-wider uppercase">
+                    Step 4: Active Custody
+                </div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: 2 elements horizontal: text on left, picture on right + get in touch button on the right of the picture -->
+<section class="py-section-gap bg-[#EADCC9] px-margin-mobile md:px-margin-desktop relative overflow-hidden">
+<div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(#06362D 1px, transparent 1px); background-size: 32px 32px;"></div>
+<div class="max-w-container-max mx-auto relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Left: Narrative Text -->
+<div class="lg:col-span-5">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-widest block mb-4">Precision Management</span>
+<h2 class="font-headline-lg text-primary text-4xl lg:text-5xl mb-6 leading-tight">
+                        Protecting Every Dimension of Your Sanctuary.
+                    </h2>
+<p class="font-body-lg text-primary/80 mb-6 leading-relaxed">
+                        From monumental cliffside residences to historic European estates, preserving architectural integrity requires more than general contracting—it demands connoisseur-level appreciation and engineering mastery.
+                    </p>
+<div class="space-y-4 pt-2">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-2xl mt-1">diamond</span>
+<div>
+<h4 class="font-headline-sm text-lg text-primary">Master Craftsmanship</h4>
+<p class="text-sm text-primary/70">Restorative masonry, millwork conditioning, and tailored artisan treatments.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-2xl mt-1">lock</span>
+<div>
+<h4 class="font-headline-sm text-lg text-primary">Vault-Level Security</h4>
+<p class="text-sm text-primary/70">Discreet monitoring and impenetrable perimeter access controls.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Picture on the right + Get in touch button on the right of the picture -->
+<div class="lg:col-span-7 flex flex-col sm:flex-row items-center gap-8">
+<!-- The Picture -->
+<div class="w-full sm:flex-1 h-[420px] rounded-2xl overflow-hidden luxury-shadow relative group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Grand entrance of a modern luxury estate at dusk" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDeZk5_y6-EX3xgdi8Xr1G4kCKaRs9fO7__hNVg5rnF-YktoDejm6A_vFyvLykiF1RI6Wd-MhgtBdrNnc9ydtPwfo3RPg54XMM0N4tgQOX9pD5UU5vwWjwXmiaFdfQnwuAQ--5T-pm1yd1YHoJHasBaAjbfvRosZWeWdwZD_Eh3l9G7georxX2k1VQfetKeA2gFf281sfurI3lTCQii0qwZZG48gF9ANM5KXUAnSen_EEAIId01bqycg')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/50 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white text-sm font-label-md">
+<span class="bg-primary/70 px-3 py-1 rounded-full backdrop-blur-sm">Alpine Villa — Full Custody</span>
+</div>
+</div>
+<!-- Get in touch button placed on the right of the picture -->
+<div class="shrink-0 flex flex-col items-center justify-center p-6 bg-primary rounded-2xl luxury-shadow text-center text-on-primary sm:w-56">
+<span class="material-symbols-outlined text-secondary-fixed text-4xl mb-3">contact_mail</span>
+<h4 class="font-headline-sm text-xl text-on-primary mb-2">Private Consultation</h4>
+<p class="text-xs text-on-primary/70 mb-6">Schedule an executive inspection of your property.</p>
+<a class="w-full inline-flex items-center justify-center gap-2 font-label-md text-xs uppercase tracking-wider bg-secondary-fixed text-primary px-5 py-4 rounded-full hover:bg-white transition-all shadow-md" href="#contact">
+<span>Get In Touch</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: The Last Section (2 horizontal elements: Left is text with picture, Right is Contact Form with name, mail, phone, message, subject) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface" id="contact">
+<div class="max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
+<!-- Left Element: Text with Picture -->
+<div class="lg:col-span-6 bg-surface-container-low rounded-2xl p-10 md:p-12 border border-outline-variant/30 flex flex-col justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-secondary-container uppercase tracking-widest block mb-4">Direct Communication</span>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6 leading-tight">
+                            Initiate Private Estate Management.
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
+                            Our managing directors personally handle all maintenance inquiries. Share your estate specifications below to schedule a confidential property walkthrough and tailored proposal.
+                        </p>
+</div>
+<!-- Integrated Picture with Text -->
+<div class="rounded-xl overflow-hidden luxury-shadow relative h-64 md:h-72 my-4">
+<div class="w-full h-full bg-cover bg-center" data-alt="Wine cellar and tasting lounge inside luxury property" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC2_0bUOqRtvrZhX6xa_88UyhKEWOvmosQXTOueMyTcXhel8RNhjtujfwub08UO4tTW7MixNGUi0VBPSSSlg6Q1fO_8-4t_UQelFyJ1L4PvtUFeQAN0Y0rD6-3Evk8sU7Vysi91DqgYY-_8yCVVP-5qD6FWB1zjAeMilBmRcV44fILaRJO1OKnA-omxOJ17chFyT95U6wkckC3J9nvhCZ2DBCxzpmkyIsEGsPVs6Uadu-fttNV4gW7odg')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6 text-on-primary">
+<span class="font-label-md text-xs text-secondary-fixed uppercase tracking-wider block mb-1">Confidential Advisory</span>
+<p class="font-headline-sm text-lg text-white">Private Estate Concierge &amp; Stewardship</p>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/30 flex items-center justify-between text-sm text-on-surface-variant">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg">shield</span> Strict Confidentiality
+                        </span>
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg">schedule</span> 24hr Guaranteed Reply
+                        </span>
+</div>
+</div>
+<!-- Right Element: Contact Form with Name, Mail, Phone, Message, and Subject sections -->
+<div class="lg:col-span-6 bg-primary rounded-2xl p-10 md:p-12 text-on-primary luxury-shadow flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -bottom-24 -right-24 w-80 h-80 bg-primary-container rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+<div class="relative z-10">
+<h3 class="font-headline-md text-headline-md text-on-primary mb-2">Request Property Evaluation</h3>
+<p class="font-body-md text-sm text-on-primary/70 mb-8">Please complete the details below. Our executive team will respond within 24 hours.</p>
+<form class="space-y-6" id="maintenanceForm" onsubmit="event.preventDefault(); alert('Thank you. An Estate Director will contact you confidentially.');">
+<!-- Name Section -->
+<div>
+<label class="block font-label-md text-xs text-secondary-fixed uppercase tracking-wider mb-2" for="client-name">Full Name *</label>
+<input class="w-full bg-white/5 border border-on-primary/20 rounded-lg px-4 py-3 text-on-primary placeholder:text-on-primary/40 focus:outline-none focus:border-secondary-fixed transition-colors" id="client-name" placeholder="Lord / Lady / Mr. / Ms. Alexander Sterling" required="" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Mail Section -->
+<div>
+<label class="block font-label-md text-xs text-secondary-fixed uppercase tracking-wider mb-2" for="client-email">Email Address *</label>
+<input class="w-full bg-white/5 border border-on-primary/20 rounded-lg px-4 py-3 text-on-primary placeholder:text-on-primary/40 focus:outline-none focus:border-secondary-fixed transition-colors" id="client-email" placeholder="principal@domain.com" required="" type="email"/>
+</div>
+<!-- Phone Section -->
+<div>
+<label class="block font-label-md text-xs text-secondary-fixed uppercase tracking-wider mb-2" for="client-phone">Phone Number *</label>
+<input class="w-full bg-white/5 border border-on-primary/20 rounded-lg px-4 py-3 text-on-primary placeholder:text-on-primary/40 focus:outline-none focus:border-secondary-fixed transition-colors" id="client-phone" placeholder="+1 (555) 019-2834" required="" type="tel"/>
+</div>
+</div>
+<!-- Subject Section -->
+<div>
+<label class="block font-label-md text-xs text-secondary-fixed uppercase tracking-wider mb-2" for="client-subject">Subject *</label>
+<select class="w-full bg-primary-container border border-on-primary/20 rounded-lg px-4 py-3 text-on-primary focus:outline-none focus:border-secondary-fixed transition-colors" id="client-subject" required="">
+<option value="Full Estate Management">Full Estate Stewardship &amp; Operations</option>
+<option value="Mechanical &amp; HVAC Maintenance">Mechanical, HVAC &amp; System Maintenance</option>
+<option value="Pool &amp; Grounds Care">Architectural Grounds &amp; Aquatic Care</option>
+<option value="Smart Home Security Audit">Smart Home &amp; Cyber Security Infrastructure</option>
+<option value="Pre-Purchase Architectural Audit">Pre-Purchase Architectural Inspection</option>
+<option value="Other Bespoke Requirement">Other Bespoke Requirement</option>
+</select>
+</div>
+<!-- Message Section -->
+<div>
+<label class="block font-label-md text-xs text-secondary-fixed uppercase tracking-wider mb-2" for="client-message">Estate Details &amp; Message *</label>
+<textarea class="w-full bg-white/5 border border-on-primary/20 rounded-lg px-4 py-3 text-on-primary placeholder:text-on-primary/40 focus:outline-none focus:border-secondary-fixed transition-colors resize-none" id="client-message" placeholder="Provide property location, approximate square footage, current staffing, or key focus areas..." required="" rows="4"></textarea>
+</div>
+<button class="w-full font-label-md text-label-md bg-secondary-fixed text-primary py-4 px-8 rounded-full hover:bg-white transition-all shadow-lg font-bold flex items-center justify-center gap-3" type="submit">
+<span>Submit Confidential Request</span>
+<span class="material-symbols-outlined text-lg">lock</span>
+</button>
+</form>
+</div>
+<p class="font-body-md text-xs text-on-primary/50 mt-6 relative z-10">
+                        Information submitted is strictly encrypted and protected under our private client confidentiality agreement.
+                    </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Exact match from the homepage) -->
+<footer class="w-full py-section-gap px-margin-desktop bg-surface-container-highest dark:bg-tertiary flex flex-col md:flex-row justify-between items-start md:items-center tonal background shift flat">
+<div class="flex flex-col gap-6 mb-8 md:mb-0">
+<div class="flex items-center gap-3">
+<img alt="ESTATE Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX0makrILF3L-j4EQQ26zWaqfUA_BvFmk-olsUJy_-vrGdF-1EkSJcRQ3APp8Itt63RuLAXdyk79Ci-9R0q0ZhhjWp3I9MUMyFqG_V7Duo3qcPe1-ybacmA9f47lMuEb-gJY9oG6EsfmDjyTYvX2_3_Js4RNbXdBOZ0y08I-_obg2Q16uvK2wbdiM8i1GbyEd7LZ7q-XVVUOb71zrOtFxY7zLOTegxffksL7aT57LyAEtt5H65UTcAJQ"/>
+<span class="text-headline-sm font-headline-sm text-primary">ESTATE</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">© 2024 Estate Luxury. All rights reserved.</span>
+</div>
+<div class="flex flex-wrap gap-8 items-center">
+<nav class="flex gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Portfolio</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">About</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Contact</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">Legal</a>
+</nav>
+<div class="flex gap-4 ml-0 md:ml-8">
+<a aria-label="Instagram" class="w-10 h-10 rounded-full bg-surface border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+</a>
+<a aria-label="LinkedIn" class="w-10 h-10 rounded-full bg-surface border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">work</span>
+</a>
+<a aria-label="Twitter" class="w-10 h-10 rounded-full bg-surface border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">chat</span>
+</a>
+</div>
+</div>
+</footer>
+<!-- Interactive Scripts -->
+<script>
+    // Navbar Scroll Effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('nav-scrolled');
+            navbar.classList.remove('bg-transparent');
+        } else {
+            navbar.classList.remove('nav-scrolled');
+            navbar.classList.add('bg-transparent');
+        }
+    });
+
+    // Mobile Side Nav Drawer
+    const openMenuBtn = document.getElementById('openMenuBtn');
+    const sideNav = document.getElementById('sideNav');
+    const closeSideNav = document.getElementById('closeSideNav');
+    const aside = sideNav?.querySelector('aside');
+
+    openMenuBtn?.addEventListener('click', () => {
+        sideNav?.classList.remove('opacity-0', 'pointer-events-none');
+        aside?.classList.remove('-translate-x-full');
+    });
+
+    closeSideNav?.addEventListener('click', () => {
+        aside?.classList.add('-translate-x-full');
+        setTimeout(() => {
+            sideNav?.classList.add('opacity-0', 'pointer-events-none');
+        }, 300);
+    });
+
+    // Expandable 'More Info' toggles for Services section
+    document.querySelectorAll('.toggle-more-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const target = document.getElementById(targetId);
+            const btnText = btn.querySelector('.btn-text');
+            const icon = btn.querySelector('.icon-arrow');
+
+            if (target) {
+                const isHidden = target.classList.contains('hidden');
+                if (isHidden) {
+                    target.classList.remove('hidden');
+                    if (btnText) btnText.textContent = 'Less Info';
+                    if (icon) icon.classList.add('rotate-180');
+                } else {
+                    target.classList.add('hidden');
+                    if (btnText) btnText.textContent = 'More Info';
+                    if (icon) icon.classList.remove('rotate-180');
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
