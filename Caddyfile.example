@@ -1,0 +1,12 @@
+example.com {
+    reverse_proxy 127.0.0.1:3001
+
+    handle_path /media/* {
+        rewrite * /latitude8estate-media{uri}
+        reverse_proxy 127.0.0.1:9000
+    }
+}
+
+api.example.com {
+    reverse_proxy 127.0.0.1:8001
+}

@@ -134,10 +134,18 @@ EOF
 Keep `.env.prod` off git — confirm `.gitignore` covers it before your first
 commit on the server.
 
+These credentials are applied by Postgres and MinIO only when their volumes are
+initialized. If the named volumes already contain data, changing the env file
+does not change the existing database or object-store password; rotate those
+credentials using the service's own procedure or a planned volume migration.
+
 ### 4.2 The override file
 
-Create `docker-compose.prod.yml` beside the committed compose file. Compose
-merges them, so this changes only what it names.
+The repository includes `docker-compose.prod.yml` and `.env.prod.example`. Do
+not create an ad-hoc override on the server; copy the example env file, replace
+every value, and use the committed override. It uses Compose's `!override` tag
+so loopback bindings replace the development bindings instead of appending to
+them. This requires Docker Compose 2.24 or newer.
 
 ```yaml
 # docker-compose.prod.yml — production overrides.
@@ -150,17 +158,17 @@ merges them, so this changes only what it names.
 services:
   postgres:
     # Loopback only. Nothing outside the compose network needs this.
-    ports: ["127.0.0.1:5432:5432"]
+    ports: !override ["127.0.0.1:5432:5432"]
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   redis:
-    ports: ["127.0.0.1:6379:6379"]
+    ports: !override ["127.0.0.1:6379:6379"]
 
   minio:
     # 9000 stays on loopback; the reverse proxy fronts it for media.
     # 9001 is the admin console — tunnel to it, do not publish it.
-    ports:
+    ports: !override
       - "127.0.0.1:9000:9000"
       - "127.0.0.1:9001:9001"
     environment:
@@ -179,7 +187,7 @@ services:
       "
 
   web_api:
-    ports: ["127.0.0.1:8001:8000"]
+    ports: !override ["127.0.0.1:8001:8000"]
     environment:
       # production: disables /docs, /redoc and /openapi.json, and enables
       # TrustedHostMiddleware. See the warning in 4.3 about CORS_ORIGINS.
@@ -196,7 +204,7 @@ services:
     restart: unless-stopped
 
   web_ui:
-    ports: ["127.0.0.1:3001:80"]
+    ports: !override ["127.0.0.1:3001:80"]
     build:
       args:
         # Baked into the static HTML and the client bundle at build time.
@@ -217,12 +225,11 @@ services:
 Make the long command tolerable:
 
 ```bash
-echo 'COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml' >> .env.prod
-alias dc='docker compose --env-file .env.prod'
+alias dc='docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml'
 ```
 
 Compose reads `.env` for variable substitution by default, not `.env.prod`, so
-`--env-file .env.prod` is required on **every** invocation. Omit it and
+`--env-file .env.prod` and both `-f` options are required on **every** invocation. Omit them and
 `${POSTGRES_PASSWORD}` expands to an empty string — which starts a Postgres
 with no password or fails outright.
 
@@ -258,7 +265,7 @@ example.com {
     # Public media bucket. The API hands out https://example.com/media/<key>.
     handle_path /media/* {
         reverse_proxy 127.0.0.1:9000 {
-            rewrite /latitude8estate-media{uri}
+            rewrite * /latitude8estate-media{uri}
         }
     }
 }
@@ -293,27 +300,27 @@ with the production flags added.
 
 ```bash
 cd /srv/latitude8estate
-export COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml
+COMPOSE='docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml'
 
 # 1. Datastores. minio_init creates the media bucket and makes it anonymously
 #    readable — without it every image 403s.
-docker compose --env-file .env.prod up -d postgres minio minio_init redis
-docker compose --env-file .env.prod ps          # wait for healthy
+$COMPOSE up -d postgres minio minio_init redis
+$COMPOSE ps                                      # wait for healthy
 
 # 2. Schema + content. Runs inside the API image, so no host Python is needed.
 #    web/api/Dockerfile copies scripts/ in precisely for this.
-docker compose --env-file .env.prod run --rm web_api python -m scripts.seed
+$COMPOSE run --rm web_api python -m scripts.seed
 
 # 3. The API.
-docker compose --env-file .env.prod up -d --build web_api
-curl -fsS http://127.0.0.1:8001/health && echo OK
+$COMPOSE up -d --build web_api
+curl -fsS -H 'Host: api.example.com' http://127.0.0.1:8001/health && echo OK
 
 # 4. Confirm the API actually has content. An empty list here means step 5
 #    will fail, which is the intended behaviour.
-curl -fsS http://127.0.0.1:8001/v1/projects/ | head -c 400
+curl -fsS -H 'Host: api.example.com' http://127.0.0.1:8001/v1/projects/ | head -c 400
 
 # 5. The static site. Only now, because this build reads the API.
-docker compose --env-file .env.prod up -d --build web_ui
+$COMPOSE up -d --build web_ui
 ```
 
 Note the **trailing slashes** on API paths. `web/api/main.py` builds the app with
@@ -352,12 +359,13 @@ skips the MinIO upload.
 ```bash
 cd /srv/latitude8estate
 git pull
+COMPOSE='docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml'
 
 # API or core changed:
-docker compose --env-file .env.prod up -d --build web_api
+$COMPOSE up -d --build web_api
 
 # UI changed — OR database content changed, OR PUBLIC_API_BASE_URL changed:
-docker compose --env-file .env.prod up -d --build web_ui
+$COMPOSE up -d --build web_ui
 ```
 
 **The second case is the one people forget.** The site is static, so a content
@@ -365,10 +373,9 @@ edit is invisible until `web_ui` is rebuilt. If editors expect their changes to
 appear, either give them a "publish" button that triggers this rebuild, or run it
 on a schedule.
 
-A rebuild takes a minute or two and the old container keeps serving until the new
-one is ready, so there is no downtime — but if the build fails, **nothing is
-replaced and the previous site stays up.** That is the intended behaviour: a
-failed build never publishes an empty site.
+A failed build leaves the previous site unchanged. A successful Compose
+recreate can cause a brief connection gap; use a separate reverse-proxy host or
+blue/green deployment if zero-downtime publishing is required.
 
 ---
 
@@ -382,11 +389,12 @@ Two named volumes hold all state: `latitude8estate_postgres_data` and
 # /usr/local/bin/l8e-backup.sh
 set -eu
 cd /srv/latitude8estate
+COMPOSE='docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml'
 OUT=/var/backups/l8e
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
 mkdir -p "$OUT"
 
-docker compose --env-file .env.prod exec -T postgres \
+$COMPOSE exec -T postgres \
   pg_dump -U postgres latitude8estate_db | gzip > "$OUT/db-$STAMP.sql.gz"
 
 docker run --rm -v latitude8estate_minio_data:/data:ro -v "$OUT":/out alpine \
@@ -398,7 +406,8 @@ find "$OUT" -type f -mtime +14 -delete
 
 ```bash
 sudo chmod 700 /usr/local/bin/l8e-backup.sh
-echo '17 3 * * * /usr/local/bin/l8e-backup.sh' | sudo crontab -
+(sudo crontab -l 2>/dev/null; \
+  echo '17 3 * * * /usr/local/bin/l8e-backup.sh') | sudo crontab -
 ```
 
 Copy the output off the box — a backup on the same VPS does not survive losing
@@ -423,7 +432,7 @@ the VPS. **Test a restore once**, before you need it.
 `/health` runs a real database query, so a `503 {"status":"unhealthy"}` means
 the API is up and Postgres is not — check `postgres` before suspecting the API.
 
-Logs: `docker compose --env-file .env.prod logs -f web_api`.
+Logs: `$COMPOSE logs -f web_api`.
 
 ---
 

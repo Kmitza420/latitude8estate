@@ -10,6 +10,7 @@ venv/
 # it holds credentials, so only the example is tracked.
 .env
 .env.local
+.env.prod
 
 # Node
 node_modules/
