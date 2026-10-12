@@ -18,8 +18,7 @@ Eight services. Only three are meant to be reachable from the internet.
 | Service | Image / build | Container port | Published by default | Public? |
 | --- | --- | --- | --- | --- |
 | `postgres` | postgres:15-alpine | 5432 | `5432` | **no** |
-| `minio` | minio/minio | 9000, 9001 | `9000`, `9001` | media only, via proxy |
-| `minio_init` | minio/mc | — | — | no (runs once, exits) |
+| `minio` | cgr.dev/chainguard/minio | 9000, 9001 | `9000`, `9001` | media only, via proxy |
 | `redis` | redis:7-alpine | 6379 | `6379` | **no** |
 | `web_api` | `web/api/Dockerfile`, context `.` | 8000 | `8001` | yes, via proxy |
 | `web_ui` | `web/ui/Dockerfile` | 80 (nginx) | `3001` | yes, via proxy |
@@ -27,8 +26,9 @@ Eight services. Only three are meant to be reachable from the internet.
 | `crm_ui` | `crm/ui/Dockerfile` | 80 (nginx) | `3000` | optional |
 
 `crm_api` and `crm_ui` are stubs — `crm_api` imports nothing from `core/` yet.
-If you only need the public site, deploy `postgres`, `minio`, `minio_init`,
-`redis`, `web_api` and `web_ui` and leave the CRM out.
+If you only need the public site, deploy `postgres`, `minio`, `redis`,
+`web_api` and `web_ui` and leave the CRM out. The seed command initializes
+the public media bucket through the Python MinIO SDK.
 
 ### Two architectural facts that drive everything below
 
@@ -302,9 +302,9 @@ with the production flags added.
 cd /srv/latitude8estate
 COMPOSE='docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml'
 
-# 1. Datastores. minio_init creates the media bucket and makes it anonymously
-#    readable — without it every image 403s.
-$COMPOSE up -d postgres minio minio_init redis
+# 1. Datastores. The seed command in step 2 creates the public media bucket
+#    and makes it anonymously readable.
+$COMPOSE up -d postgres minio redis
 $COMPOSE ps                                      # wait for healthy
 
 # 2. Schema + content. Runs inside the API image, so no host Python is needed.
@@ -319,7 +319,8 @@ curl -fsS -H 'Host: api.example.com' http://127.0.0.1:8001/health && echo OK
 #    will fail, which is the intended behaviour.
 curl -fsS -H 'Host: api.example.com' http://127.0.0.1:8001/v1/projects/ | head -c 400
 
-# 5. The static site. Only now, because this build reads the API.
+# 5. The static site. Only now, because this build reads the API through its
+#    public HTTPS origin in production.
 $COMPOSE up -d --build web_ui
 ```
 
@@ -420,7 +421,8 @@ the VPS. **Test a restore once**, before you need it.
 | Symptom | Likely cause |
 | --- | --- |
 | `web_ui` build fails on "Could not reach …" | API not running, not seeded, or `PUBLIC_API_BASE_URL` unreachable from the build container. There is no fallback, by design. |
-| Site builds, but every image is broken | `MINIO_PUBLIC_BASE_URL` not browser-reachable, or `minio_init` never ran so the bucket is still private (403). |
+| Site builds, but every image is broken | `MINIO_PUBLIC_BASE_URL` is not browser-reachable, or the seed command could not reach MinIO to create the public media bucket (403). |
+| `minio` is running but `(unhealthy)` | The Chainguard MinIO image has no `curl`, so it cannot run a curl-based health check. Remove that health check rather than adding an upstream MinIO image. |
 | API returns bare 400 to everything | `ENVIRONMENT=production` + the forwarded `Host` missing from `CORS_ORIGINS`. See 4.3. |
 | Forms show "not connected to a backend yet" | Expected. The endpoints do not exist; `PUBLIC_API_FORMS_ENABLED` is false. |
 | `/v1/projects` 404s, `/v1/projects/` works | `redirect_slashes=False`. Keep the trailing slash. |
