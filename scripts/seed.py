@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import time
 import uuid
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
@@ -124,12 +125,17 @@ def upload_media(refs: list[tuple[MediaRef, str, str]]) -> bool:
     Returns:
         ``True`` if the upload succeeded, ``False`` if MinIO was unreachable.
     """
-    try:
-        storage = ObjectStorage()
-        storage.ensure_bucket()
-    except Exception as exc:  # noqa: BLE001 — any storage failure is non-fatal here
-        logger.warning("MinIO unavailable (%s) — seeding rows without uploading images", exc)
-        return False
+    for attempt in range(15):
+        try:
+            storage = ObjectStorage()
+            storage.ensure_bucket()
+            break
+        except Exception as exc:  # noqa: BLE001 — any storage failure is non-fatal here
+            if attempt == 14:
+                logger.warning("MinIO unavailable (%s) — seeding rows without uploading images", exc)
+                return False
+            logger.info("Waiting for MinIO before uploading media (%d/15)", attempt + 1)
+            time.sleep(2)
 
     palettes = [(GREEN, SAND), (SAND, GREEN), (GOLD, CREAM), (CREAM, GREEN)]
     for index, (ref, label, subtitle) in enumerate(refs):
