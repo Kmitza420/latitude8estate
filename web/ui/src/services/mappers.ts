@@ -1,25 +1,34 @@
 /**
- * API wire shapes -> the view models the pages and components already use.
+ * API wire shapes -> the view models the pages and components use.
  *
- * The `.astro` components are deliberately untouched by this work: they still
- * take the `Project`, `Post` and `Category` types declared in `src/data/`, and
- * these functions are what make an API record look like one.
+ * Every value below comes from the database. There are no placeholders and no
+ * stand-ins: where a record has no value for something, the view model carries
+ * `null` and the component omits that piece of the layout rather than
+ * inventing a plausible one.
  *
- * Where the API has no field for something the design renders — images,
- * prices, taglines, the listing agent — the mapper substitutes a clearly
- * marked stand-in from `placeholders` below. Every one of those is an open
- * item in `web/api/TODO.md`; when a field lands upstream, delete its entry
- * here and read the real value.
+ * Three things here are *derived* rather than stored, and each is derived only
+ * from fields the record actually has:
+ *
+ * - `beds` — `guest_bedrooms + master_bedroom`, because the design shows one
+ *   figure and the schema stores the two parts separately.
+ * - `tagline` — composed from type, place and status, but **only** when the
+ *   record has no tagline of its own.
+ * - `badge` — the project status, in words.
  */
 
-import { media, type Media } from "../data/media";
-import type { Agent, Facility, NearbyGroup, Project, SpecRow } from "../data/projects";
-import type { Post } from "../data/posts";
+import type { Media } from "../data/media";
+import type { Agent, Document, Facility, NearbyGroup, Project, SpecRow } from "../data/projects";
+import type { Category, Post } from "../data/posts";
 import type {
+  AgentDto,
   BlogResponseDto,
+  BlogSummaryDto,
+  CategoryDto,
+  DocumentDto,
   FacilitiesDto,
   FeaturesDto,
   InteriorSpacesDto,
+  MediaDto,
   NearbyPlaceDto,
   NearbyPlacesDto,
   OutdoorSpacesDto,
@@ -28,64 +37,10 @@ import type {
   ProjectStatusDto,
 } from "./dto";
 
-/** Rendered where the API simply has no value to give. */
+/** Rendered where a record genuinely has no value for a labelled row. */
 const UNKNOWN = "—";
 
-/**
- * Stand-ins for fields the API does not model yet.
- *
- * Kept together so the cost of the gap is visible in one place rather than
- * scattered through the mapping functions.
- */
-const placeholders = {
-  /** No price column exists. This is the trade's honest form of "unset". */
-  price: "Price on application",
-  /** No media table exists, so heroes rotate through the mockup imagery. */
-  heroPool: [
-    media.estateGlassPavilion,
-    media.estateAlpine,
-    media.estateOceanfront,
-    media.villaSerenity,
-    media.apexPenthouse,
-    media.clifftopReserve,
-  ] as Media[],
-  galleryPool: [media.pavilionLiving, media.pavilionKitchen, media.pavilionPool] as Media[],
-  articlePool: [
-    media.journalBrutalist,
-    media.journalKitchen,
-    media.journalIsland,
-    media.journalTech,
-  ] as Media[],
-  /** No authors table, so a blog's author_id cannot be resolved to a name. */
-  author: "Latitude 8 Estate",
-  /** No categories table, so category_id cannot be resolved to a slug. */
-  category: "lifestyle",
-  /** No agents table. */
-  agent: {
-    name: "Eleanor Vance",
-    email: "eleanor@latitude8estate.com",
-    portrait: media.agentPortrait,
-  } satisfies Agent,
-} as const;
-
 // --- Small formatters ------------------------------------------------------
-
-/**
- * Derive a URL segment from a project name.
- *
- * The API has no slug column for projects and the site routes on slugs, so one
- * has to be manufactured. `listAllProjects` de-duplicates the result, because
- * two projects both called "The Residences" would otherwise generate the same
- * static route and fail the build.
- */
-export function slugify(value: string): string {
-  return value
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 function titleCase(value: string): string {
   return value
@@ -101,19 +56,91 @@ function formatDistance(metres: number | null): string {
   return `${(metres / 1000).toFixed(metres % 1000 === 0 ? 0 : 1)} km`;
 }
 
+/**
+ * Format a price for display.
+ *
+ * `price_from` is a decimal string, not a number — the API sends it that way
+ * so a nine-figure figure cannot lose its last digits to a float. It is parsed
+ * here, at the one point where it becomes text.
+ */
+function formatPrice(amount: string | null, currency: string | null): string | null {
+  if (!amount) return null;
+
+  const value = Number(amount);
+  if (!Number.isFinite(value)) return null;
+
+  if (currency) {
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 0,
+      }).format(value);
+    } catch {
+      // An unrecognised ISO code should not take the page down with it.
+    }
+  }
+
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+}
+
+/** "642.00" + "sqm" -> "642 m²". */
+function formatArea(area: string | null, unit: string | null): string | null {
+  if (!area) return null;
+
+  const value = Number(area);
+  if (!Number.isFinite(value)) return null;
+
+  const formatted = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+  return unit === "sqft" ? `${formatted} sq ft` : `${formatted} m²`;
+}
+
 /** ISO timestamp or date -> the "YYYY-MM-DD" that `formatDate` expects. */
 function isoDate(value: string | null): string | null {
   const date = value?.split("T")[0];
   return date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null;
 }
 
-/** Rotate deterministically through a pool, so a record keeps its image. */
-function pick<T>(pool: readonly T[], index: number): T {
-  return pool[index % pool.length]!;
-}
-
 function present(rows: (SpecRow | null)[]): SpecRow[] {
   return rows.filter((row): row is SpecRow => row !== null);
+}
+
+// --- Shared pieces ---------------------------------------------------------
+
+function toMedia(dto: MediaDto): Media {
+  return { src: dto.url, alt: dto.alt };
+}
+
+export function toCategory(dto: CategoryDto): Category {
+  return {
+    slug: dto.slug,
+    name: dto.name,
+    blurb: dto.blurb,
+    image: dto.image ? toMedia(dto.image) : null,
+    featured: dto.featured,
+  };
+}
+
+function toAgent(dto: AgentDto): Agent {
+  return {
+    name: dto.name,
+    email: dto.email,
+    phone: dto.phone,
+    portrait: dto.portrait ? toMedia(dto.portrait) : null,
+  };
+}
+
+function toDocument(dto: DocumentDto): Document {
+  // Size is the only metadata worth showing beside the title, and only when
+  // the record has it.
+  const megabytes = dto.size_bytes ? `${(dto.size_bytes / 1_000_000).toFixed(1)} MB` : null;
+  const kind = dto.content_type === "application/pdf" ? "PDF" : null;
+
+  return {
+    title: dto.title,
+    meta: [kind, megabytes].filter(Boolean).join(", ") || null,
+    href: dto.url,
+  };
 }
 
 // --- Project pieces --------------------------------------------------------
@@ -135,7 +162,16 @@ function addressLines(location: ProjectLocationDto): string[] {
   );
 }
 
+/**
+ * The lead line under the hero title.
+ *
+ * A record with its own tagline uses it. One without gets a sentence composed
+ * from three fields it does have — which is a description of the record, not
+ * marketing copy written on its behalf.
+ */
 function taglineFor(dto: ProjectResponseDto): string {
+  if (dto.tagline) return dto.tagline;
+
   const kind = dto.project_type === "villa" ? "villa" : "condominium development";
   const state =
     dto.status === "completed"
@@ -146,9 +182,11 @@ function taglineFor(dto: ProjectResponseDto): string {
   return `A ${kind} in ${cityLine(dto.location)}. ${state}.`;
 }
 
-function bedCount(interior: InteriorSpacesDto): string {
+/** Guest bedrooms plus the master, when the record knows either. */
+function bedCount(interior: InteriorSpacesDto): string | null {
+  if (interior.guest_bedrooms === null && !interior.master_bedroom) return null;
   const total = (interior.guest_bedrooms ?? 0) + (interior.master_bedroom ? 1 : 0);
-  return total > 0 ? String(total) : UNKNOWN;
+  return total > 0 ? String(total) : null;
 }
 
 function quickSpecs(dto: ProjectResponseDto): SpecRow[] {
@@ -170,12 +208,11 @@ function quickSpecs(dto: ProjectResponseDto): SpecRow[] {
 }
 
 function interiorRows(interior: InteriorSpacesDto): SpecRow[] {
+  const beds = bedCount(interior);
+
   return present([
-    { label: "Bedrooms", value: bedCount(interior) },
-    {
-      label: "Bathrooms",
-      value: interior.bathrooms !== null ? String(interior.bathrooms) : UNKNOWN,
-    },
+    beds !== null ? { label: "Bedrooms", value: beds } : null,
+    interior.bathrooms !== null ? { label: "Bathrooms", value: String(interior.bathrooms) } : null,
     interior.living_room ? { label: "Living Room", value: "Included" } : null,
     interior.dining_area ? { label: "Dining Area", value: "Included" } : null,
     interior.kitchen ? { label: "Kitchen", value: "Included" } : null,
@@ -285,27 +322,25 @@ function nearbyGroups(nearby: NearbyPlacesDto): NearbyGroup[] {
 
 // --- Public mappers --------------------------------------------------------
 
-/**
- * @param index Position in the list. Used only to keep the placeholder imagery
- *   stable and varied until the API returns real media.
- */
-export function toProject(dto: ProjectResponseDto, index = 0): Project {
+export function toProject(dto: ProjectResponseDto): Project {
   const interior = dto.features.spaces.interior;
+  const [hero, ...gallery] = dto.media.map(toMedia);
 
   return {
-    slug: slugify(dto.name) || dto.id,
+    slug: dto.slug,
     name: dto.name,
     tagline: taglineFor(dto),
-    price: placeholders.price,
+    price: formatPrice(dto.price_from, dto.price_currency),
     city: cityLine(dto.location),
     badge: badgeFor(dto.status),
-    // No `featured` column; `getFeaturedProjects` decides by list position.
-    featured: false,
+    featured: dto.featured,
     beds: bedCount(interior),
-    baths: interior.bathrooms !== null ? String(interior.bathrooms) : UNKNOWN,
-    // No floor-area column at all.
-    area: UNKNOWN,
-    hero: pick(placeholders.heroPool, index),
+    baths: interior.bathrooms !== null ? String(interior.bathrooms) : null,
+    area: formatArea(dto.floor_area, dto.floor_area_unit),
+    // A listing with no photograph renders as a typographic card rather than
+    // borrowing someone else's.
+    hero: hero ?? null,
+    gallery,
     address: addressLines(dto.location),
     quickSpecs: quickSpecs(dto),
     interior: interiorRows(interior),
@@ -313,33 +348,29 @@ export function toProject(dto: ProjectResponseDto, index = 0): Project {
     facilities: facilityTiles(dto.features.facilities),
     technical: technicalList(dto.features.features),
     nearby: nearbyGroups(dto.features.nearby),
-    // No documents table; the section renders empty rather than inventing links.
-    documents: [],
-    gallery: placeholders.galleryPool,
-    agent: placeholders.agent,
+    documents: dto.documents.map(toDocument),
+    agent: dto.agent ? toAgent(dto.agent) : null,
   };
 }
 
-export function toPost(dto: BlogResponseDto, index = 0): Post {
-  const image: Media = dto.featured_image_url
-    ? // A bare URL arrives with no alt text, so the title stands in for one.
-      { src: dto.featured_image_url, alt: dto.title }
-    : pick(placeholders.articlePool, index);
-
+/** A list item — everything but the body. */
+export function toPost(dto: BlogSummaryDto): Post {
   return {
     slug: dto.slug,
     title: dto.title,
-    // `category_id` is an unresolvable UUID until a categories table exists.
-    category: placeholders.category,
+    category: dto.category ? toCategory(dto.category) : null,
     excerpt: dto.excerpt ?? "",
-    image,
-    author: placeholders.author,
+    image: dto.featured_image ? toMedia(dto.featured_image) : null,
+    author: dto.author?.name ?? null,
     date: isoDate(dto.published_at) ?? isoDate(dto.created_at) ?? "",
-    // No `featured` column; `getFeaturedPost` takes the newest instead.
-    featured: false,
-    // One HTML blob upstream, so there is no interruption and no lower body.
-    bodyTop: dto.content,
+    featured: dto.featured,
+    body: null,
   };
+}
+
+/** A full article, body included. */
+export function toArticle(dto: BlogResponseDto): Post {
+  return { ...toPost(dto), body: dto.content };
 }
 
 /**
@@ -348,11 +379,11 @@ export function toPost(dto: BlogResponseDto, index = 0): Post {
  * One malformed row — a project whose JSONB `features` predates the current
  * shape, say — should cost that one card, not the whole build.
  */
-export function mapAll<D, T>(items: D[], map: (dto: D, index: number) => T, label: string): T[] {
+export function mapAll<D, T>(items: D[], map: (dto: D) => T, label: string): T[] {
   const mapped: T[] = [];
-  items.forEach((item, index) => {
+  items.forEach((item) => {
     try {
-      mapped.push(map(item, index));
+      mapped.push(map(item));
     } catch (error) {
       const reason = error instanceof Error ? error.message : String(error);
       console.warn(`[services] skipped a malformed ${label} record — ${reason}`);

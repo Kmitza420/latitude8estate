@@ -54,7 +54,7 @@ export const hero = {
   eyebrow: "Bespoke Estate Care",
   title: "Comprehensive Property Management.",
   lead: "Preserving architectural excellence, proactive facility engineering, and bespoke property stewardship for the world's most discerning private residences and estates.",
-  image: media.heroEstate,
+  image: media.homeHero,
 };
 
 export const reasons: Reason[] = [
@@ -93,7 +93,7 @@ export const services: Service[] = [
     category: "Infrastructure",
     title: "Facility & Mechanical Systems",
     body: "Full lifecycle maintenance for whole-home HVAC chillers, backup generators, water desalination, filtration plants, and electrical grid synchronisation.",
-    image: media.catCoastal,
+    image: media.aboutHero,
     details: [
       "Automated seasonal climate switchovers and air purity diagnostics.",
       "Annual acoustic and vibration dampening testing on heavy plant machinery.",
@@ -104,7 +104,7 @@ export const services: Service[] = [
     category: "Grounds & Aquatic",
     title: "Architectural Grounds & Pools",
     body: "Meticulous upkeep of geometric gardens, specimen trees, heated saltwater infinity pools, fountains, exterior stone surfaces, and landscape lighting systems.",
-    image: media.estateGlassPavilion,
+    image: media.contactHero,
     details: [
       "Bi-weekly mineral balancing and robotic optical pool cleaning.",
       "Horticultural care tailored to rare botanical specimens and topiary forms.",
@@ -115,7 +115,7 @@ export const services: Service[] = [
     category: "Technology & Access",
     title: "Smart Home & Security Audits",
     body: "Firmware optimisation, automated shades, Crestron/Lutron lighting matrix updates, perimeter biometrics, and secure encrypted estate network monitoring.",
-    image: media.journalTech,
+    image: media.managementTechnology,
     details: [
       "Cybersecurity hardening for all IoT cameras and internal networks.",
       "Custom multi-room audio calibration and home cinema performance checks.",
@@ -160,7 +160,7 @@ export const narrative = {
   eyebrow: "Precision Management",
   title: "Protecting Every Dimension of Your Sanctuary.",
   body: "From monumental cliffside residences to historic European estates, preserving architectural integrity requires more than general contracting — it demands connoisseur-level appreciation and engineering mastery.",
-  image: media.estateAlpine,
+  image: media.managementNarrative,
   /** Overlaid on the lower-left of that image. */
   imageCaption: "Alpine Villa — Full Custody",
   assurances: [
@@ -182,7 +182,7 @@ export const enquiry = {
   eyebrow: "Direct Communication",
   title: "Initiate Private Estate Management.",
   body: "Our managing directors personally handle all property management enquiries. Share your estate specifications below to schedule a confidential property walkthrough and tailored proposal.",
-  image: media.estateOceanfront,
+  image: media.managementAdvisory,
   imageEyebrow: "Confidential Advisory",
   imageCaption: "Private Estate Concierge & Stewardship",
   /** Printed along the panel's footer rule. */

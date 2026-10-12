@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 
 // Imported from the module rather than the barrel: this file is a hydrated
-// island, and the barrel would drag the read services (and the fixtures behind
+// island, and the barrel would drag the read services (and the whole wire
 // them) into the client bundle.
 import {
   describeSubmitError,

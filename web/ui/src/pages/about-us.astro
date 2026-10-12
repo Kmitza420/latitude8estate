@@ -5,6 +5,7 @@ import Icon from "../components/Icon.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import { media } from "../data/media";
 import { site } from "../data/site";
+import { listAllProjects, summarise } from "../services";
 
 // Placeholder agency copy — no mockup existed for this page.
 const pillars = [
@@ -25,11 +26,16 @@ const pillars = [
   },
 ];
 
+// These four figures were invented ("$2.4B transacted", "74% off-market").
+// They are now counted from the portfolio, so the page cannot claim anything
+// the database does not support.
+const portfolio = summarise(await listAllProjects());
+
 const stats = [
-  { value: "18", label: "Years advising" },
-  { value: "$2.4B", label: "Transacted" },
-  { value: "9", label: "Markets" },
-  { value: "74%", label: "Off-market" },
+  { value: String(portfolio.total), label: "Listings represented" },
+  { value: String(portfolio.markets), label: portfolio.markets === 1 ? "Market" : "Markets" },
+  { value: String(portfolio.completed), label: "Completed" },
+  { value: String(portfolio.underConstruction), label: "Under construction" },
 ];
 ---
 
@@ -38,7 +44,7 @@ const stats = [
   description={`${site.name} advises on the acquisition and sale of architecturally significant private residences.`}
 >
   <Hero
-    image={media.catCoastal}
+    image={media.aboutHero}
     eyebrow="About Us"
     title="Quiet counsel on remarkable buildings."
     lead={`${site.name} advises a small number of clients on the acquisition and sale of architecturally significant private residences.`}

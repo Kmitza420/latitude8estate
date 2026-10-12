@@ -1,128 +1,81 @@
-# web/api — open work, driven by what `web/ui` renders
+# web/api — open work
 
-The public site is now wired to this API through `web/ui/src/services/`. This
-file is the gap list: everything the UI asks for that the API cannot answer yet,
-ordered so the blocking items come first.
+The public site (`web/ui`) reads this API through `web/ui/src/services/`. This
+file tracks the gap between what the site renders and what the API can answer.
 
-Nothing here changes the API's code. It is a checklist, not a design document —
-where a decision is genuinely open, it says so rather than picking for you.
-
-**Scope note.** The public site has no accounts, no login and no authenticated
-area, so nothing below asks for auth endpoints. The two write endpoints are
-anonymous public submissions and must be treated as such — validated and
-rate-limited, never trusted.
+> **Note on branches.** An earlier copy of this file exists on `aco_b01`, left
+> there by the accidental merge of `api` into that branch. This is the current
+> one. When `api` is merged into `aco_b01`, take this version.
 
 Contract mirrors, for cross-referencing:
 
 | Concern | UI file |
 | --- | --- |
 | Wire shapes, mirrored from `core/models/dto.py` | `web/ui/src/services/dto.ts` |
-| Field-by-field mapping, and every placeholder | `web/ui/src/services/mappers.ts` |
+| Field-by-field mapping | `web/ui/src/services/mappers.ts` |
 | Paths, timeouts, feature flags | `web/ui/src/services/config.ts` |
 
 ---
 
-## 0. Blocking — the API cannot serve the site as it stands
+## Closed
 
-- [ ] **The projects router is mounted under `/blogs`.**
-      `endpoints/v1/routes/projects.py:10` declares
-      `APIRouter(prefix="/blogs", tags=["Blogs"])`. Because `router.py` includes
-      projects *before* blogs, `GET /v1/blogs/` resolves to `list_projects` and
-      `GET /v1/blogs/{id}` to `get_project`, and the blogs routes are shadowed
-      entirely. There is no reachable projects URL at all. Should be
-      `prefix="/projects", tags=["Projects"]`. The UI already calls
-      `/v1/projects/` on the assumption that this is fixed.
+The consolidation pass closed the whole of the previous blocking list and most
+of the data-model gaps. Recorded here so the same ground is not re-covered.
 
-- [ ] **`limit=0` is a 500.** Both list routes compute
-      `(count + limit - 1) // limit`, which raises `ZeroDivisionError` on
-      `limit=0` — reachable by anyone who types the query string. Clamp `limit`
-      to a sane range (say 1–100) and `skip` to `>= 0`, with `Query(ge=..., le=...)`.
-
-- [ ] **The import roots disagree.** `main.py` imports `endpoints.v1.router`
-      (needs `web/api` on `sys.path`), while `routes/blogs.py` imports
-      `web.api.dependencies` (needs the repo root), and everything imports
-      `core.*` (repo root again). Both roots have to be on the path
-      simultaneously, and `web/` has no `__init__.py`, so this only works by
-      namespace-package accident. Pick one root — importing `dependencies`
-      relatively, or as `web.api.dependencies` everywhere including `main.py` —
-      and make the Dockerfile set it explicitly.
-
-- [ ] **`web/api/Dockerfile` is empty**, so `docker-compose build web_api`
-      produces nothing. `web/ui/Dockerfile` is empty too.
-
-- [ ] **`redirect_slashes=False` makes the trailing slash mandatory.** The app is
-      built with that flag and the list routes are registered as `"/"`, so
-      `/v1/blogs` 404s where `/v1/blogs/` works. That is a defensible choice, but
-      it is a contract detail — the UI sends the trailing slash deliberately
-      (`web/ui/src/services/config.ts`). If you would rather the bare path
-      worked, register the list routes as `""` instead.
-
-- [ ] **Set a real CORS origin list before the forms go live.** The enquiry and
-      newsletter forms POST from the browser, cross-origin, so they depend on
-      this. `CORS_ORIGINS` defaults to `"*"`, which does work for the site's
-      requests (they send no credentials), but pairing it with
-      `allow_credentials=True` is a misconfiguration that Starlette only papers
-      over — and in production the same value also feeds `TrustedHostMiddleware`,
-      where `"*"` defeats the point of having it. List the real origins:
-      `http://localhost:4321` (astro dev), `http://localhost:3001`
-      (docker-compose `web_ui`), plus the production domain. Symptom if this is
-      wrong: the forms fail with an opaque network error in the browser while
-      `curl` works fine.
-
-- [ ] **`docker-compose.yml` passes the wrong build arg to `web_ui`.** It sets
-      `VITE_API_BASE_URL`, but the UI is Astro, which only exposes `PUBLIC_`-
-      prefixed variables. It needs `PUBLIC_API_BASE_URL`. (`crm_ui` is Vite and
-      is correct as-is.)
+- [x] **Projects router was mounted under `/blogs`**, shadowing the blogs
+      routes and leaving no reachable projects URL. Now `/v1/projects`.
+- [x] **`limit=0` was a 500** (`ZeroDivisionError` in the `total_pages`
+      calculation, reachable from the query string). `skip`/`limit` are now
+      validated by `SkipParam`/`LimitParam` in `web/api/dependencies.py`, and
+      `PaginationMetadata.build` clamps independently.
+- [x] **Import roots disagreed.** One root now — the repository root. The
+      service runs as `uvicorn web.api.main:app`.
+- [x] **Services called repositories with a positional dict** where `**kwargs`
+      was expected, so every write raised `TypeError`. See
+      `core/services/base.to_columns`, which also handles the scalar-vs-JSONB
+      dump-mode distinction.
+- [x] **Response DTOs had no `from_attributes`**, so no ORM row could be
+      serialised.
+- [x] **No stable ordering.** `created_at DESC, id` — total, so pagination
+      cannot duplicate or drop a row. Blogs order on `published_at DESC`.
+- [x] **Unpublished posts were served to the public.** Filtered in the
+      repository now, on the list *and* detail routes.
+- [x] **The list route shipped every post's full `content`.** `BlogSummary`.
+- [x] **`content` was unsanitised HTML** injected with `set:html`.
+      `core/services/sanitize.py`, applied on write and on read.
+- [x] **`author_id` / `category_id` were unresolvable UUIDs.** Real `authors`
+      and `categories` tables, real FKs, expanded inline on the response.
+- [x] **No slug, price, floor area, featured flag, media, documents or agent
+      on `Project`.** All added; media and documents are object keys resolved
+      through `MINIO_PUBLIC_BASE_URL` on read.
+- [x] **`featured_image_url` carried no alt text.** Now a `MediaRef` with
+      `alt` required and non-empty at validation time.
+- [x] **`GET /v1/blogs/by-slug/{slug}`** and `/v1/projects/by-slug/{slug}` —
+      the site routes on slugs; it no longer takes two round trips.
+- [x] **`/health` did not touch the database.** It runs `SELECT 1` and returns
+      503 when that fails.
+- [x] **`CORS_ORIGINS` defaulted to `"*"`** while `allow_credentials=True`.
+- [x] **`PagninatedResponse` was misspelt.**
+- [x] **`requirements.txt` was missing `psycopg2-binary`, `minio` and `nh3`** —
+      all three imported, none declared.
+- [x] **Nothing created the tables or wrote a row.** `python -m scripts.seed`.
 
 ---
 
-## 1. Projects — columns the site renders and the model does not have
+## Open
 
-`ProjectResponse` covers the physical description of a development well. It has
-nothing for the *listing* — the part a buyer actually reads. Each item below is
-currently faked in `mappers.ts`; the placeholder is named so you can find it.
+### 1. Schema management
 
-- [ ] **`slug`** — the site routes on `/projects/{slug}`. The UI derives one from
-      `name` and de-duplicates collisions (`listAllProjects`), which means a
-      rename silently breaks every inbound link to that project. Add a unique,
-      indexed `slug` column, set on create and never changed casually.
-- [ ] **`price`** — rendered under the title on the detail page and on every
-      card. Placeholder: the string `"Price on application"`. Decide whether it
-      is a display string or a number plus currency; if numeric, the UI needs a
-      formatter and the API needs a currency code.
-- [ ] **`tagline` / marketing description** — the hero lead and the card copy.
-      Placeholder: a sentence assembled from type, city and status, which reads
-      like a database record because it is one.
-- [ ] **`featured`** — drives the "Featured Estates" rail on `/home`. Without it
-      `getFeaturedProjects` just takes the first three in list order.
-- [ ] **Floor area** — the third stat on every card, beside beds and baths.
-      Currently renders as an em dash. Store the number and the unit separately.
-- [ ] **Media: hero image and gallery** — there is no media table and no image
-      column. Placeholders rotate through the mockup imagery, so two different
-      projects can show the same photograph. See §5 for the shape.
-- [ ] **Listing agent** — name, email, portrait. Placeholder: a hardcoded
-      person. Probably a real `agents` table rather than three columns.
-- [ ] **Documents** — floor plans and brochures. The section is hidden when
-      empty, which today is always. Needs title, size/meta and a URL; anything
-      not meant to be crawlable wants a signed, expiring link.
-- [ ] **Card badge** — "New Listing" in the mockups. Derived from `status` for
-      now ("Planned", "Under Construction"), which is informative but is not the
-      editorial label the design asked for.
+- [ ] **Adopt Alembic.** `scripts/seed.py` calls `create_all`, which creates
+      missing tables and silently ignores changes to existing ones. Every
+      schema change from here needs a migration, not a reseed.
 
-## 2. Projects — endpoint behaviour
+### 2. Write endpoints the UI is already coded against
 
-- [ ] **Guarantee a stable ordering.** `ProjectRepository.list` has no `ORDER BY`,
-      so PostgreSQL may return rows in any order and pagination will duplicate
-      and drop listings between page 1 and page 2. Order by something total —
-      `created_at DESC, id` — and make it part of the contract.
-- [ ] **`GET /v1/projects/by-slug/{slug}`.** The detail route takes a UUID, so
-      the UI resolves a slug by scanning the full list. Fine for a static build
-      of a few dozen projects; not fine at any real size.
-- [ ] **`GET /v1/projects/featured`.** Pre-ordered, not paginated. The home rail
-      lays out exactly three.
-- [ ] **Decide what the public sees.** `ProjectStatus.PLANNED` records are
-      returned today. If a planned project should not be public, filter it
-      server-side rather than leaving it to the client.
+Both are called from the browser at runtime. `PUBLIC_API_FORMS_ENABLED` stays
+`false` in the UI until they exist, and both forms show a "not connected"
+notice rather than failing silently. They are anonymous public writes and must
+be treated as such.
 
 ## 3. Blogs — the lifestyle section
 
@@ -195,55 +148,51 @@ both forms show a notice saying they are not connected. Flip it once these ship.
       send a confirmation mail — the UI's success copy already tells the visitor
       to check their inbox. A repeat subscribe should be idempotent, not a 409,
       and it must not disclose whether an address is already on the list.
+- [ ] **`POST /v1/enquiries/`** — body `{name, email, phone?, message?,
+      project_slug?}` → `201 {id, status}`. Validate the email, reject an
+      unknown `project_slug`, rate-limit by IP, return field errors as 422.
+      Forward to the CRM and the listing agent.
+- [ ] **`POST /v1/newsletter/subscriptions/`** — body `{email}` →
+      `201 {id, status}`. Double opt-in; the UI's success copy already tells
+      the visitor to check their inbox. A repeat subscribe must be idempotent,
+      not a 409, and must not disclose whether an address is on the list.
       Rate-limit by IP.
-- [ ] `GET /v1/categories/` and `GET /v1/categories/{slug}` — see §3.
-- [ ] `GET /v1/projects/featured` and a featured-article route — see §2, §3.
+- [ ] Redis is already in `docker-compose.yml` and is the obvious place to put
+      the rate limiter.
 
-## 5. Media, once there is somewhere to put it
+### 3. Media
 
-Every image the site renders needs an accessible name, so media should never be
-a bare string on the wire:
+- [ ] **Documents are served from the public bucket.** Fine for a brochure,
+      wrong for anything that should not be crawlable.
+      `ObjectStorage.presigned_url` exists for this; route document URLs
+      through it once there is a private bucket to put them in.
+- [ ] **No upload endpoint.** The CRM needs one; `ObjectStorage.put_object`
+      is the piece it is missing, plus content-type and size validation.
+- [ ] **Facility icons are derived in the UI** (`mappers.ts`) from the boolean
+      feature vocabulary. If they ever move server-side, validate against the
+      Material Symbols set on write — an unrecognised name renders as text.
 
-```
-{"url": "https://…", "alt": "Human readable description"}
-```
-
-- [ ] Resolve MinIO object keys to absolute, browser-reachable URLs server-side.
-      `MINIO_PUBLIC_BASE_URL` already exists in `core/settings.py` for this.
-- [ ] Make `alt` required and non-empty at write time in the CRM. An empty one
-      is an accessibility regression that no reviewer will catch by eye.
-- [ ] Facility icons, if they ever come from the API, are Material Symbols
-      ligature names (`pool`, `fitness_center`, `security`). Validate against a
-      known set on write — an unrecognised name renders as literal text.
-      The UI currently derives these itself in `mappers.ts`.
-
-## 6. Cross-cutting
+### 4. Cross-cutting
 
 - [ ] **Cache headers** (`ETag`, `Cache-Control`) on the GETs. The site reads
       them at build time today, but the same responses get hit per-request the
       moment anything moves to SSR.
 - [ ] **A consistent error body.** FastAPI's `{"detail": …}` is a string for
-      `HTTPException` and a list of objects for a 422. The UI has to special-case
-      that (`describeSubmitError` in `web/ui/src/services/forms.ts`). One shape
-      would be kinder.
-- [ ] **`PagninatedResponse` is misspelt** in `core/models/dto.py`. Internal
-      only — the wire format is unaffected — but it will be copied around.
-- [ ] **Health check.** `/health` reports `{"status": "ok"}` without touching the
-      database, so it stays green while every request 500s.
+      `HTTPException` and a list of objects for a 422; the UI special-cases
+      that in `describeSubmitError`.
+- [ ] **No tests.** The sanitiser, `to_columns`, the published-only filter and
+      the pagination arithmetic are the four things most worth pinning down.
 
-## 7. Content the UI still hardcodes — decide where it belongs
+### 5. Content the UI still holds — decide where it belongs
 
-Not necessarily API work; some of it is properly a build-time concern. Worth an
-explicit decision rather than drift:
+Not necessarily API work, but worth an explicit decision rather than drift:
 
-- [ ] The testimonial on `/home` (quote, name, detail) — `web/ui/src/pages/home.astro`.
-- [ ] `/about-us` and `/contact-us`: agency copy, statistics, office addresses,
-      phone number, email. All of it is invented placeholder text right now.
-- [ ] Site navigation and the four categories — deliberately left in
-      `web/ui/src/data/site.ts`, since routes are a build-time concern. Flagged
-      so the decision is visible, not because it should move.
-- [ ] **`web/ui/src/data/media.ts` points at temporary `lh3.googleusercontent.com`
-      URLs emitted by the design tool. They will expire.** These are also what
-      the mappers fall back to for project heroes and galleries, so the media
-      work in §5 is on the critical path for the site's images, not just for the
-      CMS.
+- [ ] Site navigation and the four nav tiles — deliberately in
+      `web/ui/src/data/site.ts`, since routes are a build-time concern.
+- [ ] Page hero artwork for `/home`, `/projects`, `/lifestyle`, `/about-us`
+      is still site chrome in `web/ui/src/data/media.ts`, pointing at
+      temporary `lh3.googleusercontent.com` URLs **that will expire**. Record
+      data no longer depends on them, but these six or so images do.
+- [ ] `/about-us` and `/contact-us` prose. The fabricated statistics, offices
+      and phone number are gone (the page now reports real aggregates over the
+      portfolio), but the remaining agency copy is still placeholder text.

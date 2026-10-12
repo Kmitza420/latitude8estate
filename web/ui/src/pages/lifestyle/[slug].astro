@@ -5,22 +5,37 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import PostCard from "../../components/PostCard.astro";
-import { categoryName, formatDate } from "../../data/posts";
-import { getRelatedPosts, listAllPosts } from "../../services";
+import { formatDate } from "../../data/posts";
+import { getPostBySlug, getRelatedPosts, listAllPosts } from "../../services";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  // The list route returns summaries — no body — so each article is fetched
+  // from the detail route for the page that renders it.
   const posts = await listAllPosts();
 
   return Promise.all(
-    posts.map(async (post) => ({
-      params: { slug: post.slug },
-      props: { post, related: await getRelatedPosts(post.slug) },
-    })),
+    posts.map(async (summary) => {
+      const [post, related] = await Promise.all([
+        getPostBySlug(summary.slug),
+        getRelatedPosts(summary.slug),
+      ]);
+      return {
+        params: { slug: summary.slug },
+        props: { post: post ?? summary, related },
+      };
+    }),
   );
 };
 
 const { post, related } = Astro.props;
 
+/**
+ * The article body arrives as one sanitised HTML blob, which is how a CMS
+ * stores prose. The full-bleed image the design breaks the article across is
+ * expressed inside it as `<figure class="interruption">`, laid out by
+ * `global.css` — so an editor places it, rather than it being three columns on
+ * the table that only one layout can ever use.
+ */
 const prose =
   "prose prose-lg max-w-none prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-h2:text-secondary prose-h2:mb-6 prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary";
 ---
@@ -28,41 +43,27 @@ const prose =
 <BaseLayout title={post.title} description={post.excerpt}>
   <Hero
     image={post.image}
-    eyebrow={categoryName(post.category)}
+    eyebrow={post.category?.name}
     title={post.title}
     overlay="gradient"
   >
     <div
       class="font-label-md text-label-md mt-6 flex items-center gap-4 text-on-primary/80"
     >
-      <span>By {post.author}</span>
-      <span class="h-1 w-1 rounded-full bg-secondary-fixed"></span>
-      <time datetime={post.date}>{formatDate(post.date)}</time>
+      {post.author && <span>By {post.author}</span>}
+      {
+        post.author && post.date && (
+          <span class="h-1 w-1 rounded-full bg-secondary-fixed" />
+        )
+      }
+      {post.date && <time datetime={post.date}>{formatDate(post.date)}</time>}
     </div>
   </Hero>
 
-  <article class="mx-auto max-w-[700px] px-margin-mobile py-section-gap md:px-0">
-    <div class={prose} set:html={post.bodyTop} />
-  </article>
-
-  {
-    post.interruption && (
-      <figure class="relative mb-section-gap h-[60dvh] min-h-[400px] w-full">
-        <div
-          class="absolute inset-0 h-full w-full bg-cover bg-center"
-          style={`background-image: url('${post.interruption.image.src}')`}
-          role="img"
-          aria-label={post.interruption.image.alt}
-        />
-        <figcaption class="font-label-md text-label-md absolute right-4 bottom-4 rounded bg-surface/90 px-4 py-2 text-on-surface backdrop-blur">
-          {post.interruption.caption}
-        </figcaption>
-      </figure>
-    )
-  }
-
-  <article class="mx-auto max-w-[700px] px-margin-mobile pb-section-gap md:px-0">
-    {post.bodyBottom && <div class={prose} set:html={post.bodyBottom} />}
+  <article
+    class="article-body mx-auto max-w-[700px] px-margin-mobile py-section-gap md:px-0"
+  >
+    {post.body && <div class={prose} set:html={post.body} />}
 
     <div
       class="mt-16 flex items-center justify-between border-t border-outline-variant/30 pt-8"
@@ -85,12 +86,16 @@ const prose =
         </a>
       </div>
 
-      <a
-        href={`/lifestyle/category/${post.category}`}
-        class="font-label-md text-label-md text-secondary transition-colors hover:text-primary"
-      >
-        More in {categoryName(post.category)}
-      </a>
+      {
+        post.category && (
+          <a
+            href={`/lifestyle/category/${post.category.slug}`}
+            class="font-label-md text-label-md text-secondary transition-colors hover:text-primary"
+          >
+            More in {post.category.name}
+          </a>
+        )
+      }
     </div>
   </article>
 

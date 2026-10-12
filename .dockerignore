@@ -1,0 +1,25 @@
+# The API images build from the repository root, so this keeps the whole of
+# node_modules and both virtualenvs out of the build context.
+
+.git
+.gitignore
+*.md
+!web/api/README.md
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/.pytest_cache/
+
+# Node
+**/node_modules/
+**/dist/
+**/.astro/
+
+# Local configuration and design source
+.env
+.env.local
+**/mockups/
+**/.vscode/

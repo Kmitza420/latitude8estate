@@ -2,19 +2,18 @@
  * Projects (the portfolio) read from `web/api`.
  *
  * Everything here returns the `Project` view model from `src/data/projects`,
- * so the pages and cards that consume it are unchanged from when the data was
- * a static module.
+ * so the pages and cards that consume it stay unaware that a network sits
+ * behind them.
  *
- * Note that `/v1/projects/` is **not reachable yet**: `web/api` mounts its
- * projects router under the `/blogs` prefix by mistake, so every call here
- * currently fails and falls through to the fixtures. That is the first item in
- * `web/api/TODO.md`, and a one-line fix upstream.
+ * There are no fixtures behind these calls. A failure propagates and stops the
+ * build, which is the intended behaviour — a site that silently published
+ * placeholder content because the API was briefly down would be worse.
  */
 
-import { projects as fixtureProjects, type Project } from "../data/projects";
+import type { Project } from "../data/projects";
 import { BULK_PAGE_SIZE, MAX_BULK_PAGES, endpoints } from "./config";
 import type { PaginatedDto, ProjectResponseDto } from "./dto";
-import { apiGet, withFallback } from "./http";
+import { apiGet, optional } from "./http";
 import { mapAll, toProject } from "./mappers";
 
 export interface ProjectPage {
@@ -50,58 +49,25 @@ export async function listProjects(page = 1, pageSize = BULK_PAGE_SIZE): Promise
 }
 
 /**
- * Every project, in API order.
+ * Every project, in API order (newest first).
  *
  * `getStaticPaths` needs the full list anyway, and a static build runs once, so
- * walking the endpoint to exhaustion is cheaper than the alternative of one
- * request per rendered page.
+ * walking the endpoint to exhaustion is cheaper than one request per rendered
+ * page.
  */
 export async function listAllProjects(): Promise<Project[]> {
-  return withFallback(
-    "listAllProjects",
-    async () => {
-      const collected: Project[] = [];
-      let page = 1;
-      let totalPages = 1;
+  const collected: Project[] = [];
+  let page = 1;
+  let totalPages = 1;
 
-      do {
-        const result = await listProjects(page, BULK_PAGE_SIZE);
-        collected.push(...result.projects);
-        totalPages = result.totalPages;
-        page += 1;
-      } while (page <= totalPages && page <= MAX_BULK_PAGES);
+  do {
+    const result = await listProjects(page, BULK_PAGE_SIZE);
+    collected.push(...result.projects);
+    totalPages = result.totalPages;
+    page += 1;
+  } while (page <= totalPages && page <= MAX_BULK_PAGES);
 
-      return dedupeSlugs(collected);
-    },
-    () => fixtureProjects,
-  );
-}
-
-/**
- * Make every slug unique.
- *
- * Slugs are derived from the project name (the API has no slug column), so two
- * identically named projects would otherwise produce two identical static
- * routes and fail the build.
- */
-function dedupeSlugs(projects: Project[]): Project[] {
-  const seen = new Set<string>();
-
-  return projects.map((project) => {
-    if (!seen.has(project.slug)) {
-      seen.add(project.slug);
-      return project;
-    }
-
-    let suffix = 2;
-    let candidate = `${project.slug}-${suffix}`;
-    while (seen.has(candidate)) {
-      suffix += 1;
-      candidate = `${project.slug}-${suffix}`;
-    }
-    seen.add(candidate);
-    return { ...project, slug: candidate };
-  });
+  return collected;
 }
 
 /** Slice a full list into one page of the portfolio grid. */
@@ -120,26 +86,50 @@ export function paginate(projects: Project[], page: number, pageSize: number): P
 /**
  * The estates on the home page rail.
  *
- * The fixtures carry an explicit `featured` flag; the API has no such column,
- * so API-backed results fall back to the first few in list order. Give the
- * endpoint a deliberate ordering (see `web/api/TODO.md`) and this becomes
- * meaningful rather than arbitrary.
+ * Backed by the `featured` flag on the record. The API falls back to the
+ * newest listings when nothing has been flagged, so the rail is never empty.
  */
 export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
-  const all = await listAllProjects();
-  const flagged = all.filter((project) => project.featured);
-  return (flagged.length > 0 ? flagged : all).slice(0, limit);
+  const items = await apiGet<ProjectResponseDto[]>(endpoints.featuredProjects, { limit });
+  return mapAll(items, toProject, "project");
 }
 
 /**
  * One project by its slug.
  *
- * There is no `GET /v1/projects/by-slug/{slug}` — and could not be, since the
- * API has no slug column — so this scans the list the same way the routes are
- * generated from it. Returns `undefined` when nothing matches, which is what a
- * detail page should render as a 404.
+ * `slug` is a real, unique, indexed column now, so this is a single lookup
+ * rather than a scan of the whole list. Returns `undefined` when nothing
+ * matches, which is what a detail page should render as a 404.
  */
 export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
-  const all = await listAllProjects();
-  return all.find((project) => project.slug === slug);
+  const dto = await optional(() => apiGet<ProjectResponseDto>(endpoints.projectBySlug(slug)));
+  return dto ? toProject(dto) : undefined;
+}
+
+/**
+ * Aggregate figures over the whole portfolio.
+ *
+ * Used by the band on `/home` and the statistics on `/about-us`. Both slots
+ * previously held invented numbers; these are counted from the records that
+ * are actually published.
+ */
+export interface PortfolioSummary {
+  total: number;
+  markets: number;
+  completed: number;
+  underConstruction: number;
+  /** Distinct "City, Country" lines, alphabetically. */
+  marketNames: string[];
+}
+
+export function summarise(projects: Project[]): PortfolioSummary {
+  const marketNames = [...new Set(projects.map((project) => project.city))].sort();
+
+  return {
+    total: projects.length,
+    markets: marketNames.length,
+    completed: projects.filter((project) => project.badge === undefined).length,
+    underConstruction: projects.filter((project) => project.badge === "Under Construction").length,
+    marketNames,
+  };
 }

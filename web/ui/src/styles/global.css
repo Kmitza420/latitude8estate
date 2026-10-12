@@ -207,6 +207,56 @@
   }
 }
 
+/*
+ * Article body styling for content that comes out of the database.
+ *
+ * Both rules exist so that an editor writing ordinary prose gets the design
+ * without having to remember any markup conventions:
+ *
+ * - The drop cap is applied to the opening paragraph by position, not by an
+ *   author-typed `class="drop-cap"`.
+ * - `<figure class="interruption">` breaks out of the 700px measure to full
+ *   width. This is how the design's full-bleed image interruption is
+ *   expressed — inside the content, where it can be placed anywhere in the
+ *   article, rather than as fixed columns on the table.
+ */
+.article-body .prose > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-headline-lg);
+  font-size: 5rem;
+  line-height: 4rem;
+  padding-top: 4px;
+  padding-right: 12px;
+  padding-left: 3px;
+  color: var(--color-secondary);
+}
+
+.article-body .prose figure.interruption {
+  /* Escape the article measure and span the viewport. */
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: -50vw;
+  margin-block: calc(var(--spacing) * 16);
+}
+
+.article-body .prose figure.interruption img {
+  width: 100%;
+  height: 60dvh;
+  min-height: 400px;
+  object-fit: cover;
+  margin: 0;
+}
+
+.article-body .prose figure.interruption figcaption {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
 @utility hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

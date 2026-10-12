@@ -27,8 +27,8 @@ rather than expecting Ctrl+C on a wrapper process to stop them.
 | `/lifestyle` | `src/pages/lifestyle/index.astro` | `mockups/blog_home.html` |
 | `/lifestyle/category/[category]` | `src/pages/lifestyle/category/[category].astro` | `mockups/blog_category.html` |
 | `/lifestyle/[slug]` | `src/pages/lifestyle/[slug].astro` | `mockups/blog.html` |
-| `/about-us` | `src/pages/about-us.astro` | no mockup — placeholder copy |
-| `/contact-us` | `src/pages/contact-us.astro` | no mockup — placeholder details |
+| `/about-us` | `src/pages/about-us.astro` | no mockup — agency copy, real portfolio figures |
+| `/contact-us` | `src/pages/contact-us.astro` | no mockup — form, email, real markets |
 | anything else | `src/pages/404.astro` | → `/home` |
 
 Both the bare root and any unknown path land on `/home`. The 404 is a meta
@@ -115,12 +115,14 @@ src/
     ReasonCard, ServiceCard, ProcessStep, ConsultationCard
                        the four /property-management card shapes
     Footer, Newsletter, Pagination, PortfolioView, SectionHeading, Icon
-  data/           media.ts (generated), site.ts, collections.ts,
-                  projects.ts, posts.ts, pagination.ts, management.ts
+  data/           view model types + site chrome; no records live here
+                  media.ts (page heroes and nav tiles only), site.ts,
+                  collections.ts, projects.ts, posts.ts, pagination.ts,
+                  management.ts
   services/       everything that talks to web/api (see below)
     index.ts         the barrel pages import from
     config.ts        base URL, timeouts, feature flags, endpoint paths
-    http.ts          typed fetch, ApiError, fixture fallback
+    http.ts          typed fetch, ApiError, `optional` for 404s
     dto.ts           wire shapes, mirrored from core/models/dto.py
     mappers.ts       DTO -> the view models in src/data/
     projects.ts      the portfolio
@@ -129,8 +131,6 @@ src/
   layouts/        BaseLayout.astro
   pages/          routes (table above)
   styles/         global.css — @theme tokens + utilities
-scripts/
-  gen-media.mjs   regenerates src/data/media.ts from mockups/*.html
 ```
 
 **React is reserved for interactive components.** `SiteNav` (scroll state +
@@ -142,10 +142,16 @@ for the nav, `client:visible` for the forms. Everything presentational stays in
 
 `/property-management` is the one page with no API behind it: the offer is
 static marketing copy, so `src/data/management.ts` is its source of truth
-rather than a fallback fixture. It reuses the existing media library — all six
-images were already in `media.ts`, so `scripts/gen-media.mjs` did not need to
-run and `mockups/property-management.html` is deliberately absent from that
-script's file list.
+rather than anything the database holds.
+
+Its artwork therefore sits in `media.ts` beside the page heroes and the nav
+tiles, under that file's rule — images belonging to a *page* rather than to a
+record. Three of the six are the same photographs as the home, about and
+contact heroes and are referenced as such; the remaining four are its own
+(`tileManagement`, `managementTechnology`, `managementNarrative`,
+`managementAdvisory`). `mockups/property-management.html` is the page's origin
+reference; it was never an input to the old `scripts/gen-media.mjs`, which has
+since been deleted along with the generated media library.
 
 The mockup drove its "More info" panels from a click handler that toggled
 `hidden` and rewrote the button label. That is a disclosure, so
@@ -180,29 +186,38 @@ const { projects, totalPages } = paginate(await listAllProjects(), 1, PAGE_SIZE)
 The site is a static build, so the reads happen once at build time. The two
 React islands are the exception: they POST from the browser at runtime, and
 import `services/forms` directly rather than through the barrel, so the read
-services and their fixtures stay out of the client bundle.
+services stay out of the client bundle.
 
-The modules under `src/data/` keep two jobs: they declare the view model types,
-and they are the **fallback fixtures**. When a read fails, the service logs one
-warning and serves the fixture instead of failing the build. That is on by
-default because the API cannot yet supply most of what the site renders — no
-images, prices, taglines or agents. `web/api/TODO.md` is the full gap list.
+**There are no fixtures.** `src/data/` declares the view model types and holds
+the site's own chrome artwork — page heroes and the four nav tiles — and
+nothing else. Every project, article, category, author and agent the site
+renders comes from `web/api`, and a read that fails stops the build rather than
+substituting something plausible.
+
+That is the point of the whole arrangement: the site cannot display anything
+the database does not hold. Where a record has no value for something — no
+published price, no photography, no listing agent — the view model carries
+`null` and the component omits that piece of layout. It never fills it in.
+
+The API must therefore be running and populated before a build:
+
+```bash
+docker compose up -d postgres minio minio_init
+python -m scripts.seed          # from the repository root
+uvicorn web.api.main:app --port 8001
+npm run build
+```
 
 ### Configuration
 
-All four are optional and read at build time; `PUBLIC_` is required for the two
-the islands need in the browser.
+All three are optional and read at build time; `PUBLIC_` is required for the
+ones the islands need in the browser.
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `PUBLIC_API_BASE_URL` | `http://localhost:8001` | Origin of `web/api`, as published by docker-compose |
 | `PUBLIC_API_TIMEOUT_MS` | `10000` | Per-request timeout |
-| `PUBLIC_API_ALLOW_FALLBACK` | `true` | Fall back to fixtures instead of failing the build |
 | `PUBLIC_API_FORMS_ENABLED` | `false` | Let the forms POST for real |
-
-Set `PUBLIC_API_ALLOW_FALLBACK=false` once the API is the real source of truth,
-so a broken API fails the build loudly instead of quietly publishing stale
-placeholder content.
 
 ## What was reconciled from the mockups
 
@@ -217,33 +232,32 @@ The mockups were generated per-page, so shared chrome had drifted:
 - **Accounts removed.** The mockups' account icon, "Exclusive Member Access"
   drawer label, and settings/privacy/sign-out links are gone.
 - **The Glass Pavilion.** `home.html` listed it as Beverly Hills / $24,500,000
-  and `project.html` as Malibu / $12,500,000. The detail page won.
+  and `project.html` as Malibu / $12,500,000. Moot now: listings come from the
+  database, and a price is whatever `price_from` says or nothing at all.
 - **Lifestyle categories.** `blog_home.html` labelled its four tiles with
   *property* categories (Coastal / Urban / Historic / Desert) that duplicated
-  the home page grid. They now carry editorial categories (Architecture,
-  Interior, Lifestyle, Sustainability) resolving to real category routes.
+  the home page grid. The tiles now come from the `categories` table, showing
+  whichever rows are flagged `featured`.
 
 ## Known gaps
 
-- **Images are temporary.** All 40 entries in `src/data/media.ts` point at
-  `lh3.googleusercontent.com` URLs emitted by the design tool. They *will*
-  expire. Replace them with real assets and move to `astro:assets`.
+- **Site chrome images are temporary.** The eight entries left in
+  `src/data/media.ts` — page heroes and the four nav tiles — still point at
+  `lh3.googleusercontent.com` URLs emitted by the design tool, and they *will*
+  expire. Record imagery no longer depends on them (it comes from MinIO through
+  the API), but these eight do. Replace them and move to `astro:assets`.
 - **Forms have no backend.** Both forms are wired to `services/forms`, but
   `POST /v1/enquiries/` and `POST /v1/newsletter/subscriptions/` do not exist
   yet, so `PUBLIC_API_FORMS_ENABLED` is off and submission still shows an inline
   notice saying so. Flip the flag once the endpoints ship.
-- **Projects are unreachable over HTTP.** `web/api` mounts its projects router
-  under the `/blogs` prefix by mistake, so `/v1/projects/` 404s and the portfolio
-  always falls back to fixtures. One-line fix upstream; first item in
-  `web/api/TODO.md`.
-- **Categories are still fixtures.** `Blog.category_id` is a UUID with no
-  `categories` table behind it, so every API-sourced article is filed under a
-  single placeholder category and the byline is a constant.
-- **`/about-us` and `/contact-us` are placeholder content.** No mockup existed
-  for either; the copy, statistics, office addresses, phone number and email are
-  invented and need replacing with real agency details.
+- **`/about-us` and `/contact-us` prose.** The invented statistics, the three
+  invented offices and the invented telephone number are gone — the pages now
+  report figures counted from the portfolio, and contact is the form plus a
+  real email address. The remaining agency prose is still placeholder copy and
+  needs writing.
 - **Carousel controls were dropped, not ported.** `home.html` drew prev/next
-  arrows on the featured-estates rail and the testimonial block, but neither had
-  any carousel behind it. Rather than ship dead controls, the estates arrows
-  became a "View the portfolio" link and the testimonial renders as a single
-  static quote. Restore the arrows alongside real carousel behaviour.
+  arrows on the featured-estates rail, but there was no carousel behind them.
+  Rather than ship dead controls they became a "View the portfolio" link.
+  Restore them alongside real carousel behaviour if the rail ever needs it.
+  (The mockup's testimonial block is gone entirely: nothing in the database
+  backs a client quotation, so that band reports the portfolio instead.)

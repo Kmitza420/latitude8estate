@@ -11,9 +11,10 @@ Responsibilities:
     - Mounting the versioned API router (``/v1``).
     - Disabling OpenAPI / Swagger UI in production.
 
-Run with::
+Run from the **repository root** — that is the single import root for this
+service, so that ``core.*`` and ``web.api.*`` both resolve::
 
-    uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    uvicorn web.api.main:app --reload --host 0.0.0.0 --port 8000
 """
 
 import logging
@@ -27,8 +28,8 @@ from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 from minio.error import MinioException
 
 from core.settings import settings
-from core.clients.db import Database
-from endpoints.v1.router import router as v1_router
+from web.api.dependencies import get_db
+from web.api.endpoints.v1.router import router as v1_router
 
 
 # ── Logging ───────────────────────────────────────────────────────────
@@ -57,16 +58,9 @@ async def lifespan(app: FastAPI):
     """
     logger.info("Starting up Latitude 8 Estate API  [env=%s] …", settings.ENVIRONMENT)
 
-    db = Database(
-        db_username=settings.DATABASE_USER,
-        db_password=settings.DATABASE_PASSWORD,
-        db_host=settings.DATABASE_HOST,
-        db_port=settings.DATABASE_PORT,
-        db_name=settings.DATABASE_NAME,
-        pool_size=settings.DATABASE_POOL_SIZE,
-        max_overflow=settings.DATABASE_MAX_OVERFLOW,
-        pool_recycle=settings.DATABASE_POOL_RECYCLE,
-    )
+    # The same singleton the request dependencies use, so the process holds
+    # one connection pool rather than two.
+    db = get_db()
     logger.info("Database connection initialized")
 
     if not db.test_connection():
@@ -98,7 +92,7 @@ def create_app() -> FastAPI:
     )
 
     # ── CORS ──────────────────────────────────────────────────────────
-    origins = [o.strip() for o in settings.CORS_ORIGINS.split(",") if o.strip()]
+    origins = settings.cors_origins
 
     application.add_middleware(
         CORSMiddleware,
@@ -147,7 +141,18 @@ def create_app() -> FastAPI:
 
     @application.get("/health", tags=["Health"], include_in_schema=False)
     async def health():
-        """Health check endpoint."""
+        """Health check endpoint.
+
+        Executes a real query rather than returning a constant. A check that
+        does not touch the database stays green while every request 500s,
+        which makes it worse than no check at all — an orchestrator will
+        happily keep routing traffic to a broken instance.
+        """
+        if not get_db().test_connection():
+            return JSONResponse(
+                content={"status": "unhealthy", "detail": "Database unreachable"},
+                status_code=503,
+            )
         return {"status": "ok"}
 
     return application

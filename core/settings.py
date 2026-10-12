@@ -51,8 +51,16 @@ class Settings(BaseSettings):
     AUTH_JWT_ALGORITHM: str = "HS256"
     AUTH_JWT_EXPIRATION_MINUTES: int = 60
 
-    # CORS — comma-separated origins; defaults to "*" for local dev
-    CORS_ORIGINS: str = "*"
+    # CORS — comma-separated origins.
+    #
+    # The default lists the two places the site actually runs locally: the
+    # Astro dev server and the docker-compose `web_ui` container. It is
+    # deliberately *not* "*": the API is mounted with allow_credentials=True,
+    # and a wildcard paired with credentials is a misconfiguration the spec
+    # forbids and Starlette only papers over. In production the same value
+    # also feeds TrustedHostMiddleware, where "*" would defeat the point of
+    # having it. Set the real origins per environment.
+    CORS_ORIGINS: str = "http://localhost:4321,http://localhost:3001"
 
     # Logging
     LOG_LEVEL: str = "INFO"
@@ -61,6 +69,11 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         """Return *True* when running in the production environment."""
         return self.ENVIRONMENT.lower() == "production"
+
+    @property
+    def cors_origins(self) -> list[str]:
+        """``CORS_ORIGINS`` split into a list, blanks removed."""
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     model_config = SettingsConfigDict(
         env_file=".env",
