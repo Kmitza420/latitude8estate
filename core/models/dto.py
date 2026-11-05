@@ -426,6 +426,9 @@ class ProjectCreate(BaseModel):
     featured: bool = False
 
     tagline: str | None = Field(default=None, max_length=500)
+    #: Long-form copy for the listing page, as HTML. Sanitised on write and on
+    #: read like a blog body; see :mod:`core.services.sanitize`.
+    description: str | None = None
 
     location: ProjectLocation
 
@@ -487,6 +490,7 @@ class ProjectResponse(BaseModel):
     featured: bool
 
     tagline: str | None = None
+    description: str | None = None
 
     location: ProjectLocation
 

@@ -165,6 +165,9 @@ class Project(ORMBase):
     # Marketing lead. NULL is meaningful: the site falls back to a sentence
     # composed from type, location and status rather than printing nothing.
     tagline: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    #: Long-form marketing copy for the listing page, sanitised HTML on the
+    #: same allowlist as a blog body. Null renders no "About" section.
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Structured location (see ProjectLocation) — never a free-text string.
     location: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
