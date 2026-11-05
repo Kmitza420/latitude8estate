@@ -8,6 +8,7 @@ from core.models.db import Project
 from core.models.dto import ProjectCreate, ProjectResponse, ProjectUpdate
 from core.repositories.project_repository import ProjectRepository
 from core.services.base import to_columns
+from core.services.sanitize import sanitize_html
 
 #: Fields on the project DTOs backed by JSONB columns.
 _JSONB_FIELDS = {"location", "features", "media", "documents"}
@@ -27,11 +28,15 @@ class ProjectService:
     @staticmethod
     def _response(project: Project) -> ProjectResponse:
         """Convert one ORM row into its response DTO."""
-        return ProjectResponse.model_validate(project)
+        response = ProjectResponse.model_validate(project)
+        return response.model_copy(update={"description": sanitize_html(response.description)})
 
     def create_project(self, project_data: ProjectCreate) -> ProjectResponse:
         """Insert a new project."""
-        project = self.project_repository.create(**to_columns(project_data, _JSONB_FIELDS))
+        values = to_columns(project_data, _JSONB_FIELDS)
+        if values.get("description") is not None:
+            values["description"] = sanitize_html(values["description"])
+        project = self.project_repository.create(**values)
         return self._response(project)
 
     def get_project(self, project_id: uuid.UUID) -> ProjectResponse | None:
@@ -46,9 +51,10 @@ class ProjectService:
 
     def update_project(self, project_id: uuid.UUID, project_data: ProjectUpdate) -> ProjectResponse | None:
         """Apply a partial update to a project."""
-        project = self.project_repository.update(
-            project_id, **to_columns(project_data, _JSONB_FIELDS)
-        )
+        values = to_columns(project_data, _JSONB_FIELDS)
+        if values.get("description") is not None:
+            values["description"] = sanitize_html(values["description"])
+        project = self.project_repository.update(project_id, **values)
         return self._response(project) if project else None
 
     def delete_project(self, project_id: uuid.UUID) -> bool:
