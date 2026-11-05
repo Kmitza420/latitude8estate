@@ -16,22 +16,47 @@ const [categories, posts, featuredPost] = await Promise.all([
 
 const tiles = categories.filter((category) => category.featured);
 const latest = posts.filter((post) => post.slug !== featuredPost?.slug).slice(0, 3);
+
+const description = `The Latitude 8 Estate journal: ${posts.length} articles on architecture, interiors, the property market and life on the coast of Phuket and Koh Samui, written by people who build, survey and sell here.`;
 ---
 
-<BaseLayout
-  title="Lifestyle"
-  description="Insights into the world's most exclusive residences and architectural trends."
->
+<BaseLayout title="Lifestyle: Architecture, Interiors and the Phuket Market" description={description}>
   <Hero
     image={media.journalHero}
+    eyebrow="The Journal"
     title="Lifestyle"
-    lead="Insights into the world's most exclusive residences and architectural trends."
+    lead="Architecture, interiors, the market and the rituals of living well on the coast of Phuket and Koh Samui, written by people who build, survey and sell here."
     overlay="tint"
   />
 
   <main
     class="mx-auto w-full max-w-page px-margin-mobile pb-section-gap md:px-margin-desktop"
   >
+    {/* What the journal is for */}
+    <section class="mt-section-gap grid grid-cols-1 gap-gutter lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <h2 class="font-headline-lg text-headline-lg-mobile text-primary md:text-headline-lg">
+          Written for people who own, or want to own, a house on this coast.
+        </h2>
+      </div>
+      <div class="space-y-6 lg:col-span-7">
+        <p class="font-body-lg text-body-lg text-on-surface-variant">
+          The journal exists because the questions our clients ask are rarely
+          about square metres. They are about what board-formed concrete
+          actually costs over ten years, why a deep roof overhang does more
+          than any glass coating, how a foreign buyer holds land in Thailand,
+          and what happens to an empty tropical house in a monsoon.
+        </p>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          The writers are the people we work with: an editor who covers the
+          architecture and the market of southern Thailand, and a former
+          surveyor who covers construction quality, materials and long-term
+          value. Articles are grouped by category below, and the market pieces
+          sit beside the buying guide on the Projects page.
+        </p>
+      </div>
+    </section>
+
     {/* Categories */}
     <section class="mt-section-gap">
       <h2 class="sr-only">Categories</h2>

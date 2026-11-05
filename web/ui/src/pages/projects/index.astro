@@ -1,25 +1,152 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import AreaCard from "../../components/AreaCard.astro";
+import Faq from "../../components/Faq.astro";
+import Icon from "../../components/Icon.astro";
 import PortfolioView from "../../components/PortfolioView.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import { areas } from "../../data/areas";
+import { buyingFaq } from "../../data/faqs";
 import { PAGE_SIZE } from "../../data/pagination";
-import { listAllProjects, paginate } from "../../services";
+import { breadcrumbs, faqSchema, listingIndexSchema } from "../../data/seo";
+import { site } from "../../data/site";
+import { listAllProjects, paginate, summarise } from "../../services";
 
 // Page 1. Pages 2..n come from page/[page].astro, sliced from the same list so
 // the two can never disagree about where the boundary falls.
-const { projects: pageProjects, totalPages } = paginate(
-  await listAllProjects(),
-  1,
-  PAGE_SIZE,
-);
+const allProjects = await listAllProjects();
+const { projects: pageProjects, totalPages } = paginate(allProjects, 1, PAGE_SIZE);
+const portfolio = summarise(allProjects);
+
+const description = `Luxury villas, private estates and condominiums for sale in Phuket and Koh Samui, Thailand: ${portfolio.total} listings represented by ${site.legalName}, with a buyer's guide to freehold, leasehold and due diligence.`;
+
+const origin = (Astro.site ?? new URL(site.url)).origin;
+const jsonLd = [
+  listingIndexSchema(origin, allProjects),
+  faqSchema(buyingFaq),
+  breadcrumbs(origin, [
+    { name: "Home", href: "/home" },
+    { name: "Projects", href: "/projects" },
+  ]),
+];
+
+// What is on the books right now, in words a reader can scan.
+const villas = allProjects.filter((project) => project.meta.type === "villa").length;
+const condominiums = allProjects.length - villas;
 ---
 
-<BaseLayout
-  title="The Portfolio"
-  description="A curated collection of the world's most prestigious residences."
->
+<BaseLayout title="Luxury Villas & Condominiums for Sale in Phuket" description={description} jsonLd={jsonLd}>
   <PortfolioView
     projects={pageProjects}
     currentPage={1}
     totalPages={totalPages}
   />
+
+  {/* The portfolio, described */}
+  <section
+    class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+  >
+    <div class="mx-auto grid max-w-page grid-cols-1 gap-gutter lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <SectionHeading
+          eyebrow="The Portfolio"
+          title="Villas, estates and condominiums in Phuket and Koh Samui"
+        />
+      </div>
+      <div class="space-y-6 lg:col-span-7">
+        <p class="font-body-lg text-body-lg text-on-surface-variant">
+          {`The portfolio currently holds ${portfolio.total} listings across ${portfolio.marketNames.join(" and ")}: ${villas} ${villas === 1 ? "villa or private estate" : "villas and private estates"} and ${condominiums} ${condominiums === 1 ? "condominium" : "condominiums"}, from completed houses ready to view to projects sold off plan ahead of a release.`}
+        </p>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Each listing page sets out what the record actually holds: the
+          interior and exterior spaces, the facilities and technical features,
+          the distances to the beach, the airport, international schools,
+          shopping and marinas, the floor plans and documents attached, and the
+          agent who represents it. Where a price or a lead is not published,
+          the page says so rather than inventing one.
+        </p>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          We represent a small number of houses deliberately. A building worth
+          owning for thirty years deserves more than a fortnight of attention,
+          and each of these has been assessed for the qualities that hold value
+          on this coast: how it was built, how it is held, and what it costs to
+          run.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* Buying guide */}
+  <section class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop">
+    <SectionHeading
+      eyebrow="Buying in Thailand"
+      title="How a foreign buyer owns property in Phuket"
+      lead="The structures are well established and the rules are clear once they are laid out. This is the plain version; every purchase should also be reviewed by an independent Thai lawyer."
+      align="center"
+      class="mb-16"
+    />
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      {
+        [
+          {
+            icon: "apartment",
+            title: "Condominiums: freehold, within a quota",
+            body: "A condominium unit is the one kind of property a foreign buyer can hold in their own name with a freehold title. The condition is the foreign quota: no more than 49% of a building's saleable area may be foreign-owned. Purchase funds arrive as foreign currency and the bank's exchange record is what the Land Office needs to register the unit.",
+          },
+          {
+            icon: "villa",
+            title: "Villas: own the building, lease the land",
+            body: "Land cannot be held in a foreign name, so a villa is bought with freehold title to the building and a registered lease of the land for 30 years, the maximum the Land Office will register, with renewal options in the contract. The lease is recorded on the title deed, which is what binds a future landowner.",
+          },
+          {
+            icon: "fact_check",
+            title: "Title, due diligence and costs",
+            body: "A full Chanote title, registered road access, building permits and, for a condominium, a solvent juristic person are the things to confirm before a deposit. Transfer fees and taxes are payable at the Land Office on the day, and which party pays which is agreed in the contract.",
+          },
+        ].map((card) => (
+          <div class="luxury-shadow rounded-lg bg-surface p-10">
+            <Icon name={card.icon} class="mb-6 text-4xl text-secondary" />
+            <h3 class="font-headline-sm text-headline-sm mb-4 text-primary">{card.title}</h3>
+            <p class="font-body-md text-body-md text-on-surface-variant">{card.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="font-body-md text-body-md mx-auto mt-12 max-w-2xl text-center text-on-surface-variant">
+      The full guide, including off-plan payment schedules and the Thai company
+      structure some buyers are offered, is in the journal:
+      <a href="/lifestyle/buying-property-in-phuket-as-a-foreigner" class="text-secondary underline-offset-4 hover:underline">
+        Buying Property in Phuket as a Foreigner</a>.
+    </p>
+  </section>
+
+  {/* Areas */}
+  <section
+    class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+  >
+    <div class="mx-auto max-w-page">
+      <SectionHeading
+        eyebrow="Where We Represent"
+        title="The coast, stretch by stretch"
+        lead="Buyers arrive with a beach in mind and leave with a different one more often than not. The right address depends on how the house will be used."
+        align="center"
+        class="mb-16"
+      />
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {areas.map((area) => <AreaCard area={area} />)}
+      </div>
+    </div>
+  </section>
+
+  {/* Questions */}
+  <section class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop">
+    <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <SectionHeading eyebrow="Questions" title="Buying, answered plainly" />
+      </div>
+      <div class="lg:col-span-8">
+        <Faq items={buyingFaq} />
+      </div>
+    </div>
+  </section>
 </BaseLayout>
