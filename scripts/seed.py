@@ -336,9 +336,149 @@ def _condo_features(units: int) -> ProjectFeatures:
     )
 
 
+
+# ── Listing descriptions ──────────────────────────────────────────────
+#
+# Long-form copy for each listing page, keyed by slug and attached in
+# ``build_projects``. HTML on the same allowlist as an article body.
+
+PROJECT_DESCRIPTIONS: dict[str, str] = {
+    "baan-sawan-reserve": """<p>Baan Sawan Reserve is a private enclave of six villas on the headland above Bang Tao,
+on the west coast of Phuket. Each house sits on its own terrace cut into the slope and is
+turned a few degrees away from its neighbours, so that every living room, pool deck and
+master bedroom looks west over the Andaman Sea with nothing built in front of it.</p>
+<h3>The houses</h3>
+<p>Each villa offers around 642 square metres of interior space across two levels, with five
+bedrooms and six bathrooms. The ground floor is one continuous sequence of double-height
+living room, dining room and kitchen, opening through full-width sliding glass onto a covered
+terrace and a private infinity pool. Bedrooms occupy the upper floor and the quieter rear wing,
+each with its own bathroom and a walk-in wardrobe. A staff room, laundry and secure garage sit
+below the entrance level, out of sight of the main rooms.</p>
+<p>The construction is board-formed concrete, dark hardwood and local stone, chosen to weather
+well in the humidity rather than to need repainting every second season. Kitchens are fitted
+with Gaggenau ovens and Sub-Zero refrigeration, and every house carries a wine cellar, a
+jacuzzi and a sauna.</p>
+<h3>Living here</h3>
+<p>Bang Tao Beach is under a kilometre away on foot. Boat Avenue and the Laguna resort area,
+with their restaurants, markets and the Laguna Golf course, are a few minutes by car, and
+Phuket International Airport is roughly half an hour north. UWC Thailand, the island's best
+known international school, is within a fifteen-minute drive. The estate is gated, with
+24-hour security and CCTV across the common areas.</p>
+<p>Baan Sawan Reserve was completed in late 2024 and is sold freehold on the building with a
+registered long-term lease on the land, the usual structure for a foreign buyer of a villa in
+Thailand. Full title and lease documentation is available on request.</p>""",
+    "kata-noi-residences": """<p>Kata Noi Residences is a low-rise condominium of ninety-four apartments in three
+buildings, stepped down a wooded south-facing slope above Kata Noi, one of the smallest and
+quietest beaches on the south-west coast of Phuket. The beach is a six-minute walk down the
+hill; the larger Kata and Karon beaches, with their restaurants and services, are a short drive
+or a longer walk along the coast road.</p>
+<h3>The apartments</h3>
+<p>Residences start at 86.5 square metres with one guest bedroom beside the master, two
+bathrooms, a walk-in wardrobe and a separate laundry and storage room. Every apartment has a
+terrace, and the upper floors of each building have roof terraces with a sea view across the
+bay. Kitchens are fitted with Bosch induction hobs and integrated dishwashers; the whole
+building is air-conditioned and wired for smart-home control.</p>
+<h3>Shared facilities</h3>
+<p>Residents share a main pool with a children's pool and sun deck, a fitness centre, a sauna
+and spa, a kids' club, a private cinema, a library, a games room and a rooftop lounge. The
+lobby is staffed, access is by key card and the site is covered by 24-hour security and CCTV.
+Underground parking is included.</p>
+<h3>Ownership and completion</h3>
+<p>As a registered condominium, Kata Noi Residences can be bought freehold by foreign buyers
+within the foreign ownership quota that Thai condominium law allows for each building. The
+project is under construction with completion scheduled for mid-2026, and purchasers buy off
+plan on a staged payment schedule tied to construction milestones. Phuket International
+Airport is about 31 kilometres away, Central Phuket roughly 11 kilometres, and the British
+International School about fifteen minutes by car.</p>""",
+    "laem-sor-villas": """<p>Laem Sor Villas is a group of four courtyard houses on the south coast of Koh Samui,
+in the quiet Taling Ngam district away from the island's busier north and east. The beach is
+120 metres from the gate, and the houses are planned around water and shade rather than a
+view: each one wraps around a planted internal courtyard with a reflecting pool at its centre,
+so that every room opens onto greenery and moving air.</p>
+<h3>The houses</h3>
+<p>Each villa has around 410 square metres of interior space, four bedrooms and four
+bathrooms, arranged on a single level around the courtyard. The living, dining and kitchen
+spaces run along one side under a deep roof overhang; the bedrooms occupy the opposite wings
+with their own bathrooms and dressing rooms. A private pool with its own deck and outdoor
+shower sits beyond the living room, and a traditional sala, an outdoor kitchen and dining
+terrace, and a tropical garden with walking paths complete the grounds.</p>
+<p>Kitchens are fitted with Gaggenau ovens, Sub-Zero refrigeration and a wine cabinet. The
+houses are fully air-conditioned, equipped with smart-home systems, an automatic gate, a staff
+room and a secure garage, and the estate has 24-hour security and CCTV.</p>
+<h3>Why the south coast</h3>
+<p>Laem Sor is one of the last stretches of Samui's coastline that still feels rural, with
+small temples, coconut plantations and long, empty beaches. It suits buyers who want a
+private family house to use for part of the year, or to let privately in between, without
+the noise of Chaweng or Bophut. The villas were completed in early 2023 and are available
+as a complete, maintained estate.</p>""",
+    "sirinat-terraces": """<p>Sirinat Terraces is a planned low-rise condominium on the northern shoreline of
+Phuket, in Sakhu, between Nai Yang Beach and the Sirinat National Park. The park protects
+the coastline north of the site from further building, which is the main reason the
+project is being planned here: it is one of the few places on the island where the view
+and the quiet are permanent rather than provisional.</p>
+<h3>The development</h3>
+<p>Forty-eight apartments are planned across four buildings of three storeys, set back
+behind the casuarina trees that line this stretch of coast, with the beach about 310 metres
+away. Apartments start from 72 square metres with one guest bedroom, two bathrooms, a
+terrace and, on the upper floors, roof terraces with a sea view. Residents will share a
+pool with a children's pool and sun deck, a fitness centre, a sauna and spa, a kids' club, a
+cinema, a library and a rooftop lounge, with a staffed lobby, key-card access, underground
+parking and 24-hour security.</p>
+<h3>Phasing and timing</h3>
+<p>The project is released in two phases from 2027. Phuket International Airport is about
+ten minutes by road, which makes Sirinat Terraces one of the most convenient addresses on
+the island for owners who fly in and out regularly, and the Thalang district's international
+schools and the Boat Avenue and Laguna area are twenty to twenty-five minutes to the south.
+Early reservations are being taken on a refundable basis ahead of the first phase release;
+full plans and the payment schedule are available on request.</p>""",
+    "ao-yon-house": """<p>Ao Yon House is a single-storey private residence on the east coast of Phuket, set
+directly behind Ao Yon beach on the Cape Panwa peninsula, forty metres from the water. It is
+a private resale: the owners have asked that neither the price nor a public tagline be
+published, and both are available to qualified buyers on request.</p>
+<h3>The house</h3>
+<p>Three bedrooms and three bathrooms are arranged on one level around a living room, dining
+area and kitchen that open fully onto a covered terrace, a private pool and the garden beyond.
+The master suite has a walk-in wardrobe; a staff room, laundry and storage are planned so that
+the house can be run by a small household staff without them passing through the main rooms.
+A sala, an outdoor kitchen and dining area and a tropical garden with walking paths sit
+between the house and the beach.</p>
+<p>The house was completed in 2019 and has been continuously maintained since. It is fully
+air-conditioned, with smart-home control, an automatic gate, a jacuzzi, a wine cellar and a
+sauna, and it is fitted with Gaggenau and Sub-Zero kitchen appliances.</p>
+<h3>Ao Yon and the east coast</h3>
+<p>Ao Yon is a small, sheltered bay facing Chalong Bay and the islands beyond it, calm
+enough to swim in the monsoon months when the west coast surf is up. The peninsula is quiet
+and largely residential, with the Phuket Aquarium at its tip and Phuket Town fifteen minutes
+away. Royal Phuket Marina and Ao Po Grand Marina serve owners who keep a boat. This is a
+house for people who want to live on the water rather than look at it from a hill.</p>""",
+    "naithon-cliff-estate": """<p>Naithon Cliff Estate is a single private estate on eleven rai, about 1.76 hectares, of
+cliff on the north-west coast of Phuket, above Nai Thon beach. Its own beach access is cut
+into the rock, so the estate reaches the sand without crossing a road or another property. It
+is the largest single residence currently represented by Latitude 8 Estate and is being built
+to a design that treats the whole headland as one composition.</p>
+<h3>The estate</h3>
+<p>Three buildings are under construction: the main house, a guest pavilion and a service
+building, together offering around 1,180 square metres of interior space with seven bedrooms
+and eight bathrooms. A cantilevered terrace projects over the rock face from the main living
+room, and a long lap pool is cut into the cliff edge below it. The grounds include a sala, an
+outdoor kitchen and dining terrace, a tropical garden with walking paths, a staff wing, a
+laundry and a secure garage.</p>
+<p>The specification includes full smart-home control, a wine cellar, a jacuzzi and sauna, an
+automatic gate and 24-hour security with CCTV across the site. Kitchens are fitted with
+Gaggenau and Sub-Zero appliances. A site plan and a specification summary are attached to
+this listing and can be downloaded below.</p>
+<h3>Nai Thon</h3>
+<p>Nai Thon is a short, quiet beach between the Sirinat National Park and the headland at
+Nai Yang, with a handful of restaurants and no large resorts. Phuket International Airport
+is roughly twenty-five minutes by road and the Laguna area about the same, which places the
+estate among the most private addresses on the island that remain genuinely easy to reach.
+Completion is scheduled for late 2026, and the estate is offered with a registered long-term
+land lease and freehold title to the buildings.</p>""",
+}
+
 def build_projects(agent_ids: list[uuid.UUID]) -> list[ProjectCreate]:
     """Six listings, deliberately uneven so the "unset" render paths are covered."""
-    return [
+    projects = [
         ProjectCreate(
             project_type=ProjectType.VILLA,
             name="Baan Sawan Reserve",
@@ -538,6 +678,10 @@ def build_projects(agent_ids: list[uuid.UUID]) -> list[ProjectCreate]:
                 ),
             ],
         ),
+    ]
+    return [
+        project.model_copy(update={"description": PROJECT_DESCRIPTIONS[project.slug]})
+        for project in projects
     ]
 
 
