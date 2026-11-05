@@ -6,6 +6,8 @@ import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import PostCard from "../../components/PostCard.astro";
 import { formatDate } from "../../data/posts";
+import { articleSchema, breadcrumbs } from "../../data/seo";
+import { site } from "../../data/site";
 import { getPostBySlug, getRelatedPosts, listAllPosts } from "../../services";
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -36,11 +38,30 @@ const { post, related } = Astro.props;
  * `global.css` — so an editor places it, rather than it being three columns on
  * the table that only one layout can ever use.
  */
+const origin = (Astro.site ?? new URL(site.url)).origin;
+const jsonLd = [
+  articleSchema(origin, post),
+  breadcrumbs(origin, [
+    { name: "Home", href: "/home" },
+    { name: "Lifestyle", href: "/lifestyle" },
+    ...(post.category
+      ? [{ name: post.category.name, href: `/lifestyle/category/${post.category.slug}` }]
+      : []),
+    { name: post.title, href: `/lifestyle/${post.slug}` },
+  ]),
+];
+
 const prose =
   "prose prose-lg max-w-none prose-headings:font-headline-md prose-headings:font-medium prose-h2:text-headline-md prose-h2:text-secondary prose-h2:mb-6 prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary";
 ---
 
-<BaseLayout title={post.title} description={post.excerpt}>
+<BaseLayout
+  title={post.seoTitle ?? post.title}
+  description={post.seoDescription ?? post.excerpt}
+  image={post.image}
+  type="article"
+  jsonLd={jsonLd}
+>
   <Hero
     image={post.image}
     eyebrow={post.category?.name}

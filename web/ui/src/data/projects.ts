@@ -43,11 +43,38 @@ export interface Agent {
   portrait: Media | null;
 }
 
+/**
+ * The raw values behind a listing that structured data and page copy need
+ * un-formatted: the display strings on `Project` are for people, these are
+ * for machines.
+ */
+export interface ListingMeta {
+  type: "villa" | "condominium";
+  status: string;
+  street: string | null;
+  district: string | null;
+  city: string | null;
+  country: string;
+  latitude: number | null;
+  longitude: number | null;
+  priceValue: number | null;
+  priceCurrency: string | null;
+  floorArea: number | null;
+  floorAreaUnit: string | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  distanceToBeachM: number | null;
+  completionDate: string | null;
+}
+
 export interface Project {
   slug: string;
   name: string;
   /** The record's own tagline, or one composed from type, place and status. */
   tagline: string;
+  /** Sanitised HTML for the "About" section, or null when the record has none. */
+  description: string | null;
+  meta: ListingMeta;
   /** Formatted price, or null when no price is published for this listing. */
   price: string | null;
   city: string;

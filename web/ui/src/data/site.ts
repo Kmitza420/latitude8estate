@@ -18,9 +18,21 @@ export interface SocialLink {
 
 export const site = {
   name: "latitude8estate",
-  tagline: "latitude8estate — Architectural Masterpieces",
+  /** The name written out, for structured data and page copy. */
+  legalName: "Latitude 8 Estate",
+  tagline: "latitude8estate — Luxury Villas & Condominiums in Phuket",
   description:
-    "A curated collection of the world's most exceptional private residences. Uncompromising design meets unparalleled exclusivity.",
+    "Latitude 8 Estate represents architecturally significant villas, estates and condominiums in Phuket and Koh Samui, Thailand, and manages them for owners who live abroad.",
+  /**
+   * The canonical origin, matching `site` in astro.config.mjs. Used for
+   * canonical URLs, Open Graph tags and structured data; `Astro.site` is the
+   * same value inside a page.
+   */
+  url: import.meta.env.PUBLIC_SITE_URL ?? "https://latitude8estate.com",
+  locale: "en_GB",
+  email: "enquiries@latitude8estate.com",
+  /** Where the portfolio actually is; used in structured data and page copy. */
+  areaServed: ["Phuket, Thailand", "Koh Samui, Thailand"],
   copyright: `© ${new Date().getFullYear()} latitude8estate. All rights reserved.`,
 };
 

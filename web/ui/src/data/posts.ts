@@ -43,6 +43,9 @@ export interface Post {
    * body — so a card must never assume this is present.
    */
   body: string | null;
+  /** Editor-set search title and description; the page falls back to title and excerpt. */
+  seoTitle: string | null;
+  seoDescription: string | null;
 }
 
 export function formatDate(iso: string): string {

@@ -17,7 +17,7 @@
  */
 
 import type { Media } from "../data/media";
-import type { Agent, Document, Facility, NearbyGroup, Project, SpecRow } from "../data/projects";
+import type { Agent, Document, Facility, ListingMeta, NearbyGroup, Project, SpecRow } from "../data/projects";
 import type { Category, Post } from "../data/posts";
 import type {
   AgentDto,
@@ -320,6 +320,36 @@ function nearbyGroups(nearby: NearbyPlacesDto): NearbyGroup[] {
     .filter((group) => group.places.length > 0);
 }
 
+function numberOrNull(value: string | number | null): number | null {
+  if (value === null || value === undefined) return null;
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+/** The record's own values, unformatted, for structured data. */
+function listingMeta(dto: ProjectResponseDto): ListingMeta {
+  const interior = dto.features.spaces.interior;
+  const beds = bedCount(interior);
+  return {
+    type: dto.project_type,
+    status: dto.status,
+    street: dto.location.address,
+    district: dto.location.district,
+    city: dto.location.city,
+    country: dto.location.country,
+    latitude: dto.location.latitude,
+    longitude: dto.location.longitude,
+    priceValue: numberOrNull(dto.price_from),
+    priceCurrency: dto.price_currency,
+    floorArea: numberOrNull(dto.floor_area),
+    floorAreaUnit: dto.floor_area_unit,
+    bedrooms: beds !== null ? Number(beds) : null,
+    bathrooms: interior.bathrooms,
+    distanceToBeachM: dto.distance_to_beach_m,
+    completionDate: dto.completion_date,
+  };
+}
+
 // --- Public mappers --------------------------------------------------------
 
 export function toProject(dto: ProjectResponseDto): Project {
@@ -330,6 +360,8 @@ export function toProject(dto: ProjectResponseDto): Project {
     slug: dto.slug,
     name: dto.name,
     tagline: taglineFor(dto),
+    description: dto.description,
+    meta: listingMeta(dto),
     price: formatPrice(dto.price_from, dto.price_currency),
     city: cityLine(dto.location),
     badge: badgeFor(dto.status),
@@ -365,6 +397,8 @@ export function toPost(dto: BlogSummaryDto): Post {
     date: isoDate(dto.published_at) ?? isoDate(dto.created_at) ?? "",
     featured: dto.featured,
     body: null,
+    seoTitle: dto.seo_title,
+    seoDescription: dto.seo_description,
   };
 }
 

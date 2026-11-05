@@ -237,6 +237,8 @@ export interface ProjectResponseDto {
   featured: boolean;
   /** Marketing lead. Null is meaningful — see `taglineFor` in `mappers.ts`. */
   tagline: string | null;
+  /** Long-form copy for the listing page, sanitised HTML. Null renders no "About" section. */
+  description: string | null;
   location: ProjectLocationDto;
   /** Decimal-as-string, e.g. "48500000.00". Null when no price is published. */
   price_from: string | null;
