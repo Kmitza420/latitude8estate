@@ -1,18 +1,72 @@
 ---
+import JsonLd from "../components/JsonLd.astro";
 import SiteNav from "../components/react/SiteNav";
 import Footer from "../components/Footer.astro";
+import { media, type Media } from "../data/media";
 import { categories, cta, site } from "../data/site";
 import "../styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
+  /** Social preview image. Defaults to the home hero. */
+  image?: Media | null;
+  /** Open Graph type: "article" for a journal post, "website" otherwise. */
+  type?: "website" | "article";
+  /** Page-specific schema.org objects, emitted after the site-wide ones. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** Keep a page out of search results (pagination duplicates, 404). */
+  noindex?: boolean;
 }
 
-const { title, description = site.description } = Astro.props;
+const {
+  title,
+  description = site.description,
+  image = media.homeHero,
+  type = "website",
+  jsonLd,
+  noindex = false,
+} = Astro.props;
 
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 const fullTitle = title === site.tagline ? title : `${title} — ${site.name}`;
+
+// Canonical and social URLs are absolute, built on the configured origin
+// rather than whatever host served the page.
+const origin = (Astro.site ?? new URL(site.url)).origin;
+const canonical = new URL(pathname === "/" ? "/home" : pathname, origin).href;
+const socialImage = image ? new URL(image.src, origin).href : undefined;
+
+// Every page carries the organisation and the site; a page adds its own.
+const siteWide: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "@id": `${origin}/#organization`,
+    name: site.legalName,
+    alternateName: site.name,
+    url: `${origin}/home`,
+    email: site.email,
+    description: site.description,
+    areaServed: site.areaServed.map((name) => ({ "@type": "Place", name })),
+    knowsAbout: [
+      "Luxury real estate",
+      "Villas in Phuket",
+      "Condominiums in Phuket",
+      "Property management",
+      "Koh Samui villas",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${origin}/#website`,
+    name: site.legalName,
+    url: `${origin}/home`,
+    publisher: { "@id": `${origin}/#organization` },
+    inLanguage: "en",
+  },
+];
 ---
 
 <html lang="en">
@@ -25,9 +79,26 @@ const fullTitle = title === site.tagline ? title : `${title} — ${site.name}`;
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large"} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:site_name" content={site.legalName} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    {image && <meta property="og:image:alt" content={image.alt} />}
+
+    <meta name="twitter:card" content={socialImage ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+
+    <JsonLd data={siteWide} />
+    {jsonLd && <JsonLd data={jsonLd} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

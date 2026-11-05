@@ -26,6 +26,7 @@ const { page, totalPages, pageProjects } = Astro.props;
 <BaseLayout
   title={`The Portfolio — Page ${page}`}
   description="A curated collection of the world's most prestigious residences."
+  noindex
 >
   <PortfolioView
     projects={pageProjects}
