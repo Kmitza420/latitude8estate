@@ -716,7 +716,7 @@ be decided early and left decided.</p>"""
 
 
 def build_blogs(author_ids: list[uuid.UUID], category_ids: dict[str, uuid.UUID]) -> list[BlogCreate]:
-    """Eight articles: six published, one draft, one archived."""
+    """Twelve articles: ten published, one draft, one archived."""
     return [
         BlogCreate(
             title="What Board-Formed Concrete Actually Costs",
@@ -822,6 +822,201 @@ not finished.</p>""",
             author_id=author_ids[1],
             category_id=category_ids["technology"],
             published_at=NOW - timedelta(days=52),
+        ),
+        BlogCreate(
+            title="Buying Property in Phuket as a Foreigner: Freehold, Leasehold and the Condominium Quota",
+            slug="buying-property-in-phuket-as-a-foreigner",
+            excerpt="Foreign buyers can own a condominium outright and a villa on a long lease. The structures are well established; the mistakes are in the details.",
+            content="""<p>Thailand does not allow a foreign individual to own land. That one rule shapes every
+purchase on this coast, and most of the confusion we see in first conversations comes from
+not having it explained plainly. What follows is the plain version. It is general guidance,
+not legal advice, and every purchase should be reviewed by an independent Thai lawyer before
+a deposit is paid.</p>
+<h2>Condominiums: freehold, within a quota</h2>
+<p>A condominium registered under the Condominium Act is the one kind of property a foreign
+buyer can hold in their own name with a freehold title. The condition is the foreign quota:
+no more than 49 per cent of the total saleable area of a building may be foreign-owned. Good
+developments track the quota carefully and tell you where it stands before you reserve. The
+purchase funds must arrive in Thailand as foreign currency, which the receiving bank records
+on a foreign exchange transaction form; that document is what the Land Office needs to
+register the unit to a foreigner, so it must be kept.</p>
+<h2>Villas and houses: own the building, lease the land</h2>
+<p>A villa stands on land, and the land cannot be in a foreign name. The usual structure is a
+registered lease of the land for thirty years, which is the maximum term the Land Office
+will register, with renewal options written into the contract, together with freehold title
+to the building itself registered separately in the buyer's name. The lease is recorded on
+the back of the land title deed, which is what makes it enforceable against a future owner
+of the land. Renewal options are a contractual promise rather than a registered right, so the
+quality of the developer or landowner, and of the drafting, matters a great deal.</p>
+<p>Some buyers are offered a Thai limited company as the landowner instead. The structure is
+common, but a company formed only to hold land for a foreigner is not what the law intends,
+and the authorities have looked at these arrangements more closely in recent years. We walk
+clients through the risks rather than steering them to it.</p>
+<h2>Title, and what to check</h2>
+<p>Land in Thailand carries one of several kinds of title document. A Chanote, the full
+freehold title deed with a surveyed boundary, is what a serious purchase should sit on. Lesser
+documents exist and are sometimes offered at tempting prices; they are harder to lease, harder
+to build on legally and harder to sell. Due diligence should also confirm road access, that
+the building has its permits and, for a condominium, that the juristic person is solvent and
+the sinking fund has been paid.</p>
+<h2>Costs on transfer</h2>
+<p>Transfer fees, specific business tax or stamp duty, withholding tax and lease registration
+fees are payable at the Land Office on the day of transfer, and which party pays which is a
+matter for the contract. Budget for them and have the split agreed in writing before you
+sign. Ongoing costs are modest by European standards: a condominium pays a monthly common
+area fee per square metre, and an estate villa pays an estate maintenance charge.</p>
+<p>None of this is difficult once it is laid out. Our role is to lay it out before the
+excitement of a viewing makes it seem unimportant.</p>""",
+            featured_image=MediaRef(key="journal/buying-in-phuket.svg", alt="A Thai land title deed laid on a desk beside a set of keys"),
+            status=BlogStatus.PUBLISHED,
+            author_id=author_ids[1],
+            category_id=category_ids["market"],
+            published_at=NOW - timedelta(days=2),
+            seo_title="Buying property in Phuket as a foreigner: freehold, leasehold and the condo quota",
+            seo_description="How foreign buyers own property in Phuket: freehold condominiums within the 49% quota, villas on a registered 30-year land lease, title due diligence and transfer costs.",
+        ),
+        BlogCreate(
+            title="Phuket's Coast, Beach by Beach: Where to Buy and Why",
+            slug="phuket-coast-beach-by-beach",
+            excerpt="The island is forty-eight kilometres long and changes character every few of them. A guide to the stretches where we represent houses, and what each one is for.",
+            content="""<p>Buyers arrive with a beach in mind and leave with a different one more often than not.
+That is not indecision; it is that the island's coast is more varied than a week's holiday
+can reveal, and the right address depends on how the house will be used. This is the guide we
+give to clients before the first drive around.</p>
+<h2>Bang Tao and Laguna</h2>
+<p>The long western beach north of Surin is where the island's established luxury market
+sits. The Laguna resort area brought a golf course, international restaurants and a critical
+mass of well-run estates, and the headlands at either end carry some of the best villa sites
+on the island. It is the natural choice for a family that wants to live here for much of the
+year: UWC Thailand and other international schools are close, and the services are mature.
+Prices reflect that.</p>
+<h2>Surin and Kamala</h2>
+<p>South of Bang Tao the coast tightens into a series of small bays with steep land behind
+them. Surin has the most expensive hillside in Phuket for a reason: the headland villas
+there face west over a short, beautiful beach. Kamala, the next bay south, has a quieter
+village and a run of modern cliff-front developments on its northern headland known locally
+as Millionaire's Mile.</p>
+<h2>Kata and Kata Noi</h2>
+<p>The south-west corner is more compact and more walkable. Kata is a lively beach town; Kata
+Noi, just over the headland, is a single short beach with a few hotels and almost nothing
+else, which is why apartments on the slope above it hold their value. This is the part of
+the island for an owner who wants to walk to the sand and to dinner, rather than drive.</p>
+<h2>Nai Thon, Nai Yang and the north</h2>
+<p>North of the airport the coast is protected by the Sirinat National Park, so it cannot be
+built out, and the beaches are long, quiet and lined with casuarina trees. Nai Thon is a
+single small bay with a handful of restaurants; Nai Yang is the local beach for the airport
+district. The appeal is permanence and convenience together: ten to twenty-five minutes
+from the terminal, and a view that will still be the same view in thirty years. The market
+here has been moving steadily for several years as the road works that once isolated it
+have finished.</p>
+<h2>The east coast and Cape Panwa</h2>
+<p>The east faces Phang Nga Bay rather than the open Andaman Sea, so the water is calm in
+the monsoon months when the west coast surf is up, and the marinas are here. Ao Yon, on the
+Cape Panwa peninsula, is the quietest sandy bay within fifteen minutes of Phuket Town. It
+suits owners who keep a boat, or who simply want to swim every day of the year.</p>
+<h2>And Samui</h2>
+<p>An hour's flight to the east, Koh Samui is a smaller and greener island with a different
+rhythm. The north and east coasts, Bophut and Chaweng, carry most of the resorts; the south
+and west, around Taling Ngam and Laem Sor, remain rural, with coconut plantations running
+down to empty beaches. We represent houses there for clients who want somewhere genuinely
+quiet.</p>""",
+            featured_image=MediaRef(key="journal/phuket-beaches.svg", alt="A long western beach at low tide, headlands at either end"),
+            status=BlogStatus.PUBLISHED,
+            author_id=author_ids[0],
+            category_id=category_ids["lifestyle"],
+            published_at=NOW - timedelta(days=7),
+            seo_title="Phuket's coast beach by beach: where to buy a villa or apartment",
+            seo_description="A buyer's guide to Phuket's coastline: Bang Tao and Laguna, Surin and Kamala, Kata Noi, Nai Thon and the north, the east coast at Ao Yon, and the south coast of Koh Samui.",
+        ),
+        BlogCreate(
+            title="Building for the Monsoon: Materials That Last on the Andaman Coast",
+            slug="building-for-the-monsoon",
+            excerpt="Salt, humidity and five months of rain test every material. A short account of which ones pass, which fail, and why the cheapest house is rarely the cheapest to own.",
+            content="""<p>A house on this coast lives in salt air at thirty degrees and eighty per cent humidity,
+with a monsoon that delivers most of the year's rain between May and October. Nothing about
+that is hostile to good building. It is only hostile to building that was specified for
+somewhere else.</p>
+<h2>Concrete and render</h2>
+<p>Reinforced concrete is the structural norm here and it performs well when the steel has
+enough cover and the mix is right for the humidity. Render over it is where most of the
+island's maintenance money goes: painted render on an exposed west elevation needs attention
+every two or three seasons. Exposed, well-poured concrete, or a lime-based render that
+breathes, costs more on the day and far less over a decade.</p>
+<h2>Timber</h2>
+<p>Teak and other dense tropical hardwoods are the traditional choice and still the best one
+for anything outside, provided the supply is legal and documented. Softwoods and most
+engineered timbers do not last. Inside, the question is less about the species than about
+the air: a house that is sealed and cooled all day moves its timber less than one that is
+opened every evening, and the detailing should allow for whichever the owner will actually
+do.</p>
+<h2>Metal</h2>
+<p>Within a kilometre of the sea, ordinary galvanised steel and most aluminium finishes
+corrode visibly within a few years. Marine-grade stainless steel for fixings, railings and
+hardware, and properly specified powder coating on window frames, are not luxuries; they are
+the difference between a house that looks new at ten years and one that does not.</p>
+<h2>Roofs, overhangs and water</h2>
+<p>The single most valuable element of a tropical house is a deep roof overhang. It shades
+the glass, keeps the rain off the walls and lets the windows stay open in a downpour. Flat
+roofs are possible but demand careful drainage and a membrane that is maintained; a house
+with standing water on its roof in October is a house with a problem by Christmas. Ground
+drainage matters equally: the land should shed water away from the building, and swimming
+pool overflows and garden irrigation should be designed as part of the same system.</p>
+<h2>What this means for a buyer</h2>
+<p>When we assess a house for a client, materials are the first thing we look at, because
+they tell us what the next ten years will cost. A listing that was built properly for this
+climate is worth paying more for, and we say so.</p>""",
+            featured_image=MediaRef(key="journal/monsoon-materials.svg", alt="Rain falling past a deep roof overhang onto a stone terrace"),
+            status=BlogStatus.PUBLISHED,
+            author_id=author_ids[1],
+            category_id=category_ids["sustainability"],
+            published_at=NOW - timedelta(days=14),
+            seo_title="Building for the monsoon: materials that last on Phuket's coast",
+            seo_description="Which building materials survive salt air, humidity and the monsoon on the Andaman coast, and what they tell a buyer about the real cost of owning a villa in Phuket.",
+        ),
+        BlogCreate(
+            title="Owning a Villa From Abroad: What Good Property Management Actually Does",
+            slug="owning-a-villa-from-abroad",
+            excerpt="Most owners are on the island for a few months a year. The rest of the time the house is in someone else's hands, and the quality of those hands decides what it is worth.",
+            content="""<p>The typical owner of a house on this coast lives somewhere else. They arrive in the dry
+season, stay for weeks or months, and leave the house to the climate for the rest of the year.
+What happens in the months between is the difference between a property that holds its value
+and one that quietly loses it.</p>
+<h2>The problem with an empty house</h2>
+<p>A closed tropical house grows mould in a fortnight. Pools turn green in days. Air
+conditioning that is never run seizes; air conditioning that runs unattended fails and no one
+notices until the ceiling stains. Gardens overgrow, and in a monsoon a blocked drain can flood
+a ground floor in an afternoon. None of this is dramatic, and all of it is expensive to put
+right once it has happened.</p>
+<h2>What management should include</h2>
+<p>At its simplest, management means a person who is in the house regularly, runs the systems
+on a schedule, keeps the pool and garden in order and tells the owner about anything they
+should know. A good arrangement goes further: a documented inventory of every system and
+finish, with its warranties; a preventative maintenance calendar; relationships with reliable
+trades on an island where good trades are scarce; a monthly report with photographs; and a
+clear procedure for emergencies, including who can authorise what spending without waking the
+owner at three in the morning.</p>
+<h2>Staff</h2>
+<p>Many estate houses come with household staff, and managing them well is a skill of its
+own. Contracts, social security, holidays and the household budget all need handling in
+Thai and in writing. Owners who try to manage staff from abroad by message generally end up
+either with unhappy staff or with an empty house.</p>
+<h2>Letting the house</h2>
+<p>Some owners let the house when they are away. That is possible and can cover the running
+costs, but it brings its own requirements: licensing, tax, guest management, and wear that a
+private house never sees. It should be a decision, not a drift, and the management
+arrangement should be designed for it from the start.</p>
+<h2>What it costs, and what it saves</h2>
+<p>Good management is a running cost, and it is always cheaper than the alternative. When we
+value a house for a client, the first thing we ask for is the maintenance record. A house with
+five years of monthly reports sells for more and sells faster than a house with none, because
+the buyer knows what they are getting. That is the return on the fee.</p>""",
+            featured_image=MediaRef(key="journal/owning-from-abroad.svg", alt="A caretaker checking a pool pump room beside a villa"),
+            status=BlogStatus.PUBLISHED,
+            author_id=author_ids[0],
+            category_id=category_ids["lifestyle"],
+            published_at=NOW - timedelta(days=24),
+            seo_title="Owning a villa in Phuket from abroad: what good property management does",
+            seo_description="What property management should cover for an absentee owner of a villa in Phuket: systems, pools and gardens, staff, letting, monthly reporting and why the record raises resale value.",
         ),
         BlogCreate(
             title="Notes on the 2027 Coastal Setback Review",
