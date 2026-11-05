@@ -1,0 +1,19 @@
+---
+/**
+ * Emit one or more schema.org objects as a JSON-LD script.
+ *
+ * Structured data is how a search engine reads a listing's price, an
+ * article's author and the organisation behind the site without guessing at
+ * the markup. Each page passes what it knows; nothing here is invented.
+ */
+interface Props {
+  data: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { data } = Astro.props;
+const items = Array.isArray(data) ? data : [data];
+// `</script` inside a string would end the block early; escape it the usual way.
+const json = JSON.stringify(items.length === 1 ? items[0] : items).replace(/</g, "\\u003c");
+---
+
+<script type="application/ld+json" set:html={json} />
