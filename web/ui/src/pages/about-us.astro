@@ -3,11 +3,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import Icon from "../components/Icon.astro";
 import SectionHeading from "../components/SectionHeading.astro";
+import Faq from "../components/Faq.astro";
+import { aboutFaq } from "../data/faqs";
 import { media } from "../data/media";
+import { breadcrumbs, faqSchema } from "../data/seo";
 import { site } from "../data/site";
 import { listAllProjects, summarise } from "../services";
 
-// Placeholder agency copy — no mockup existed for this page.
 const pillars = [
   {
     icon: "visibility_off",
@@ -20,10 +22,37 @@ const pillars = [
     body: "We advise on buildings, not just square footage. Every listing is assessed for the qualities that hold value across decades.",
   },
   {
-    icon: "public",
-    title: "Global Reach",
-    body: "Coastal, alpine, urban and historic holdings across Europe and North America, represented by one team end to end.",
+    icon: "location_on",
+    title: "Local Knowledge",
+    body: "Phuket and Koh Samui, coast by coast: which headland faces the sunset, which bay stays calm in the monsoon, and which road works changed a district's value.",
   },
+];
+
+const services = [
+  {
+    icon: "search",
+    title: "Acquisition",
+    body: "A search across the stretches of coast that suit how the house will be used, an honest assessment of each candidate, and a purchase managed through to the Land Office, including the ownership structure and the independent legal review.",
+  },
+  {
+    icon: "sell",
+    title: "Sale",
+    body: "Preparing the house and its paperwork, presenting it to a small number of qualified buyers rather than an open listing, and handling the negotiation, the contract and the transfer.",
+  },
+  {
+    icon: "home_repair_service",
+    title: "Management",
+    body: "For owners who live abroad for part of the year: the systems, pool and garden, household staff, monthly reporting and an emergency procedure, so the house holds its value in the months they are away.",
+  },
+];
+
+const origin = (Astro.site ?? new URL(site.url)).origin;
+const jsonLd = [
+  faqSchema(aboutFaq),
+  breadcrumbs(origin, [
+    { name: "Home", href: "/home" },
+    { name: "About Us", href: "/about-us" },
+  ]),
 ];
 
 // These four figures were invented ("$2.4B transacted", "74% off-market").
@@ -41,13 +70,14 @@ const stats = [
 
 <BaseLayout
   title="About Us"
-  description={`${site.name} advises on the acquisition and sale of architecturally significant private residences.`}
+  description={`${site.legalName} advises a small number of clients on buying, selling and managing architecturally significant villas, estates and condominiums in Phuket and Koh Samui.`}
+  jsonLd={jsonLd}
 >
   <Hero
     image={media.aboutHero}
     eyebrow="About Us"
     title="Quiet counsel on remarkable buildings."
-    lead={`${site.name} advises a small number of clients on the acquisition and sale of architecturally significant private residences.`}
+    lead={`${site.legalName} advises a small number of clients on the acquisition, sale and care of architecturally significant residences in Phuket and Koh Samui.`}
     overlay="dark"
   />
 
@@ -78,7 +108,35 @@ const stats = [
             carefully, and a practice that measures itself on the quality of what
             it declines as much as what it lists.
           </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            We work on the coasts of Phuket and Koh Samui because we know them:
+            which headland above Bang Tao faces the sunset, why the shoreline at
+            Nai Thon cannot be built out, which bay on the east coast stays calm
+            in the monsoon, and what a house here needs to be made of to look
+            new at ten years. That knowledge is what we sell, and it is why most
+            of our clients arrive by introduction.
+          </p>
         </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-page px-margin-mobile pb-section-gap md:px-margin-desktop">
+      <SectionHeading
+        eyebrow="What We Do"
+        title="Three services, one principal"
+        align="center"
+        class="mb-16"
+      />
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          services.map((service) => (
+            <div class="rounded-lg border border-outline-variant/30 bg-surface-container-low p-10">
+              <Icon name={service.icon} class="mb-6 text-4xl text-secondary" />
+              <h3 class="font-headline-sm text-headline-sm mb-4 text-primary">{service.title}</h3>
+              <p class="font-body-md text-body-md text-on-surface-variant">{service.body}</p>
+            </div>
+          ))
+        }
       </div>
     </section>
 
@@ -133,6 +191,17 @@ const stats = [
           ))
         }
       </dl>
+    </section>
+
+    <section class="mx-auto max-w-page px-margin-mobile pt-section-gap md:px-margin-desktop">
+      <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <SectionHeading eyebrow="Questions" title="About the practice" />
+        </div>
+        <div class="lg:col-span-8">
+          <Faq items={aboutFaq} />
+        </div>
+      </div>
     </section>
 
     <section

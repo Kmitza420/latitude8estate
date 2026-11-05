@@ -4,7 +4,9 @@ import type { GetStaticPaths } from "astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
+import AreaCard from "../../components/AreaCard.astro";
 import ContactForm from "../../components/react/ContactForm";
+import { areaFor } from "../../data/areas";
 import { breadcrumbs, listingSchema } from "../../data/seo";
 import { site } from "../../data/site";
 import { listAllProjects } from "../../services";
@@ -26,6 +28,9 @@ const placeLine = [project.meta.district, project.meta.city, project.meta.countr
   .filter(Boolean)
   .join(", ");
 const description = `${project.tagline} ${project.name} is a ${project.meta.type} listing in ${placeLine}, represented by ${site.legalName}.`;
+
+// The guide for the stretch of coast the listing is on, if one is written.
+const area = areaFor(project.meta.district, project.meta.city);
 
 const origin = (Astro.site ?? new URL(site.url)).origin;
 const jsonLd = [
@@ -162,6 +167,16 @@ const prose =
               </div>
             </address>
           </div>
+
+          {/* The area */}
+          {
+            area && (
+              <div class="space-y-6">
+                <h3 class="font-headline-md text-headline-md text-primary">The Area</h3>
+                <AreaCard area={area} variant="band" />
+              </div>
+            )
+          }
 
           {/* Spaces */}
           <div class="space-y-6">

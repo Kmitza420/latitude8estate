@@ -21,11 +21,31 @@ const details = [
 ];
 
 const markets = summarise(await listAllProjects()).marketNames;
+
+// What happens after the form, so nobody has to wonder.
+const steps = [
+  {
+    title: "A reply from a principal",
+    body: "Your enquiry goes to one of the principals, not a mailbox. We reply with a time for a call, in your time zone, and a note of what would help us prepare.",
+  },
+  {
+    title: "A conversation, not a pitch",
+    body: "We ask how the house will be used, by whom and for how much of the year, because that decides which stretch of coast is right before any listing does.",
+  },
+  {
+    title: "Houses, seen properly",
+    body: "A shortlist with the honest case for and against each one, walked live on video if you are abroad, and visited together when you are on the island.",
+  },
+  {
+    title: "The purchase, managed",
+    body: "Ownership structure, independent legal review, the contract and the transfer at the Land Office, handled end to end by the same person you first spoke to.",
+  },
+];
 ---
 
 <BaseLayout
   title="Contact Us"
-  description={`Speak with a ${site.name} specialist about acquiring or selling an architecturally significant residence.`}
+  description={`Speak with a ${site.legalName} principal about buying, selling or managing a villa, estate or condominium in Phuket or Koh Samui. Every enquiry is handled in confidence.`}
 >
   <Hero
     image={media.contactHero}
@@ -88,7 +108,7 @@ const markets = summarise(await listAllProjects()).marketNames;
         </div>
 
         {/* Form */}
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-7 space-y-12">
           <div
             class="rounded-xl border border-outline-variant/30 bg-surface-container-highest p-8 shadow-xl md:p-12"
           >
@@ -99,6 +119,23 @@ const markets = summarise(await listAllProjects()).marketNames;
               Leave your details and a specialist will contact you shortly.
             </p>
             <ContactForm client:visible submitLabel="Send Enquiry" />
+          </div>
+
+          <div>
+            <h2 class="font-headline-sm text-headline-sm mb-8 text-primary">What happens next</h2>
+            <ol class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              {
+                steps.map((step, index) => (
+                  <li class="rounded-xl border border-surface-container-high bg-surface-container-low p-6">
+                    <span class="font-label-md text-label-md mb-3 block tracking-widest text-secondary uppercase">
+                      Step {index + 1}
+                    </span>
+                    <h3 class="font-headline-sm mb-2 text-lg text-primary">{step.title}</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant">{step.body}</p>
+                  </li>
+                ))
+              }
+            </ol>
           </div>
         </div>
       </div>

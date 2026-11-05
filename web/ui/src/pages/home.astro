@@ -7,8 +7,13 @@ import Newsletter from "../components/Newsletter.astro";
 import PostCard from "../components/PostCard.astro";
 import PropertyCard from "../components/PropertyCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
+import AreaCard from "../components/AreaCard.astro";
+import Faq from "../components/Faq.astro";
+import { areas } from "../data/areas";
 import { media } from "../data/media";
 import { collections } from "../data/collections";
+import { homeFaq } from "../data/faqs";
+import { faqSchema } from "../data/seo";
 import { site } from "../data/site";
 import {
   getFeaturedPost,
@@ -45,12 +50,13 @@ const figures = [
 ].filter((figure) => figure.value !== "0");
 ---
 
-<BaseLayout title={site.tagline}>
+<BaseLayout title={site.tagline} description={site.description} jsonLd={faqSchema(homeFaq)}>
   {/* Hero copy sits over the image, anchored to its lower-left corner. */}
   <Hero
     image={media.homeHero}
+    eyebrow="Luxury real estate in Phuket & Koh Samui"
     title="Architectural Masterpieces."
-    lead={site.description}
+    lead="Villas, private estates and condominiums on the coasts of Phuket and Koh Samui, selected for how they are built and represented by one principal from first conversation to completion."
     overlay="scrim"
     animate
   />
@@ -73,9 +79,64 @@ const figures = [
       </div>
     </section>
 
-    {/* Featured estates */}
+    {/* What we do, in prose: the page's one substantial piece of copy. */}
     <section
       class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="mx-auto grid max-w-page grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <SectionHeading
+            eyebrow="Latitude 8 Estate"
+            title="Luxury property in Phuket, chosen for how it is built"
+          />
+        </div>
+        <div class="space-y-6 lg:col-span-7">
+          <p class="font-body-lg text-body-lg text-on-surface-variant">
+            Latitude 8 Estate represents a small number of villas, private
+            estates and low-rise condominiums on the coasts of Phuket and Koh
+            Samui. Every house on our books has been assessed for the things
+            that decide what it is worth to own in this climate: its structure
+            and materials, its title and ownership structure, its running costs,
+            and the honest case against it.
+          </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            We work with buyers who want a house on the Andaman coast and with
+            owners who are ready to sell one. For a buyer that means a search
+            across the stretches of coast that suit how the house will be used,
+            from the established estates above Bang Tao to the protected
+            shoreline at Nai Thon and the calm bays of the east coast, followed
+            by a purchase managed through to the Land Office. For a seller it
+            means preparing the house and its paperwork, presenting it to
+            qualified buyers only, and handling the negotiation and transfer.
+          </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Because most of our clients live abroad for part of the year, we
+            also manage the houses we sell: the systems, the pool and the
+            garden, the household staff, and a monthly report with photographs,
+            so that a house holds its value in the months its owner is away.
+          </p>
+          <div class="flex flex-wrap gap-4 pt-2">
+            <a
+              href="/projects"
+              class="font-label-md text-label-md inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-on-primary transition-colors hover:bg-secondary"
+            >
+              View the portfolio
+              <Icon name="arrow_forward" />
+            </a>
+            <a
+              href="/property-management"
+              class="font-label-md text-label-md inline-flex items-center gap-2 rounded-full border border-primary px-8 py-3 text-primary transition-colors hover:bg-primary hover:text-on-primary"
+            >
+              Property management
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Featured estates */}
+    <section
+      class="bg-surface px-margin-mobile py-section-gap md:px-margin-desktop"
     >
       <div class="mx-auto max-w-page">
         <SectionHeading
@@ -207,6 +268,40 @@ const figures = [
             </p>
           )
         }
+      </div>
+    </section>
+
+    {/* Where the portfolio is */}
+    <section
+      class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+    >
+      <div class="mx-auto max-w-page">
+        <SectionHeading
+          eyebrow="Where We Represent"
+          title="Phuket and Koh Samui, coast by coast"
+          lead="The island is forty-eight kilometres long and changes character every few of them. These are the stretches where our houses are, and what each one is for."
+          align="center"
+          class="mb-16"
+        />
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {areas.map((area) => <AreaCard area={area} />)}
+        </div>
+      </div>
+    </section>
+
+    {/* Questions */}
+    <section class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop">
+      <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <SectionHeading eyebrow="Questions" title="What clients ask first" />
+          <p class="font-body-md text-body-md mt-6 text-on-surface-variant">
+            The buying guide on the Projects page goes further into ownership
+            structures, due diligence and costs.
+          </p>
+        </div>
+        <div class="lg:col-span-8">
+          <Faq items={homeFaq} />
+        </div>
       </div>
     </section>
 

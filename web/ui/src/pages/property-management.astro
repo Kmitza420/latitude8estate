@@ -10,6 +10,10 @@ import ReasonCard from "../components/ReasonCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import ContactForm from "../components/react/ContactForm";
+import Faq from "../components/Faq.astro";
+import { managementFaq } from "../data/faqs";
+import { breadcrumbs, faqSchema } from "../data/seo";
+import { site } from "../data/site";
 import {
   enquiry,
   hero,
@@ -25,9 +29,22 @@ import {
 //
 // Breakpoints follow the rest of the site: one column until `md`, panels at
 // `p-8 md:p-12`, section headings at `text-headline-lg-mobile md:text-headline-lg`.
+
+const origin = (Astro.site ?? new URL(site.url)).origin;
+const jsonLd = [
+  faqSchema(managementFaq),
+  breadcrumbs(origin, [
+    { name: "Home", href: "/home" },
+    { name: "Property Management", href: "/property-management" },
+  ]),
+];
 ---
 
-<BaseLayout title="Property Management" description={hero.lead}>
+<BaseLayout
+  title="Villa & Estate Property Management in Phuket"
+  description="Property management for luxury villas and estates in Phuket and Koh Samui: systems, pools and gardens, household staff, monthly reporting and emergency response for owners who live abroad."
+  jsonLd={jsonLd}
+>
   <Hero
     image={hero.image}
     eyebrow={hero.eyebrow}
@@ -182,6 +199,56 @@ import {
               class="md:w-56 md:shrink-0"
             />
           </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Why an absent owner needs it, in prose */}
+    <section class="mx-auto max-w-page px-margin-mobile py-section-gap md:px-margin-desktop">
+      <div class="grid grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <SectionHeading
+            eyebrow="Why It Matters Here"
+            title="A house in the tropics is never idle"
+          />
+        </div>
+        <div class="space-y-6 lg:col-span-7">
+          <p class="font-body-lg text-body-lg text-on-surface-variant">
+            Most owners of a house on this coast live somewhere else. They
+            arrive in the dry season, stay for weeks or months, and leave the
+            house to the climate for the rest of the year. A closed tropical
+            house grows mould in a fortnight; a pool turns green in days; air
+            conditioning that never runs seizes, and air conditioning that runs
+            unattended fails without anyone noticing until the ceiling stains.
+          </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Management means a person who is in the house on a schedule, runs
+            the systems, keeps the pool and garden in order and tells the owner
+            about anything they should know. A good arrangement goes further: a
+            documented inventory of every system and finish with its
+            warranties, a preventative maintenance calendar, relationships with
+            reliable trades on an island where good trades are scarce, a
+            monthly report with photographs, and a clear procedure for who may
+            authorise what in an emergency.
+          </p>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            It is also what a house is worth at resale. When we value a property
+            for a client, the first thing we ask for is the maintenance record.
+            A house with five years of monthly reports sells for more, and
+            faster, than a house with none.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Questions */}
+    <section class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop">
+      <div class="mx-auto grid max-w-page grid-cols-1 gap-gutter lg:grid-cols-12">
+        <div class="lg:col-span-4">
+          <SectionHeading eyebrow="Questions" title="Management, answered plainly" />
+        </div>
+        <div class="lg:col-span-8">
+          <Faq items={managementFaq} />
         </div>
       </div>
     </section>
