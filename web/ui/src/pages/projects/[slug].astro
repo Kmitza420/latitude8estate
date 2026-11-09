@@ -5,6 +5,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Hero from "../../components/Hero.astro";
 import Icon from "../../components/Icon.astro";
 import ContactForm from "../../components/react/ContactForm";
+import { breadcrumbs, listingSchema } from "../../data/seo";
+import { site } from "../../data/site";
 import { listAllProjects } from "../../services";
 
 export const getStaticPaths: GetStaticPaths = async () =>
@@ -18,9 +20,35 @@ const { project } = Astro.props;
 // Not every listing publishes a price; "Price on application" is the trade's
 // term for that, and the only honest thing to put in the slot.
 const priceLabel = project.price ?? "Price on application";
+
+// The search snippet: the listing's own lead, placed.
+const placeLine = [project.meta.district, project.meta.city, project.meta.country]
+  .filter(Boolean)
+  .join(", ");
+const description = `${project.tagline} ${project.name} is a ${project.meta.type} listing in ${placeLine}, represented by ${site.legalName}.`;
+
+const origin = (Astro.site ?? new URL(site.url)).origin;
+const jsonLd = [
+  listingSchema(origin, project),
+  breadcrumbs(origin, [
+    { name: "Home", href: "/home" },
+    { name: "Projects", href: "/projects" },
+    { name: project.name, href: `/projects/${project.slug}` },
+  ]),
+];
+
+// The description is sanitised server-side on the same allowlist as an
+// article body, which is what makes `set:html` safe here.
+const prose =
+  "prose prose-lg max-w-none prose-headings:font-headline-md prose-headings:font-medium prose-h3:text-headline-sm prose-h3:text-primary prose-h3:mt-10 prose-h3:mb-4 prose-p:font-body-md prose-p:text-body-lg prose-p:text-on-surface-variant prose-p:leading-relaxed prose-a:text-secondary prose-a:underline-offset-4 hover:prose-a:text-primary";
 ---
 
-<BaseLayout title={project.name} description={project.tagline}>
+<BaseLayout
+  title={project.name}
+  description={description}
+  image={project.hero}
+  jsonLd={jsonLd}
+>
   <main class="flex flex-grow flex-col">
     <Hero
       image={project.hero}
@@ -72,6 +100,18 @@ const priceLabel = project.price ?? "Price on application";
             </div>
 
             <div class="h-px w-full bg-outline-variant"></div>
+
+            {/* Long-form copy from the record, when it carries one. */}
+            {
+              project.description && (
+                <div>
+                  <h3 class="font-headline-md text-headline-md mb-6 text-primary">
+                    About {project.name}
+                  </h3>
+                  <div class={prose} set:html={project.description} />
+                </div>
+              )
+            }
 
             <div>
               <h3 class="font-headline-sm text-headline-sm mb-6 text-primary">
