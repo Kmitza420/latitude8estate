@@ -1,0 +1,48 @@
+---
+import type { Area } from "../data/areas";
+
+/** One area guide: name, strap, prose and a short list of facts. */
+interface Props {
+  area: Area;
+  /** `card` on an index grid; `band` as a full-width section on a listing. */
+  variant?: "card" | "band";
+}
+
+const { area, variant = "card" } = Astro.props;
+---
+
+{
+  variant === "card" ? (
+    <article class="luxury-shadow flex h-full flex-col gap-4 rounded-lg bg-surface p-8">
+      <h3 class="font-headline-sm text-headline-sm text-primary">{area.name}</h3>
+      <p class="font-label-md text-label-md tracking-wider text-secondary uppercase">{area.strap}</p>
+      <p class="font-body-md text-body-md text-on-surface-variant">{area.body[0]}</p>
+      <ul class="mt-auto space-y-2 border-t border-outline-variant/30 pt-4">
+        {area.highlights.map((item) => (
+          <li class="font-body-md flex gap-3 text-sm text-on-surface-variant">
+            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </article>
+  ) : (
+    <div class="grid grid-cols-1 gap-8 rounded-xl border border-surface-container-high bg-surface-container-low p-8 md:grid-cols-5">
+      <div class="md:col-span-3">
+        <p class="font-label-md text-label-md mb-2 tracking-wider text-secondary uppercase">{area.strap}</p>
+        <h4 class="font-headline-sm text-headline-sm mb-4 text-primary">{area.name}</h4>
+        {area.body.map((paragraph) => (
+          <p class="font-body-md text-body-md mb-4 last:mb-0 text-on-surface-variant">{paragraph}</p>
+        ))}
+      </div>
+      <ul class="space-y-3 md:col-span-2">
+        {area.highlights.map((item) => (
+          <li class="font-body-md flex gap-3 text-sm text-on-surface-variant">
+            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
